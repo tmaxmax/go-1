@@ -1091,12 +1091,11 @@ func (p *parser) parseResult() *ast.FieldList {
 	return nil
 }
 
-func (p *parser) parseFuncType() *ast.FuncType {
+func (p *parser) parseFuncType(pos token.Pos) *ast.FuncType {
 	if p.trace {
 		defer un(trace(p, "FuncType"))
 	}
 
-	pos := p.expect(token.FUNC)
 	tparams, params := p.parseParameters(true)
 	if tparams != nil {
 		p.error(tparams.Pos(), "function type must have no type parameters")
@@ -1369,7 +1368,7 @@ func (p *parser) tryIdentOrType() ast.Expr {
 	case token.MUL:
 		return p.parsePointerType()
 	case token.FUNC:
-		return p.parseFuncType()
+		return p.parseFuncType(p.expect(token.FUNC))
 	case token.INTERFACE:
 		return p.parseInterfaceType()
 	case token.MAP:
@@ -1435,7 +1434,32 @@ func (p *parser) parseFuncTypeOrLit() ast.Expr {
 		defer un(trace(p, "FuncTypeOrLit"))
 	}
 
-	typ := p.parseFuncType()
+	pos := p.expect(token.FUNC)
+	if p.tok == token.LBRACE {
+		lbrace := p.pos
+
+		p.next()
+
+		var params []*ast.Ident
+		var sep token.Pos
+		if p.tok == token.IDENT {
+			params = p.parseIdentList()
+			sep = p.expect(token.OR)
+		}
+
+		p.exprLev++
+		stmts := p.parseStmtList()
+		rbrace := p.expect2(token.RBRACE)
+		p.exprLev--
+
+		return &ast.FuncLight{
+			Func: pos, Lbrace: lbrace,
+			Params: params, Sep: sep,
+			Body: stmts, Rbrace: rbrace,
+		}
+	}
+
+	typ := p.parseFuncType(pos)
 	if p.tok != token.LBRACE {
 		// function type only
 		return typ

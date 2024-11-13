@@ -370,6 +370,16 @@ func main() {
 	// so that it can use defer and have them
 	// run before the exit.
 	gofmtMain(s)
+
+	if *simplifyAST {
+		perc := func(a, b int) float64 { return 100 * float64(a) / float64(b) }
+
+		fmt.Printf("found %d function literals, %d (%0.1f%%) rewritten into lightweight form\n", count.funcLit, count.funcLight, perc(count.funcLight, count.funcLit))
+		fmt.Printf("%d lightweight function literals contain a single statement (%d, %0.1f%% are long)\n", count.singleStatement, count.longSingleStatement, perc(count.longSingleStatement, count.singleStatement))
+		fmt.Printf("%d lightweight function literals contain a single return statement (%0.1f%% of all rewritten literals, %0.1f%% of single statement literals)\n", count.singleReturn, perc(count.singleReturn, count.funcLight), perc(count.singleReturn, count.singleStatement))
+		fmt.Printf("return value count histogram for single-return lightweight function literals:\n\t%v\n", count.returnVals)
+	}
+
 	os.Exit(s.GetExitCode())
 }
 
@@ -421,9 +431,9 @@ func gofmtMain(s *sequencer) {
 				return processFile(arg, info, nil, r)
 			})
 		default:
-			// Directories are walked, ignoring non-Go files.
+			// Directories are walked, ignoring testdata directories and non-Go files.
 			err := filepath.WalkDir(arg, func(path string, f fs.DirEntry, err error) error {
-				if err != nil || !isGoFile(f) {
+				if err != nil || !isGoFile(f) || strings.Contains(filepath.ToSlash(path), "/testdata/") {
 					return err
 				}
 				info, err := f.Info()

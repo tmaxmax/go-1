@@ -77,6 +77,10 @@ func Walk(v Visitor, node Node) {
 		Walk(v, n.Type)
 		Walk(v, n.Body)
 
+	case *FuncLight:
+		walkList(v, n.Params)
+		walkList(v, n.Body)
+
 	case *CompositeLit:
 		if n.Type != nil {
 			Walk(v, n.Type)
