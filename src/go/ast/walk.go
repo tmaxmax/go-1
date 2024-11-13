@@ -138,6 +138,9 @@ func Walk(v Visitor, node Node) {
 		Walk(v, n.Key)
 		Walk(v, n.Value)
 
+	case ExprList:
+		walkList(v, n)
+
 	// Types
 	case *ArrayType:
 		if n.Len != nil {

@@ -918,6 +918,15 @@ func (p *printer) expr1(expr ast.Expr, prec1, depth int) {
 		p.setPos(x.Rbrace)
 		p.print(noExtraBlank, token.RBRACE)
 
+	case ast.ExprList:
+		if p.indentList(x) {
+			p.print(indent)
+			p.exprList(token.NoPos, x, 1, noIndent, token.NoPos, false)
+			p.print(unindent)
+		} else {
+			p.exprList(token.NoPos, x, 1, 0, token.NoPos, false)
+		}
+
 	case *ast.ParenExpr:
 		if _, hasParens := x.X.(*ast.ParenExpr); hasParens {
 			// don't print parentheses around an already parenthesized expression

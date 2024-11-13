@@ -187,7 +187,9 @@ func (s simplifier) simplifyFuncLit(f *ast.FuncLit) ast.Expr {
 
 	if len(fl.Body) == 1 {
 		count.singleStatement++
-		if sz := int(fl.Body[0].End()-fl.Body[0].Pos()) + 1; sz >= 100 {
+
+		long := int(fl.Body[0].End()-fl.Body[0].Pos())+1 >= 100
+		if long {
 			count.longSingleStatement++
 		}
 
@@ -197,6 +199,10 @@ func (s simplifier) simplifyFuncLit(f *ast.FuncLit) ast.Expr {
 			n := len(ret.Results)
 			if n >= len(count.returnVals) {
 				n = len(count.returnVals) - 1
+			}
+
+			if *simplifySingleReturn && !long {
+				fl.Body[0] = &ast.ExprStmt{X: ast.ExprList(ret.Results)}
 			}
 
 			count.returnVals[n]++
