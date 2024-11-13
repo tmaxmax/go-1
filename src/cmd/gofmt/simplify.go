@@ -57,9 +57,6 @@ func (s simplifier) Visit(node ast.Node) ast.Visitor {
 			return nil
 		}
 
-	case *ast.FuncLit:
-		count.funcLit++
-
 	case *ast.SliceExpr:
 		// a slice expression of the form: s[a:len(s)]
 		// can be simplified to: s[a:]
@@ -105,6 +102,7 @@ func (s simplifier) Visit(node ast.Node) ast.Visitor {
 		// that the source code typechecks correctly in the first place.
 		for i, x := range n.Args {
 			if f, _ := x.(*ast.FuncLit); f != nil {
+				count.funcLit++
 				n.Args[i] = s.simplifyFuncLit(f)
 			}
 		}
@@ -119,6 +117,8 @@ func (s simplifier) Visit(node ast.Node) ast.Visitor {
 			if !ok {
 				continue
 			}
+
+			count.funcLit++
 
 			mustHaveNoParams := n.Tok == token.DEFINE
 			if i < len(n.Lhs) { // guard against incorrect code
@@ -152,6 +152,11 @@ func (s simplifier) Visit(node ast.Node) ast.Visitor {
 
 func (s simplifier) simplifyFuncLit(f *ast.FuncLit) ast.Expr {
 	if f.Type == nil {
+		return f
+	}
+
+	// Do not simplify any func()
+	if len(f.Type.Params.List) == 0 && (f.Type.Results == nil || len(f.Type.Results.List) == 0) {
 		return f
 	}
 

@@ -21,12 +21,9 @@ func _() {
 }
 
 func _() {
-	f = func {}
+	f = func() {}
 	f = func { x | }
 	f = func { x, y | return x < y }
-	y := func {
-		fmt.Println("Hello there, this should surely go way over the allowed single-line character limit...")
-	}
 	f = func { x |
 		fmt.Println("Hello there, this should surely go way over the allowed single-line character limit...")
 	}

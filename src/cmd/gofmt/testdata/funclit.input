@@ -24,7 +24,6 @@ func _() {
 	f = func() {}
 	f = func(x int) {}
 	f = func(x, y int) bool { return x < y }
-	y := func() {fmt.Println("Hello there, this should surely go way over the allowed single-line character limit...")}
 	f = func(x int) {fmt.Println("Hello there, this should surely go way over the allowed single-line character limit...")}
 	f = func(x, y int) bool {
 		x = y ^ x
