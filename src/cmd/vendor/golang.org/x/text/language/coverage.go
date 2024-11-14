@@ -172,13 +172,13 @@ func NewCoverage(list ...interface{}) Coverage {
 		case func() []Tag:
 			s.tags = v
 		case []Base:
-			s.bases = func() []Base { return v }
+			s.bases = func { return v }
 		case []Script:
-			s.scripts = func() []Script { return v }
+			s.scripts = func { return v }
 		case []Region:
-			s.regions = func() []Region { return v }
+			s.regions = func { return v }
 		case []Tag:
-			s.tags = func() []Tag { return v }
+			s.tags = func { return v }
 		default:
 			panic(fmt.Sprintf("language: unsupported set type %T", v))
 		}
