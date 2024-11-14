@@ -96,7 +96,7 @@ func TestIsRegularMemory(t *testing.T) {
 		{"struct {_ int32 }", args{reflect.TypeOf(struct{ _ int32 }{})}, false},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func { t |
+		t.Run(tt.name, func { t ->
 			if got := reflect.IsRegularMemory(tt.args.t); got != tt.want {
 				t.Errorf("isRegularMemory() = %v, want %v", got, tt.want)
 			}
@@ -135,7 +135,7 @@ func TestType_CanSeq(t *testing.T) {
 		{"[]int", reflect.TypeOf([]int{}), true},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func { t |
+		t.Run(tt.name, func { t ->
 			if got := tt.tr.CanSeq(); got != tt.want {
 				t.Errorf("Type.CanSeq() = %v, want %v", got, tt.want)
 			}
@@ -160,7 +160,7 @@ func TestType_CanSeq2(t *testing.T) {
 		{"[]int", reflect.TypeOf([]int{}), true},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func { t |
+		t.Run(tt.name, func { t ->
 			if got := tt.tr.CanSeq2(); got != tt.want {
 				t.Errorf("Type.CanSeq2() = %v, want %v", got, tt.want)
 			}

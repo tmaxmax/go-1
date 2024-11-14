@@ -64,7 +64,7 @@ func TestRFC9180Vectors(t *testing.T) {
 	}
 
 	for _, vector := range vectors {
-		t.Run(vector.Name, func { t |
+		t.Run(vector.Name, func { t ->
 			setup := parseVectorSetup(vector.Setup)
 
 			kemID, err := strconv.Atoi(setup["kem_id"])
@@ -134,7 +134,7 @@ func TestRFC9180Vectors(t *testing.T) {
 			}
 
 			for _, enc := range parseVectorEncryptions(vector.Encryptions) {
-				t.Run("seq num "+enc["sequence number"], func { t |
+				t.Run("seq num "+enc["sequence number"], func { t ->
 					seqNum, err := strconv.Atoi(enc["sequence number"])
 					if err != nil {
 						t.Fatal(err)

@@ -505,7 +505,7 @@ func BenchmarkReadMIMEHeader(b *testing.B) {
 		{"client_headers", clientHeaders},
 		{"server_headers", serverHeaders},
 	} {
-		b.Run(set.name, func { b |
+		b.Run(set.name, func { b ->
 			var buf bytes.Buffer
 			br := bufio.NewReader(&buf)
 			r := NewReader(br)

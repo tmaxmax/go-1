@@ -22,7 +22,7 @@ type Bench struct {
 
 func benchmarkEndToEnd(b *testing.B, ctor func() any, pipe func() (r io.Reader, w io.Writer, err error)) {
 	b.ReportAllocs()
-	b.RunParallel(func { pb |
+	b.RunParallel(func { pb ->
 		r, w, err := pipe()
 		if err != nil {
 			b.Fatal("can't get pipe:", err)
@@ -133,7 +133,7 @@ func TestCountDecodeMallocs(t *testing.T) {
 func benchmarkEncodeSlice(b *testing.B, a any) {
 	b.ResetTimer()
 	b.ReportAllocs()
-	b.RunParallel(func { pb |
+	b.RunParallel(func { pb ->
 		var buf bytes.Buffer
 		enc := NewEncoder(&buf)
 
@@ -228,7 +228,7 @@ func benchmarkDecodeSlice(b *testing.B, a any) {
 	b.ResetTimer()
 
 	b.ReportAllocs()
-	b.RunParallel(func { pb |
+	b.RunParallel(func { pb ->
 		// TODO(#19025): Move per-thread allocation before ResetTimer.
 		rp := reflect.New(rt)
 		rp.Elem().Set(reflect.MakeSlice(rt, ra.Len(), ra.Cap()))

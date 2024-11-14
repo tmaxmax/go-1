@@ -27,7 +27,7 @@ func TestMapFSChmodDot(t *testing.T) {
 		".":       &MapFile{Mode: 0777 | fs.ModeDir},
 	}
 	buf := new(strings.Builder)
-	fs.WalkDir(m, ".", func { path, d, err |
+	fs.WalkDir(m, ".", func { path, d, err ->
 		fi, err := d.Info()
 		if err != nil {
 			return err

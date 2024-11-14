@@ -501,18 +501,18 @@ func eqFunc(t *types.Type) *ir.Func {
 		case types.TSTRING:
 			// Do two loops. First, check that all the lengths match (cheap).
 			// Second, check that all the contents match (expensive).
-			checkAll(3, false, func { pi, qi |
+			checkAll(3, false, func { pi, qi ->
 				// Compare lengths.
 				eqlen, _ := compare.EqString(pi, qi)
 				return eqlen
 			})
-			checkAll(1, true, func { pi, qi |
+			checkAll(1, true, func { pi, qi ->
 				// Compare contents.
 				_, eqmem := compare.EqString(pi, qi)
 				return eqmem
 			})
 		case types.TFLOAT32, types.TFLOAT64:
-			checkAll(2, true, func { pi, qi |
+			checkAll(2, true, func { pi, qi ->
 			// p[i] == q[i]
 			return ir.NewBinaryExpr(base.Pos, ir.OEQ, pi, qi) })
 		case types.TSTRUCT:
@@ -546,11 +546,11 @@ func eqFunc(t *types.Type) *ir.Func {
 				}
 			}
 			if !hasCallExprs || allCallExprs || canPanic {
-				checkAll(1, true, func { pi, qi |
+				checkAll(1, true, func { pi, qi ->
 				// p[i] == q[i]
 				return ir.NewBinaryExpr(base.Pos, ir.OEQ, pi, qi) })
 			} else {
-				checkAll(4, false, func { pi, qi |
+				checkAll(4, false, func { pi, qi ->
 					expr = nil
 					flatConds, _ := compare.EqStruct(t.Elem(), pi, qi)
 					if len(flatConds) == 0 {
@@ -563,7 +563,7 @@ func eqFunc(t *types.Type) *ir.Func {
 					}
 					return expr
 				})
-				checkAll(2, true, func { pi, qi |
+				checkAll(2, true, func { pi, qi ->
 					expr = nil
 					flatConds, _ := compare.EqStruct(t.Elem(), pi, qi)
 					for _, c := range flatConds {
@@ -575,7 +575,7 @@ func eqFunc(t *types.Type) *ir.Func {
 				})
 			}
 		default:
-			checkAll(1, true, func { pi, qi |
+			checkAll(1, true, func { pi, qi ->
 			// p[i] == q[i]
 			return ir.NewBinaryExpr(base.Pos, ir.OEQ, pi, qi) })
 		}
@@ -652,7 +652,7 @@ func EqFor(t *types.Type) (ir.Node, bool) {
 }
 
 func anyCall(fn *ir.Func) bool {
-	return ir.Any(fn, func { n |
+	return ir.Any(fn, func { n ->
 		// TODO(rsc): No methods?
 		op := n.Op()
 		return op == ir.OCALL || op == ir.OCALLFUNC

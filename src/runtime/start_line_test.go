@@ -107,7 +107,7 @@ func TestStartLine(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func { t |
+		t.Run(tc.name, func { t ->
 			got := tc.fn()
 			if got != tc.want {
 				t.Errorf("start line got %d want %d", got, tc.want)

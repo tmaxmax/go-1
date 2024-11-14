@@ -550,12 +550,12 @@ func TestWriterReset(t *testing.T) {
 
 	levels := []int{0, 1, 2, 5, 9}
 	for _, level := range levels {
-		t.Run(fmt.Sprint(level), func { t | testResetOutput(t, level, nil) })
+		t.Run(fmt.Sprint(level), func { t -> testResetOutput(t, level, nil) })
 	}
 
-	t.Run("dict", func { t |
+	t.Run("dict", func { t ->
 		for _, level := range levels {
-			t.Run(fmt.Sprint(level), func { t | testResetOutput(t, level, nil) })
+			t.Run(fmt.Sprint(level), func { t -> testResetOutput(t, level, nil) })
 		}
 	})
 }

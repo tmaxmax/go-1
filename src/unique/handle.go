@@ -127,7 +127,7 @@ func addUniqueMap[T comparable](typ *abi.Type) *uniqueMap[T] {
 		cleanupFuncs = append(cleanupFuncs, func() {
 			// Delete all the entries whose weak references are nil and clean up
 			// deleted entries.
-			m.All()(func { key, wp |
+			m.All()(func { key, wp ->
 				if wp.Strong() == nil {
 					m.CompareAndDelete(key, wp)
 				}

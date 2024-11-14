@@ -35,7 +35,7 @@ func BenchmarkDispatch(b *testing.B) {
 		f  float64
 		a  any
 	)
-	b.Run("switch-checked", func { b |
+	b.Run("switch-checked", func { b ->
 		for i := 0; i < b.N; i++ {
 			for _, v := range vs {
 				switch v.Kind() {
@@ -66,7 +66,7 @@ func BenchmarkDispatch(b *testing.B) {
 		_ = f
 		_ = a
 	})
-	b.Run("As", func { b |
+	b.Run("As", func { b ->
 		for i := 0; i < b.N; i++ {
 			for _, kv := range vs {
 				if v, ok := kv.AsString(); ok {
@@ -97,7 +97,7 @@ func BenchmarkDispatch(b *testing.B) {
 		_ = a
 	})
 
-	b.Run("Visit", func { b |
+	b.Run("Visit", func { b ->
 		v := &setVisitor{}
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {

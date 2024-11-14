@@ -107,7 +107,7 @@ func ExamplePerm() {
 
 func ExampleShuffle() {
 	words := strings.Fields("ink runs from the corners of my mouth")
-	rand.Shuffle(len(words), func { i, j | words[i], words[j] = words[j], words[i] })
+	rand.Shuffle(len(words), func { i, j -> words[i], words[j] = words[j], words[i] })
 	fmt.Println(words)
 }
 
@@ -115,7 +115,7 @@ func ExampleShuffle_slicesInUnison() {
 	numbers := []byte("12345")
 	letters := []byte("ABCDE")
 	// Shuffle numbers, swapping corresponding entries in letters at the same time.
-	rand.Shuffle(len(numbers), func { i, j |
+	rand.Shuffle(len(numbers), func { i, j ->
 		numbers[i], numbers[j] = numbers[j], numbers[i]
 		letters[i], letters[j] = letters[j], letters[i]
 	})

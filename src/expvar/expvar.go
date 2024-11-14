@@ -136,13 +136,13 @@ func (v *Map) appendJSONMayExpand(b []byte, expand bool) []byte {
 	mayAppendNewline := func(b []byte) []byte { return b }
 	if expand {
 		afterCommaDelim = '\n'
-		mayAppendNewline = func { b | return append(b, '\n') }
+		mayAppendNewline = func { b -> return append(b, '\n') }
 	}
 
 	b = append(b, '{')
 	b = mayAppendNewline(b)
 	first := true
-	v.Do(func { kv |
+	v.Do(func { kv ->
 		if !first {
 			b = append(b, ',', afterCommaDelim)
 		}

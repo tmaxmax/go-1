@@ -1171,7 +1171,7 @@ func (w *Walker) collectDeprecated() {
 		}
 	}
 	for _, file := range w.current.Files {
-		ast.Inspect(file, func { n |
+		ast.Inspect(file, func { n ->
 			switch n := n.(type) {
 			case *ast.File:
 				if isDeprecated(n.Doc) {

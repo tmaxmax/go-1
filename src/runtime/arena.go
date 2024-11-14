@@ -261,7 +261,7 @@ type userArena struct {
 // newUserArena creates a new userArena ready to be used.
 func newUserArena() *userArena {
 	a := new(userArena)
-	SetFinalizer(a, func { a |
+	SetFinalizer(a, func { a ->
 	// If arena handle is dropped without being freed, then call
 	// free on the arena, so the arena chunks are never reclaimed
 	// by the garbage collector.

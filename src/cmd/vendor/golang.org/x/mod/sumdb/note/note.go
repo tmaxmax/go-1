@@ -265,7 +265,7 @@ func NewVerifier(vkey string) (Verifier, error) {
 		if len(key) != 32 {
 			return nil, errVerifierID
 		}
-		v.verify = func { msg, sig | return ed25519.Verify(key, msg, sig) }
+		v.verify = func { msg, sig -> return ed25519.Verify(key, msg, sig) }
 	}
 
 	return v, nil
@@ -326,7 +326,7 @@ func NewSigner(skey string) (Signer, error) {
 		}
 		key = ed25519.NewKeyFromSeed(key)
 		pubkey = append([]byte{algEd25519}, key[32:]...)
-		s.sign = func { msg | return ed25519.Sign(key, msg), nil }
+		s.sign = func { msg -> return ed25519.Sign(key, msg), nil }
 	}
 
 	if uint32(hash) != keyHash(name, pubkey) {

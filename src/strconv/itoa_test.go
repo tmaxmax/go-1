@@ -210,7 +210,7 @@ func BenchmarkAppendUint(b *testing.B) {
 func BenchmarkFormatIntSmall(b *testing.B) {
 	smallInts := []int64{7, 42}
 	for _, smallInt := range smallInts {
-		b.Run(Itoa(int(smallInt)), func { b | for i := 0; i < b.N; i++ {
+		b.Run(Itoa(int(smallInt)), func { b -> for i := 0; i < b.N; i++ {
 			s := FormatInt(smallInt, 10)
 			BenchSink += len(s)
 		} })
@@ -228,7 +228,7 @@ func BenchmarkAppendIntSmall(b *testing.B) {
 
 func BenchmarkAppendUintVarlen(b *testing.B) {
 	for _, test := range varlenUints {
-		b.Run(test.out, func { b |
+		b.Run(test.out, func { b ->
 			dst := make([]byte, 0, 30)
 			for j := 0; j < b.N; j++ {
 				dst = AppendUint(dst[:0], test.in, 10)

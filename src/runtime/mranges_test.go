@@ -264,7 +264,7 @@ func TestAddrRangesFindSucc(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Run(test.name, func { t |
+		t.Run(test.name, func { t ->
 			a := MakeAddrRanges(test.ranges...)
 			i := a.FindSucc(test.base)
 			if i != test.expect {

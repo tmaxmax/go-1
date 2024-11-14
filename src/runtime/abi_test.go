@@ -95,7 +95,7 @@ func TestFinalizerRegisterABI(t *testing.T) {
 	}
 	for i := range tests {
 		test := &tests[i]
-		t.Run(test.name, func { t |
+		t.Run(test.name, func { t ->
 			x := &TintPointer{p: new(Tint)}
 			*x.p = (Tint)(test.confirmValue)
 			runtime.SetFinalizer(x, test.fin)

@@ -127,7 +127,7 @@ func TestDeleteFunc(t *testing.T) {
 	if !Equal(mc, m1) {
 		t.Errorf("DeleteFunc(%v, true) = %v, want %v", m1, mc, m1)
 	}
-	DeleteFunc(mc, func { k, v | return k > 3 })
+	DeleteFunc(mc, func { k, v -> return k > 3 })
 	want := map[int]int{1: 2, 2: 4}
 	if !Equal(mc, want) {
 		t.Errorf("DeleteFunc result = %v, want %v", mc, want)

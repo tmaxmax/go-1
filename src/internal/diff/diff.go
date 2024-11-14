@@ -235,7 +235,7 @@ func tgs(x, y []string) []pair {
 		T[i] = n + 1
 	}
 	for i := 0; i < n; i++ {
-		k := sort.Search(n, func { k | return T[k] >= J[i] })
+		k := sort.Search(n, func { k -> return T[k] >= J[i] })
 		T[k] = J[i]
 		L[i] = k + 1
 	}

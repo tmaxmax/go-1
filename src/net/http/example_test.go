@@ -15,7 +15,7 @@ import (
 )
 
 func ExampleHijacker() {
-	http.HandleFunc("/hijack", func { w, r |
+	http.HandleFunc("/hijack", func { w, r ->
 		hj, ok := w.(http.Hijacker)
 		if !ok {
 			http.Error(w, "webserver doesn't support hijacking", http.StatusInternalServerError)
@@ -82,7 +82,7 @@ func (apiHandler) ServeHTTP(http.ResponseWriter, *http.Request) {}
 func ExampleServeMux_Handle() {
 	mux := http.NewServeMux()
 	mux.Handle("/api/", apiHandler{})
-	mux.HandleFunc("/", func { w, req |
+	mux.HandleFunc("/", func { w, req ->
 		// The "/" pattern matches everything, so we need to check
 		// that we're at the root here.
 		if req.URL.Path != "/" {
@@ -97,7 +97,7 @@ func ExampleServeMux_Handle() {
 // after the HTTP response, instead of before.
 func ExampleResponseWriter_trailers() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/sendstrailers", func { w, req |
+	mux.HandleFunc("/sendstrailers", func { w, req ->
 		// Before any call to WriteHeader or Write, declare
 		// the trailers you will set during the HTTP
 		// response. These three headers are actually sent in
@@ -141,7 +141,7 @@ func ExampleServer_Shutdown() {
 }
 
 func ExampleListenAndServeTLS() {
-	http.HandleFunc("/", func { w, req | io.WriteString(w, "Hello, TLS!\n") })
+	http.HandleFunc("/", func { w, req -> io.WriteString(w, "Hello, TLS!\n") })
 
 	// One can use generate_cert.go in crypto/tls to generate cert.pem and key.pem.
 	log.Printf("About to listen on 8443. Go to https://127.0.0.1:8443/")
@@ -175,7 +175,7 @@ func ExampleHandleFunc() {
 }
 
 func newPeopleHandler() http.Handler {
-	return http.HandlerFunc(func { w, r | fmt.Fprintln(w, "This is the people handler.") })
+	return http.HandlerFunc(func { w, r -> fmt.Fprintln(w, "This is the people handler.") })
 }
 
 func ExampleNotFoundHandler() {

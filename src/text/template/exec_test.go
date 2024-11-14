@@ -1527,7 +1527,7 @@ func TestEvalFieldErrors(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		t.Run(tc.name, func { t |
+		t.Run(tc.name, func { t ->
 			tmpl := Must(New("tmpl").Parse(tc.src))
 			err := tmpl.Execute(io.Discard, tc.value)
 			got := "<nil>"

@@ -390,7 +390,7 @@ func BenchmarkGoroutineProfile(b *testing.B) {
 		return func(b *testing.B) {
 			b.Run("idle", runOne)
 
-			b.Run("loaded", func { b |
+			b.Run("loaded", func { b ->
 				stop := applyGCLoad(b)
 				runOne(b)
 				// Make sure to stop the timer before we wait! The load created above
@@ -517,7 +517,7 @@ func TestTimediv(t *testing.T) {
 		},
 	} {
 		name := fmt.Sprintf("%d div %d", tc.num, tc.div)
-		t.Run(name, func { t |
+		t.Run(name, func { t ->
 			// Double check that the inputs make sense using
 			// standard 64-bit division.
 			ret64 := tc.num / int64(tc.div)

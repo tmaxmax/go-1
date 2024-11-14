@@ -32,7 +32,7 @@ func FuzzPrintEnvEscape(f *testing.F) {
 	f.Add("\r")
 	f.Add("\n")
 	f.Add("E,%")
-	f.Fuzz(func { t, s |
+	f.Fuzz(func { t, s ->
 		t.Parallel()
 
 		for _, c := range []byte(s) {

@@ -304,7 +304,7 @@ var ftoaBenches = []struct {
 
 func BenchmarkFormatFloat(b *testing.B) {
 	for _, c := range ftoaBenches {
-		b.Run(c.name, func { b | for i := 0; i < b.N; i++ {
+		b.Run(c.name, func { b -> for i := 0; i < b.N; i++ {
 			FormatFloat(c.float, c.fmt, c.prec, c.bitSize)
 		} })
 	}
@@ -313,7 +313,7 @@ func BenchmarkFormatFloat(b *testing.B) {
 func BenchmarkAppendFloat(b *testing.B) {
 	dst := make([]byte, 30)
 	for _, c := range ftoaBenches {
-		b.Run(c.name, func { b | for i := 0; i < b.N; i++ {
+		b.Run(c.name, func { b -> for i := 0; i < b.N; i++ {
 			AppendFloat(dst[:0], c.float, c.fmt, c.prec, c.bitSize)
 		} })
 	}

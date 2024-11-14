@@ -242,7 +242,7 @@ func TestImportStdLib(t *testing.T) {
 
 	var nimports int
 	for _, pkg := range pkgs {
-		t.Run(pkg, func { t |
+		t.Run(pkg, func { t ->
 			if testPath(t, pkg, filepath.Join(testenv.GOROOT(t), "src", path.Dir(pkg))) != nil {
 				nimports++
 			}

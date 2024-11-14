@@ -49,7 +49,7 @@ func TestHandle(t *testing.T) {
 
 func testHandle[T comparable](t *testing.T, value T) {
 	name := reflect.TypeFor[T]().Name()
-	t.Run(fmt.Sprintf("%s/%#v", name, value), func { t |
+	t.Run(fmt.Sprintf("%s/%#v", name, value), func { t ->
 		t.Parallel()
 
 		v0 := Make(value)
@@ -117,7 +117,7 @@ func checkMapsFor[T comparable](t *testing.T, value T) {
 func TestMakeClonesStrings(t *testing.T) {
 	s := strings.Clone("abcdefghijklmnopqrstuvwxyz") // N.B. Must be big enough to not be tiny-allocated.
 	ran := make(chan bool)
-	runtime.SetFinalizer(unsafe.StringData(s), func { _ | ran <- true })
+	runtime.SetFinalizer(unsafe.StringData(s), func { _ -> ran <- true })
 	h := Make(s)
 
 	// Clean up s (hopefully) and run the finalizer.

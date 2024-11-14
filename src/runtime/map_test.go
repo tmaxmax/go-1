@@ -721,7 +721,7 @@ func TestMapBuckets(t *testing.T) {
 	// on the stack. Escaping maps start with a non-nil bucket pointer if
 	// hint size is above bucketCnt and thereby have more than one bucket.
 	// These tests depend on bucketCnt and loadFactor* in map.go.
-	t.Run("mapliteral", func { t |
+	t.Run("mapliteral", func { t ->
 		for _, tt := range mapBucketTests {
 			localMap := map[int]int{}
 			if runtime.MapBucketsPointerIsNil(localMap) {
@@ -745,7 +745,7 @@ func TestMapBuckets(t *testing.T) {
 			}
 		}
 	})
-	t.Run("nohint", func { t |
+	t.Run("nohint", func { t ->
 		for _, tt := range mapBucketTests {
 			localMap := make(map[int]int)
 			if runtime.MapBucketsPointerIsNil(localMap) {
@@ -769,7 +769,7 @@ func TestMapBuckets(t *testing.T) {
 			}
 		}
 	})
-	t.Run("makemap", func { t |
+	t.Run("makemap", func { t ->
 		for _, tt := range mapBucketTests {
 			localMap := make(map[int]int, tt.n)
 			if runtime.MapBucketsPointerIsNil(localMap) {
@@ -793,7 +793,7 @@ func TestMapBuckets(t *testing.T) {
 			}
 		}
 	})
-	t.Run("makemap64", func { t |
+	t.Run("makemap64", func { t ->
 		for _, tt := range mapBucketTests {
 			localMap := make(map[int]int, int64(tt.n))
 			if runtime.MapBucketsPointerIsNil(localMap) {
@@ -1037,7 +1037,7 @@ func benchmarkMapDeletePointer(b *testing.B, n int) {
 func runWith(f func(*testing.B, int), v ...int) func(*testing.B) {
 	return func(b *testing.B) {
 		for _, n := range v {
-			b.Run(strconv.Itoa(n), func { b | f(b, n) })
+			b.Run(strconv.Itoa(n), func { b -> f(b, n) })
 		}
 	}
 }
@@ -1509,7 +1509,7 @@ func TestMemHashGlobalSeed(t *testing.T) {
 
 	// aeshash and memhashFallback use separate per-process seeds, so test
 	// both.
-	t.Run("aes", func { t |
+	t.Run("aes", func { t ->
 		if !*runtime.UseAeshash {
 			t.Skip("No AES")
 		}
@@ -1526,7 +1526,7 @@ func TestMemHashGlobalSeed(t *testing.T) {
 		}
 	})
 
-	t.Run("noaes", func { t |
+	t.Run("noaes", func { t ->
 		env := ""
 		if *runtime.UseAeshash {
 			env = "GODEBUG=cpu.aes=off"

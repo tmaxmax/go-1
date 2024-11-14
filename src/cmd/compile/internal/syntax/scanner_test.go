@@ -37,7 +37,7 @@ func TestSmoke(t *testing.T) {
 func TestTokens(t *testing.T) {
 	var got scanner
 	for _, want := range sampleTokens {
-		got.init(strings.NewReader(want.src), func { line, col, msg | t.Errorf("%s:%d:%d: %s", want.src, line, col, msg) }, 0)
+		got.init(strings.NewReader(want.src), func { line, col, msg -> t.Errorf("%s:%d:%d: %s", want.src, line, col, msg) }, 0)
 		got.next()
 		if got.tok != want.tok {
 			t.Errorf("%s: got %s; want %s", want.src, got.tok, want.tok)
@@ -95,7 +95,7 @@ func TestEmbeddedTokens(t *testing.T) {
 	// scan source
 	var got scanner
 	var src string
-	got.init(&buf, func { line, col, msg | t.Fatalf("%s:%d:%d: %s", src, line, col, msg) }, 0)
+	got.init(&buf, func { line, col, msg -> t.Fatalf("%s:%d:%d: %s", src, line, col, msg) }, 0)
 	got.next()
 	for i, want := range sampleTokens {
 		src = want.src
@@ -348,7 +348,7 @@ func TestComments(t *testing.T) {
 	} {
 		var s scanner
 		var got comment
-		s.init(strings.NewReader(test.src), func { line, col, msg |
+		s.init(strings.NewReader(test.src), func { line, col, msg ->
 			if msg[0] != '/' {
 				// error
 				if msg != "comment not terminated" {
@@ -532,7 +532,7 @@ func TestNumbers(t *testing.T) {
 	} {
 		var s scanner
 		var err string
-		s.init(strings.NewReader(test.src), func { _, _, msg | if err == "" {
+		s.init(strings.NewReader(test.src), func { _, _, msg -> if err == "" {
 			err = msg
 		} }, 0)
 
@@ -654,7 +654,7 @@ func TestScanErrors(t *testing.T) {
 		var s scanner
 		var line, col uint
 		var err string
-		s.init(strings.NewReader(test.src), func { l, c, msg | if err == "" {
+		s.init(strings.NewReader(test.src), func { l, c, msg -> if err == "" {
 			line, col = l-linebase, c-colbase
 			err = msg
 		} }, 0)
@@ -699,7 +699,7 @@ func TestDirectives(t *testing.T) {
 	} {
 		got := ""
 		var s scanner
-		s.init(strings.NewReader(src), func { _, col, msg |
+		s.init(strings.NewReader(src), func { _, col, msg ->
 			if col != colbase {
 				t.Errorf("%s: got col = %d; want %d", src, col, colbase)
 			}
@@ -741,7 +741,7 @@ func TestIssue33961(t *testing.T) {
 	for _, lit := range strings.Split(literals, " ") {
 		n := 0
 		var got scanner
-		got.init(strings.NewReader(lit), func { _, _, msg |
+		got.init(strings.NewReader(lit), func { _, _, msg ->
 		// fmt.Printf("%s: %s\n", lit, msg) // uncomment for debugging
 		n++ }, 0)
 		got.next()

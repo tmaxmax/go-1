@@ -805,7 +805,7 @@ var errCannotFindPackage = errors.New("cannot find package")
 func (m *Module) Package(path string) *IndexPackage {
 	defer unprotect(protect(), nil)
 
-	i, ok := sort.Find(m.n, func { i | return strings.Compare(path, m.pkgDir(i)) })
+	i, ok := sort.Find(m.n, func { i -> return strings.Compare(path, m.pkgDir(i)) })
 	if !ok {
 		return &IndexPackage{error: fmt.Errorf("%w %q in:\n\t%s", errCannotFindPackage, path, filepath.Join(m.modroot, path))}
 	}

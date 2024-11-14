@@ -987,9 +987,9 @@ func BenchmarkThroughput(b *testing.B) {
 	for _, mode := range []string{"Max", "Dynamic"} {
 		for size := 1; size <= 64; size <<= 1 {
 			name := fmt.Sprintf("%sPacket/%dMB", mode, size)
-			b.Run(name, func { b |
-				b.Run("TLSv12", func { b | throughput(b, VersionTLS12, int64(size<<20), mode == "Max") })
-				b.Run("TLSv13", func { b | throughput(b, VersionTLS13, int64(size<<20), mode == "Max") })
+			b.Run(name, func { b ->
+				b.Run("TLSv12", func { b -> throughput(b, VersionTLS12, int64(size<<20), mode == "Max") })
+				b.Run("TLSv13", func { b -> throughput(b, VersionTLS13, int64(size<<20), mode == "Max") })
 			})
 		}
 	}
@@ -1080,9 +1080,9 @@ func BenchmarkLatency(b *testing.B) {
 	for _, mode := range []string{"Max", "Dynamic"} {
 		for _, kbps := range []int{200, 500, 1000, 2000, 5000} {
 			name := fmt.Sprintf("%sPacket/%dkbps", mode, kbps)
-			b.Run(name, func { b |
-				b.Run("TLSv12", func { b | latency(b, VersionTLS12, kbps*1000, mode == "Max") })
-				b.Run("TLSv13", func { b | latency(b, VersionTLS13, kbps*1000, mode == "Max") })
+			b.Run(name, func { b ->
+				b.Run("TLSv12", func { b -> latency(b, VersionTLS12, kbps*1000, mode == "Max") })
+				b.Run("TLSv13", func { b -> latency(b, VersionTLS13, kbps*1000, mode == "Max") })
 			})
 		}
 	}
@@ -1119,7 +1119,7 @@ func TestConnectionState(t *testing.T) {
 		case VersionTLS13:
 			name = "TLSv13"
 		}
-		t.Run(name, func { t |
+		t.Run(name, func { t ->
 			config := &Config{
 				Time:         now,
 				Rand:         zeroSource{},
@@ -1687,8 +1687,8 @@ func TestPKCS1OnlyCert(t *testing.T) {
 
 func TestVerifyCertificates(t *testing.T) {
 	// See https://go.dev/issue/31641.
-	t.Run("TLSv12", func { t | testVerifyCertificates(t, VersionTLS12) })
-	t.Run("TLSv13", func { t | testVerifyCertificates(t, VersionTLS13) })
+	t.Run("TLSv12", func { t -> testVerifyCertificates(t, VersionTLS12) })
+	t.Run("TLSv13", func { t -> testVerifyCertificates(t, VersionTLS13) })
 }
 
 func testVerifyCertificates(t *testing.T, version uint16) {
@@ -1745,7 +1745,7 @@ func testVerifyCertificates(t *testing.T, version uint16) {
 
 	for _, test := range tests {
 		test := test
-		t.Run(test.name, func { t |
+		t.Run(test.name, func { t ->
 			t.Parallel()
 
 			var serverVerifyConnection, clientVerifyConnection bool
@@ -1761,19 +1761,19 @@ func testVerifyCertificates(t *testing.T, version uint16) {
 			serverConfig := clientConfig.Clone()
 			serverConfig.ClientCAs = rootCAs
 
-			clientConfig.VerifyConnection = func { cs |
+			clientConfig.VerifyConnection = func { cs ->
 				clientVerifyConnection = true
 				return nil
 			}
-			clientConfig.VerifyPeerCertificate = func { rawCerts, verifiedChains |
+			clientConfig.VerifyPeerCertificate = func { rawCerts, verifiedChains ->
 				clientVerifyPeerCertificates = true
 				return nil
 			}
-			serverConfig.VerifyConnection = func { cs |
+			serverConfig.VerifyConnection = func { cs ->
 				serverVerifyConnection = true
 				return nil
 			}
-			serverConfig.VerifyPeerCertificate = func { rawCerts, verifiedChains |
+			serverConfig.VerifyPeerCertificate = func { rawCerts, verifiedChains ->
 				serverVerifyPeerCertificates = true
 				return nil
 			}
@@ -1901,7 +1901,7 @@ func TestHandshakeKyber(t *testing.T) {
 	baseConfig := testConfig.Clone()
 	baseConfig.CurvePreferences = nil
 	for _, test := range tests {
-		t.Run(test.name, func { t |
+		t.Run(test.name, func { t ->
 			if test.preparation != nil {
 				test.preparation(t)
 			} else {
@@ -1911,7 +1911,7 @@ func TestHandshakeKyber(t *testing.T) {
 			if test.serverConfig != nil {
 				test.serverConfig(serverConfig)
 			}
-			serverConfig.GetConfigForClient = func { hello |
+			serverConfig.GetConfigForClient = func { hello ->
 				if !test.expectClientSupport && slices.Contains(hello.SupportedCurves, x25519Kyber768Draft00) {
 					return nil, errors.New("client supports Kyber768Draft00")
 				} else if test.expectClientSupport && !slices.Contains(hello.SupportedCurves, x25519Kyber768Draft00) {
@@ -1981,7 +1981,7 @@ func TestX509KeyPairPopulateCertificate(t *testing.T) {
 	}
 	certPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: certDER})
 
-	t.Run("x509keypairleaf=0", func { t |
+	t.Run("x509keypairleaf=0", func { t ->
 		t.Setenv("GODEBUG", "x509keypairleaf=0")
 		cert, err := X509KeyPair(certPEM, keyPEM)
 		if err != nil {
@@ -1991,7 +1991,7 @@ func TestX509KeyPairPopulateCertificate(t *testing.T) {
 			t.Fatal("Leaf should not be populated")
 		}
 	})
-	t.Run("x509keypairleaf=1", func { t |
+	t.Run("x509keypairleaf=1", func { t ->
 		t.Setenv("GODEBUG", "x509keypairleaf=1")
 		cert, err := X509KeyPair(certPEM, keyPEM)
 		if err != nil {
@@ -2001,7 +2001,7 @@ func TestX509KeyPairPopulateCertificate(t *testing.T) {
 			t.Fatal("Leaf should be populated")
 		}
 	})
-	t.Run("GODEBUG unset", func { t |
+	t.Run("GODEBUG unset", func { t ->
 		cert, err := X509KeyPair(certPEM, keyPEM)
 		if err != nil {
 			t.Fatal(err)

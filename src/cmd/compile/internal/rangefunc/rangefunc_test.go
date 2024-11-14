@@ -184,7 +184,7 @@ const MISSING_PANIC = 4 // overload "READY" for panic call
 func Check2[U, V any](forall Seq2[U, V]) Seq2[U, V] {
 	return func(body func(U, V) bool) {
 		state := READY
-		forall(func { u, v |
+		forall(func { u, v ->
 			if state != READY {
 				panic(fail[state])
 			}
@@ -207,7 +207,7 @@ func Check2[U, V any](forall Seq2[U, V]) Seq2[U, V] {
 func Check[U any](forall Seq[U]) Seq[U] {
 	return func(body func(U) bool) {
 		state := READY
-		forall(func { u |
+		forall(func { u ->
 			if state != READY {
 				panic(fail[state])
 			}
@@ -1878,7 +1878,7 @@ func once[T any](x T) Seq[T] {
 // continue, or return).
 func terrify[T any](s string, forall Seq[T]) Seq[T] {
 	return func(yield func(T) bool) {
-		forall(func { v |
+		forall(func { v ->
 			if !yield(v) {
 				panic(s)
 			}

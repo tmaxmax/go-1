@@ -26,7 +26,7 @@ func BenchmarkMutatorBytes(b *testing.B) {
 		10000,
 		100000,
 	} {
-		b.Run(strconv.Itoa(size), func { b |
+		b.Run(strconv.Itoa(size), func { b ->
 			buf := make([]byte, size)
 			b.ResetTimer()
 
@@ -54,7 +54,7 @@ func BenchmarkMutatorString(b *testing.B) {
 		10000,
 		100000,
 	} {
-		b.Run(strconv.Itoa(size), func { b |
+		b.Run(strconv.Itoa(size), func { b ->
 			buf := make([]byte, size)
 			b.ResetTimer()
 
@@ -92,7 +92,7 @@ func BenchmarkMutatorAllBasicTypes(b *testing.B) {
 	}
 
 	for _, t := range types {
-		b.Run(fmt.Sprintf("%T", t), func { b | for i := 0; i < b.N; i++ {
+		b.Run(fmt.Sprintf("%T", t), func { b -> for i := 0; i < b.N; i++ {
 			m.r = newPcgRand()
 			m.mutate([]any{t}, workerSharedMemSize)
 		} })

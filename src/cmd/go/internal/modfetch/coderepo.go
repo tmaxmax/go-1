@@ -261,7 +261,7 @@ func (r *codeRepo) appendIncompatibleVersions(ctx context.Context, origin *codeh
 
 		if major != lastMajor {
 			rem := incompatible[i:]
-			j := sort.Search(len(rem), func { j | return semver.Major(rem[j]) != major })
+			j := sort.Search(len(rem), func { j -> return semver.Major(rem[j]) != major })
 			latestAtMajor := rem[j-1]
 
 			var err error

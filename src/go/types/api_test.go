@@ -634,7 +634,7 @@ type T[P any] []P
 		makePkg(lib)
 		pkg := makePkg(test.src)
 
-		t.Run(pkg.Name(), func { t |
+		t.Run(pkg.Name(), func { t ->
 			// Sort instances in source order for stability.
 			instances := sortedInstances(instMap)
 			if got, want := len(instances), len(test.instances); got != want {
@@ -693,7 +693,7 @@ func sortedInstances(m map[*ast.Ident]Instance) (instances []recordedInstance) {
 	for id, inst := range m {
 		instances = append(instances, recordedInstance{id, inst})
 	}
-	slices.SortFunc(instances, func { a, b | return CmpPos(a.Ident.Pos(), b.Ident.Pos()) })
+	slices.SortFunc(instances, func { a, b -> return CmpPos(a.Ident.Pos(), b.Ident.Pos()) })
 	return instances
 }
 
@@ -852,7 +852,7 @@ func (r *N[C]) n() {  }
 		switch fdecl.Name.Name {
 		case "m":
 			dm = def
-			ast.Inspect(fdecl.Body, func { n |
+			ast.Inspect(fdecl.Body, func { n ->
 				if call, ok := n.(*ast.CallExpr); ok {
 					sel := call.Fun.(*ast.SelectorExpr)
 					use := info.Uses[sel.Sel].(*Func)
@@ -1985,7 +1985,7 @@ func F[T *U, U any](param1, param2 int) /*param1=undef*/ (res1 /*res1=undef*/, r
 		if gotObj != wantObj {
 			// Print the scope tree of mainScope in case of error.
 			var printScopeTree func(indent string, s *Scope)
-			printScopeTree = func { indent, s |
+			printScopeTree = func { indent, s ->
 				t.Logf("%sscope %s %v-%v = %v",
 					indent,
 					ScopeComment(s),
@@ -2631,7 +2631,7 @@ func fn() {
 
 	// Collect all identifiers by name.
 	idents := make(map[string][]*ast.Ident)
-	ast.Inspect(f, func { n |
+	ast.Inspect(f, func { n ->
 		if id, ok := n.(*ast.Ident); ok {
 			idents[id.Name] = append(idents[id.Name], id)
 		}
@@ -2640,7 +2640,7 @@ func fn() {
 
 	for _, test := range tests {
 		test := test
-		t.Run(test.name, func { t |
+		t.Run(test.name, func { t ->
 			if got := len(idents[test.name]); got != 1 {
 				t.Fatalf("found %d identifiers named %s, want 1", got, test.name)
 			}
@@ -3061,7 +3061,7 @@ type C = int
 // checking.
 func TestAnyHijacking_Check(t *testing.T) {
 	for _, enableAlias := range []bool{false, true} {
-		t.Run(fmt.Sprintf("EnableAlias=%t", enableAlias), func { t |
+		t.Run(fmt.Sprintf("EnableAlias=%t", enableAlias), func { t ->
 			setGotypesalias(t, enableAlias)
 			var wg sync.WaitGroup
 			for i := 0; i < 10; i++ {
@@ -3084,7 +3084,7 @@ func TestAnyHijacking_Check(t *testing.T) {
 // Scope.Lookup outside of type checking.
 func TestAnyHijacking_Lookup(t *testing.T) {
 	for _, enableAlias := range []bool{false, true} {
-		t.Run(fmt.Sprintf("EnableAlias=%t", enableAlias), func { t |
+		t.Run(fmt.Sprintf("EnableAlias=%t", enableAlias), func { t ->
 			setGotypesalias(t, enableAlias)
 			a := Universe.Lookup("any")
 			if _, gotAlias := a.Type().(*Alias); gotAlias != enableAlias {

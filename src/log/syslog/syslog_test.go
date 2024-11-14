@@ -146,7 +146,7 @@ func TestWithSimulated(t *testing.T) {
 		}
 
 		tr := tr
-		t.Run(tr, func { t |
+		t.Run(tr, func { t ->
 			t.Parallel()
 
 			done := make(chan string)

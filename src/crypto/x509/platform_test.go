@@ -203,7 +203,7 @@ func TestPlatformVerifier(t *testing.T) {
 
 	for _, tc := range tests {
 		tc := tc
-		t.Run(tc.name, func { t |
+		t.Run(tc.name, func { t ->
 			t.Parallel()
 			parent := testRoot
 			if tc.selfSigned {

@@ -119,7 +119,7 @@ func TestFind(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.target, func { t |
+		t.Run(tt.target, func { t ->
 			cmp := func(i int) int {
 				return stringspkg.Compare(tt.target, tt.data[i])
 			}
@@ -153,7 +153,7 @@ func TestSearchEfficiency(t *testing.T) {
 		max := log2(n)
 		for x := 0; x < n; x += step {
 			count := 0
-			i := Search(n, func { i |
+			i := Search(n, func { i ->
 				count++
 				return i >= x
 			})
@@ -229,7 +229,7 @@ func BenchmarkSearchWrappers(b *testing.B) {
 func TestSearchExhaustive(t *testing.T) {
 	for size := 0; size <= 100; size++ {
 		for targ := 0; targ <= size; targ++ {
-			i := Search(size, func { i | return i >= targ })
+			i := Search(size, func { i -> return i >= targ })
 			if i != targ {
 				t.Errorf("Search(%d, %d) = %d", size, targ, i)
 			}

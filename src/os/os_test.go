@@ -768,7 +768,7 @@ func TestReaddirStatFailures(t *testing.T) {
 	}
 
 	var xerr error // error to return for x
-	*LstatP = func { path |
+	*LstatP = func { path ->
 		if xerr != nil && strings.HasSuffix(path, "x") {
 			return nil, xerr
 		}
@@ -1149,7 +1149,7 @@ func TestRenameCaseDifference(pt *testing.T) {
 	}
 
 	for _, test := range tests {
-		pt.Run(test.name, func { t |
+		pt.Run(test.name, func { t ->
 			defer chtmpdir(t)()
 
 			if err := test.create(); err != nil {
@@ -2457,7 +2457,7 @@ func TestLongPath(t *testing.T) {
 		tmpdir += "/dir3456789"
 	}
 	for _, sz := range sizes {
-		t.Run(fmt.Sprintf("length=%d", sz), func { t |
+		t.Run(fmt.Sprintf("length=%d", sz), func { t ->
 			sizedTempDir := tmpdir[:sz-1] + "x" // Ensure it does not end with a slash.
 
 			// The various sized runs are for this call to trigger the boundary
@@ -2550,7 +2550,7 @@ func testKillProcess(t *testing.T, processKiller func(p *Process)) {
 }
 
 func TestKillStartProcess(t *testing.T) {
-	testKillProcess(t, func { p |
+	testKillProcess(t, func { p ->
 		err := p.Kill()
 		if err != nil {
 			t.Fatalf("Failed to kill test process: %v", err)
@@ -2589,7 +2589,7 @@ func TestGetppid(t *testing.T) {
 }
 
 func TestKillFindProcess(t *testing.T) {
-	testKillProcess(t, func { p |
+	testKillProcess(t, func { p ->
 		p2, err := FindProcess(p.Pid)
 		if err != nil {
 			t.Fatalf("Failed to find test process: %v", err)
@@ -2989,7 +2989,7 @@ func forceMFTUpdateOnWindows(t *testing.T, path string) {
 
 	// On Windows, we force the MFT to update by reading the actual metadata from GetFileInformationByHandle and then
 	// explicitly setting that. Otherwise it might get out of sync with FindFirstFile. See golang.org/issues/42637.
-	if err := filepath.WalkDir(path, func { path, d, err |
+	if err := filepath.WalkDir(path, func { path, d, err ->
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -3111,7 +3111,7 @@ func TestDirFSPathsValid(t *testing.T) {
 	}
 
 	fsys := DirFS(d)
-	err := fs.WalkDir(fsys, ".", func { path, e, err |
+	err := fs.WalkDir(fsys, ".", func { path, e, err ->
 		if fs.ValidPath(e.Name()) {
 			t.Logf("%q ok", e.Name())
 		} else {
@@ -3333,7 +3333,7 @@ func TestCopyFS(t *testing.T) {
 	if err := fstest.TestFS(tmpFsys, "a", "b", "dir/x"); err != nil {
 		t.Fatal("TestFS:", err)
 	}
-	if err := fs.WalkDir(fsys, ".", func { path, d, err |
+	if err := fs.WalkDir(fsys, ".", func { path, d, err ->
 		if d.IsDir() {
 			return nil
 		}
@@ -3379,7 +3379,7 @@ func TestCopyFS(t *testing.T) {
 	if err := fstest.TestFS(tmpFsys, "william", "carl", "daVinci", "einstein", "dir/newton"); err != nil {
 		t.Fatal("TestFS:", err)
 	}
-	if err := fs.WalkDir(fsys, ".", func { path, d, err |
+	if err := fs.WalkDir(fsys, ".", func { path, d, err ->
 		if d.IsDir() {
 			return nil
 		}
@@ -3492,7 +3492,7 @@ func TestCopyFSWithSymlinks(t *testing.T) {
 	if err := fstest.TestFS(tmpFsys, "file.in.txt", "out_symlinks/file.abs.out.link", "out_symlinks/file.rel.out.link", "in_symlinks/file.rel.in.link"); err != nil {
 		t.Fatal("TestFS:", err)
 	}
-	if err := fs.WalkDir(fsys, ".", func { path, d, err |
+	if err := fs.WalkDir(fsys, ".", func { path, d, err ->
 		if d.IsDir() {
 			return nil
 		}

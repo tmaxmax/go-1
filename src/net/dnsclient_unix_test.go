@@ -1643,7 +1643,7 @@ func TestNoSuchHost(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Run(test.name, func { t |
+		t.Run(test.name, func { t ->
 			lookups := 0
 			err := lookupWithFake(fakeDNSServer{
 				rh: func(n, s string, q dnsmessage.Message, d time.Time) (dnsmessage.Message, error) {
@@ -2382,8 +2382,8 @@ func testGoLookupIPCNAMEOrderHostsAliases(t *testing.T, mode hostLookupOrder, lo
 // This isn't a great test as it just tests the dnsmessage package
 // against itself.
 func TestDNSPacketSize(t *testing.T) {
-	t.Run("enabled", func { t | testDNSPacketSize(t, false) })
-	t.Run("disabled", func { t | testDNSPacketSize(t, true) })
+	t.Run("enabled", func { t -> testDNSPacketSize(t, false) })
+	t.Run("disabled", func { t -> testDNSPacketSize(t, true) })
 }
 
 func testDNSPacketSize(t *testing.T, disable bool) {

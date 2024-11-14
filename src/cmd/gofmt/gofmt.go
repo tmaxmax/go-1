@@ -169,7 +169,7 @@ func (s *sequencer) AddReport(err error) {
 // exit code for the sequence suitable for passing to os.Exit.
 func (s *sequencer) GetExitCode() int {
 	c := make(chan int, 1)
-	s.Add(0, func { r |
+	s.Add(0, func { r ->
 		c <- r.ExitCode()
 		return nil
 	})
@@ -404,7 +404,7 @@ func gofmtMain(s *sequencer) {
 			s.AddReport(fmt.Errorf("error: cannot use -w with standard input"))
 			return
 		}
-		s.Add(0, func { r | return processFile("<standard input>", nil, os.Stdin, r) })
+		s.Add(0, func { r -> return processFile("<standard input>", nil, os.Stdin, r) })
 		return
 	}
 
@@ -415,10 +415,10 @@ func gofmtMain(s *sequencer) {
 		case !info.IsDir():
 			// Non-directory arguments are always formatted.
 			arg := arg
-			s.Add(fileWeight(arg, info), func { r | return processFile(arg, info, nil, r) })
+			s.Add(fileWeight(arg, info), func { r -> return processFile(arg, info, nil, r) })
 		default:
 			// Directories are walked, ignoring non-Go files.
-			err := filepath.WalkDir(arg, func { path, f, err |
+			err := filepath.WalkDir(arg, func { path, f, err ->
 				if err != nil || !isGoFile(f) {
 					return err
 				}
@@ -427,7 +427,7 @@ func gofmtMain(s *sequencer) {
 					s.AddReport(err)
 					return nil
 				}
-				s.Add(fileWeight(path, info), func { r | return processFile(path, info, nil, r) })
+				s.Add(fileWeight(path, info), func { r -> return processFile(path, info, nil, r) })
 				return nil
 			})
 			if err != nil {

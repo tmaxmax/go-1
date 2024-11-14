@@ -390,7 +390,7 @@ func (s *scavengerState) init() {
 
 	// Install real functions if stubs aren't present.
 	if s.scavenge == nil {
-		s.scavenge = func { n |
+		s.scavenge = func { n ->
 			start := nanotime()
 			r := mheap_.pages.scavenge(n, nil, false)
 			end := nanotime()

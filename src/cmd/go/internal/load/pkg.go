@@ -2144,7 +2144,7 @@ func resolveEmbed(pkgdir string, patterns []string) (files []string, pmap map[st
 				// Gather all files in the named directory, stopping at module boundaries
 				// and ignoring files that wouldn't be packaged into a module.
 				count := 0
-				err := fsys.Walk(file, func { path, info, err |
+				err := fsys.Walk(file, func { path, info, err ->
 					if err != nil {
 						return err
 					}
@@ -2247,7 +2247,7 @@ func (p *Package) setBuildInfo(ctx context.Context, autoVCS bool) {
 	}
 
 	var debugModFromModinfo func(*modinfo.ModulePublic) *debug.Module
-	debugModFromModinfo = func { mi |
+	debugModFromModinfo = func { mi ->
 		version := mi.Version
 		if version == "" {
 			version = "(devel)"
@@ -2657,7 +2657,7 @@ func PackageList(roots []*Package) []*Package {
 	seen := map[*Package]bool{}
 	all := []*Package{}
 	var walk func(*Package)
-	walk = func { p |
+	walk = func { p ->
 		if seen[p] {
 			return
 		}
@@ -2680,7 +2680,7 @@ func TestPackageList(ctx context.Context, opts PackageOpts, roots []*Package) []
 	seen := map[*Package]bool{}
 	all := []*Package{}
 	var walk func(*Package)
-	walk = func { p |
+	walk = func { p ->
 		if seen[p] {
 			return
 		}
@@ -2894,7 +2894,7 @@ func setPGOProfilePath(pkgs []*Package) {
 			appendBuildSetting(p.Internal.BuildInfo, "-pgo", file)
 		}
 		// Adding -pgo breaks the sort order in BuildInfo.Settings. Restore it.
-		slices.SortFunc(p.Internal.BuildInfo.Settings, func { x, y | return strings.Compare(x.Key, y.Key) })
+		slices.SortFunc(p.Internal.BuildInfo.Settings, func { x, y -> return strings.Compare(x.Key, y.Key) })
 	}
 
 	switch cfg.BuildPGO {
@@ -2924,7 +2924,7 @@ func setPGOProfilePath(pkgs []*Package) {
 			// Package.
 			visited := make(map[*Package]*Package)
 			var split func(p *Package) *Package
-			split = func { p |
+			split = func { p ->
 				if p1 := visited[p]; p1 != nil {
 					return p1
 				}

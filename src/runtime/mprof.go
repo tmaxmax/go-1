@@ -992,7 +992,7 @@ func (r *MemProfileRecord) Stack() []uintptr {
 // the testing package's -test.memprofile flag instead
 // of calling MemProfile directly.
 func MemProfile(p []MemProfileRecord, inuseZero bool) (n int, ok bool) {
-	return memProfileInternal(len(p), inuseZero, func { r |
+	return memProfileInternal(len(p), inuseZero, func { r ->
 		copyMemProfileRecord(&p[0], r)
 		p = p[1:]
 	})
@@ -1088,7 +1088,7 @@ func copyMemProfileRecord(dst *MemProfileRecord, src profilerecord.MemProfileRec
 
 //go:linkname pprof_memProfileInternal
 func pprof_memProfileInternal(p []profilerecord.MemProfileRecord, inuseZero bool) (n int, ok bool) {
-	return memProfileInternal(len(p), inuseZero, func { r |
+	return memProfileInternal(len(p), inuseZero, func { r ->
 		p[0] = r
 		p = p[1:]
 	})
@@ -1121,7 +1121,7 @@ type BlockProfileRecord struct {
 // of calling BlockProfile directly.
 func BlockProfile(p []BlockProfileRecord) (n int, ok bool) {
 	var m int
-	n, ok = blockProfileInternal(len(p), func { r |
+	n, ok = blockProfileInternal(len(p), func { r ->
 		copyBlockProfileRecord(&p[m], r)
 		m++
 	})
@@ -1206,7 +1206,7 @@ func copyBlockProfileRecord(dst *BlockProfileRecord, src profilerecord.BlockProf
 
 //go:linkname pprof_blockProfileInternal
 func pprof_blockProfileInternal(p []profilerecord.BlockProfileRecord) (n int, ok bool) {
-	return blockProfileInternal(len(p), func { r |
+	return blockProfileInternal(len(p), func { r ->
 		p[0] = r
 		p = p[1:]
 	})
@@ -1220,7 +1220,7 @@ func pprof_blockProfileInternal(p []profilerecord.BlockProfileRecord) (n int, ok
 // instead of calling MutexProfile directly.
 func MutexProfile(p []BlockProfileRecord) (n int, ok bool) {
 	var m int
-	n, ok = mutexProfileInternal(len(p), func { r |
+	n, ok = mutexProfileInternal(len(p), func { r ->
 		copyBlockProfileRecord(&p[m], r)
 		m++
 	})
@@ -1257,7 +1257,7 @@ func mutexProfileInternal(size int, copyFn func(profilerecord.BlockProfileRecord
 
 //go:linkname pprof_mutexProfileInternal
 func pprof_mutexProfileInternal(p []profilerecord.BlockProfileRecord) (n int, ok bool) {
-	return mutexProfileInternal(len(p), func { r |
+	return mutexProfileInternal(len(p), func { r ->
 		p[0] = r
 		p = p[1:]
 	})
@@ -1270,7 +1270,7 @@ func pprof_mutexProfileInternal(p []profilerecord.BlockProfileRecord) (n int, ok
 // Most clients should use the runtime/pprof package instead
 // of calling ThreadCreateProfile directly.
 func ThreadCreateProfile(p []StackRecord) (n int, ok bool) {
-	return threadCreateProfileInternal(len(p), func { r |
+	return threadCreateProfileInternal(len(p), func { r ->
 		i := copy(p[0].Stack0[:], r.Stack)
 		clear(p[0].Stack0[i:])
 		p = p[1:]
@@ -1297,7 +1297,7 @@ func threadCreateProfileInternal(size int, copyFn func(profilerecord.StackRecord
 
 //go:linkname pprof_threadCreateInternal
 func pprof_threadCreateInternal(p []profilerecord.StackRecord) (n int, ok bool) {
-	return threadCreateProfileInternal(len(p), func { r |
+	return threadCreateProfileInternal(len(p), func { r ->
 		p[0] = r
 		p = p[1:]
 	})
@@ -1438,7 +1438,7 @@ func goroutineProfileWithLabelsConcurrent(p []profilerecord.StackRecord, labels 
 	// Any goroutine that the scheduler tries to execute concurrently with this
 	// call will start by adding itself to the profile (before the act of
 	// executing can cause any changes in its stack).
-	forEachGRace(func { gp1 | tryRecordGoroutineProfile(gp1, pcbuf, Gosched) })
+	forEachGRace(func { gp1 -> tryRecordGoroutineProfile(gp1, pcbuf, Gosched) })
 
 	stw = stopTheWorld(stwGoroutineProfileCleanup)
 	endOffset := goroutineProfile.offset.Swap(0)
@@ -1449,7 +1449,7 @@ func goroutineProfileWithLabelsConcurrent(p []profilerecord.StackRecord, labels 
 
 	// Restore the invariant that every goroutine struct in allgs has its
 	// goroutineProfiled field cleared.
-	forEachGRace(func { gp1 | gp1.goroutineProfiled.Store(goroutineProfileAbsent) })
+	forEachGRace(func { gp1 -> gp1.goroutineProfiled.Store(goroutineProfileAbsent) })
 
 	if raceenabled {
 		raceacquire(unsafe.Pointer(&labelSync))
@@ -1578,7 +1578,7 @@ func goroutineProfileWithLabelsSync(p []profilerecord.StackRecord, labels []unsa
 
 	// World is stopped, no locking required.
 	n = 1
-	forEachGRace(func { gp1 | if isOK(gp1) {
+	forEachGRace(func { gp1 -> if isOK(gp1) {
 		n++
 	} })
 
@@ -1601,7 +1601,7 @@ func goroutineProfileWithLabelsSync(p []profilerecord.StackRecord, labels []unsa
 		}
 
 		// Save other goroutines.
-		forEachGRace(func { gp1 |
+		forEachGRace(func { gp1 ->
 			if !isOK(gp1) {
 				return
 			}

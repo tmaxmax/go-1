@@ -248,7 +248,7 @@ func removeEmptySections(bs []md.Block) []md.Block {
 
 func sortedMarkdownFilenames(fsys fs.FS) ([]string, error) {
 	var filenames []string
-	err := fs.WalkDir(fsys, ".", func { path, d, err |
+	err := fs.WalkDir(fsys, ".", func { path, d, err ->
 		if err != nil {
 			return err
 		}

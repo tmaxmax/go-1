@@ -47,7 +47,7 @@ func (p *parser) init(file *PosBase, r io.Reader, errh ErrorHandler, pragh Pragm
 		// handler is always at or after the current reading
 		// position, it is safe to use the most recent position
 		// base to compute the corresponding Pos value.
-		func { line, col, msg |
+		func { line, col, msg ->
 			if msg[0] != '/' {
 				p.errorAt(p.posAt(line, col), msg)
 				return

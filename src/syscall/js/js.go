@@ -50,7 +50,7 @@ func makeValue(r ref) Value {
 	if (r>>32)&nanHead == nanHead && typeFlag != typeFlagNone {
 		gcPtr = new(ref)
 		*gcPtr = r
-		runtime.SetFinalizer(gcPtr, func { p | finalizeRef(*p) })
+		runtime.SetFinalizer(gcPtr, func { p -> finalizeRef(*p) })
 	}
 
 	return Value{ref: r, gcPtr: gcPtr}

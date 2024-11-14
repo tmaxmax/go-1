@@ -274,7 +274,7 @@ func TestPallocDataFindScavengeCandidate(t *testing.T) {
 	}
 	for name, v := range tests {
 		v := v
-		t.Run(name, func { t |
+		t.Run(name, func { t ->
 			b := makePallocData(v.alloc, v.scavenged)
 			start, size := b.FindScavengeCandidate(PallocChunkPages-1, v.min, v.max)
 			got := BitRange{start, size}
@@ -436,7 +436,7 @@ func TestPageAllocScavenge(t *testing.T) {
 	}
 	for name, v := range tests {
 		v := v
-		t.Run(name, func { t |
+		t.Run(name, func { t ->
 			b := NewPageAlloc(v.beforeAlloc, v.beforeScav)
 			defer FreePageAlloc(b)
 
@@ -469,11 +469,11 @@ func TestScavenger(t *testing.T) {
 
 	// Set up the scavenger.
 	var s Scavenger
-	s.Sleep = func { ns |
+	s.Sleep = func { ns ->
 		totalSlept.Add(ns)
 		return ns
 	}
-	s.Scavenge = func { bytes |
+	s.Scavenge = func { bytes ->
 		avail := availableWork.Load()
 		if uint64(bytes) > avail {
 			bytes = uintptr(avail)
@@ -604,13 +604,13 @@ func TestScavengeIndex(t *testing.T) {
 		si.ResetSearchAddrs()
 
 		// Create and return test functions.
-		mark = func { base, limit |
+		mark = func { base, limit ->
 			t.Helper()
 
 			si.AllocRange(base, limit)
 			si.FreeRange(base, limit)
 		}
-		find = func { want, wantOffset |
+		find = func { want, wantOffset ->
 			t.Helper()
 
 			got, gotOffset := si.Find(force)
@@ -793,7 +793,7 @@ func TestScavengeIndex(t *testing.T) {
 		},
 	} {
 		test := test
-		t.Run("Bg/"+test.name, func { t |
+		t.Run("Bg/"+test.name, func { t ->
 			mark, find, nextGen := setup(t, false)
 			test.mark(mark)
 			find(0, 0)      // Make sure we find nothing at this point.
@@ -801,14 +801,14 @@ func TestScavengeIndex(t *testing.T) {
 			test.find(find) // Now we should be able to find things.
 			find(0, 0)      // The test should always fully exhaust the index.
 		})
-		t.Run("Force/"+test.name, func { t |
+		t.Run("Force/"+test.name, func { t ->
 			mark, find, _ := setup(t, true)
 			test.mark(mark)
 			test.find(find) // Finding should always work when forced.
 			find(0, 0)      // The test should always fully exhaust the index.
 		})
 	}
-	t.Run("Bg/MarkInterleaved", func { t |
+	t.Run("Bg/MarkInterleaved", func { t ->
 		mark, find, nextGen := setup(t, false)
 		for i := BaseChunkIdx; i < BaseChunkIdx+32; i++ {
 			mark(PageBase(i, 0), PageBase(i+1, 0))
@@ -817,7 +817,7 @@ func TestScavengeIndex(t *testing.T) {
 		}
 		find(0, 0)
 	})
-	t.Run("Force/MarkInterleaved", func { t |
+	t.Run("Force/MarkInterleaved", func { t ->
 		mark, find, _ := setup(t, true)
 		for i := BaseChunkIdx; i < BaseChunkIdx+32; i++ {
 			mark(PageBase(i, 0), PageBase(i+1, 0))
@@ -848,7 +848,7 @@ func FuzzPIController(f *testing.F) {
 	// reasonable seed inputs.
 	f.Add(0.3375, 3.2e6, 1e9, 0.001, 1000.0, 0.01)
 	f.Add(0.9, 4.0, 1000.0, -1000.0, 1000.0, 0.84)
-	f.Fuzz(func { t, kp, ti, tt, min, max, setPoint |
+	f.Fuzz(func { t, kp, ti, tt, min, max, setPoint ->
 		// Ignore uninteresting invalid parameters. These parameters
 		// are constant, so in practice surprising values will be documented
 		// or will be other otherwise immediately visible.

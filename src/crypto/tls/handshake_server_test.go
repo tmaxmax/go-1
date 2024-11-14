@@ -328,7 +328,7 @@ func TestTLSPointFormats(t *testing.T) {
 		{"RSA with ec_point_format", []uint16{TLS_RSA_WITH_AES_256_GCM_SHA384}, nil, []uint8{pointFormatUncompressed}, false},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func { t |
+		t.Run(tt.name, func { t ->
 			clientHello := &clientHelloMsg{
 				vers:               VersionTLS12,
 				random:             make([]byte, 32),
@@ -460,8 +460,8 @@ func TestCipherSuitePreference(t *testing.T) {
 }
 
 func TestSCTHandshake(t *testing.T) {
-	t.Run("TLSv12", func { t | testSCTHandshake(t, VersionTLS12) })
-	t.Run("TLSv13", func { t | testSCTHandshake(t, VersionTLS13) })
+	t.Run("TLSv12", func { t -> testSCTHandshake(t, VersionTLS12) })
+	t.Run("TLSv13", func { t -> testSCTHandshake(t, VersionTLS13) })
 }
 
 func testSCTHandshake(t *testing.T, version uint16) {
@@ -493,8 +493,8 @@ func testSCTHandshake(t *testing.T, version uint16) {
 }
 
 func TestCrossVersionResume(t *testing.T) {
-	t.Run("TLSv12", func { t | testCrossVersionResume(t, VersionTLS12) })
-	t.Run("TLSv13", func { t | testCrossVersionResume(t, VersionTLS13) })
+	t.Run("TLSv12", func { t -> testCrossVersionResume(t, VersionTLS12) })
+	t.Run("TLSv13", func { t -> testCrossVersionResume(t, VersionTLS13) })
 }
 
 func testCrossVersionResume(t *testing.T, version uint16) {
@@ -1036,7 +1036,7 @@ func TestHandshakeServerSNIGetCertificate(t *testing.T) {
 	// Replace the NameToCertificate map with a GetCertificate function
 	nameToCert := config.NameToCertificate
 	config.NameToCertificate = nil
-	config.GetCertificate = func { clientHello |
+	config.GetCertificate = func { clientHello ->
 		cert := nameToCert[clientHello.ServerName]
 		return cert, nil
 	}
@@ -1055,7 +1055,7 @@ func TestHandshakeServerSNIGetCertificate(t *testing.T) {
 func TestHandshakeServerSNIGetCertificateNotFound(t *testing.T) {
 	config := testConfig.Clone()
 
-	config.GetCertificate = func { clientHello | return nil, nil }
+	config.GetCertificate = func { clientHello -> return nil, nil }
 	test := &serverTest{
 		name:    "SNI-GetCertificateNotFound",
 		command: []string{"openssl", "s_client", "-no_ticket", "-cipher", "AES128-SHA", "-servername", "snitest.com"},
@@ -1070,7 +1070,7 @@ func TestHandshakeServerSNIGetCertificateError(t *testing.T) {
 	const errMsg = "TestHandshakeServerSNIGetCertificateError error"
 
 	serverConfig := testConfig.Clone()
-	serverConfig.GetCertificate = func { clientHello | return nil, errors.New(errMsg) }
+	serverConfig.GetCertificate = func { clientHello -> return nil, errors.New(errMsg) }
 
 	clientHello := &clientHelloMsg{
 		vers:               VersionTLS10,
@@ -1088,7 +1088,7 @@ func TestHandshakeServerEmptyCertificates(t *testing.T) {
 	const errMsg = "TestHandshakeServerEmptyCertificates error"
 
 	serverConfig := testConfig.Clone()
-	serverConfig.GetCertificate = func { clientHello | return nil, errors.New(errMsg) }
+	serverConfig.GetCertificate = func { clientHello -> return nil, errors.New(errMsg) }
 	serverConfig.Certificates = nil
 
 	clientHello := &clientHelloMsg{
@@ -1305,49 +1305,49 @@ func benchmarkHandshakeServer(b *testing.B, version uint16, cipherSuite uint16, 
 }
 
 func BenchmarkHandshakeServer(b *testing.B) {
-	b.Run("RSA", func { b |
+	b.Run("RSA", func { b ->
 		benchmarkHandshakeServer(b, VersionTLS12, TLS_RSA_WITH_AES_128_GCM_SHA256,
 			0, testRSACertificate, testRSAPrivateKey)
 	})
-	b.Run("ECDHE-P256-RSA", func { b |
-		b.Run("TLSv13", func { b |
+	b.Run("ECDHE-P256-RSA", func { b ->
+		b.Run("TLSv13", func { b ->
 			benchmarkHandshakeServer(b, VersionTLS13, TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
 				CurveP256, testRSACertificate, testRSAPrivateKey)
 		})
-		b.Run("TLSv12", func { b |
+		b.Run("TLSv12", func { b ->
 			benchmarkHandshakeServer(b, VersionTLS12, TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
 				CurveP256, testRSACertificate, testRSAPrivateKey)
 		})
 	})
-	b.Run("ECDHE-P256-ECDSA-P256", func { b |
-		b.Run("TLSv13", func { b |
+	b.Run("ECDHE-P256-ECDSA-P256", func { b ->
+		b.Run("TLSv13", func { b ->
 			benchmarkHandshakeServer(b, VersionTLS13, TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
 				CurveP256, testP256Certificate, testP256PrivateKey)
 		})
-		b.Run("TLSv12", func { b |
+		b.Run("TLSv12", func { b ->
 			benchmarkHandshakeServer(b, VersionTLS12, TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
 				CurveP256, testP256Certificate, testP256PrivateKey)
 		})
 	})
-	b.Run("ECDHE-X25519-ECDSA-P256", func { b |
-		b.Run("TLSv13", func { b |
+	b.Run("ECDHE-X25519-ECDSA-P256", func { b ->
+		b.Run("TLSv13", func { b ->
 			benchmarkHandshakeServer(b, VersionTLS13, TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
 				X25519, testP256Certificate, testP256PrivateKey)
 		})
-		b.Run("TLSv12", func { b |
+		b.Run("TLSv12", func { b ->
 			benchmarkHandshakeServer(b, VersionTLS12, TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
 				X25519, testP256Certificate, testP256PrivateKey)
 		})
 	})
-	b.Run("ECDHE-P521-ECDSA-P521", func { b |
+	b.Run("ECDHE-P521-ECDSA-P521", func { b ->
 		if testECDSAPrivateKey.PublicKey.Curve != elliptic.P521() {
 			b.Fatal("test ECDSA key doesn't use curve P-521")
 		}
-		b.Run("TLSv13", func { b |
+		b.Run("TLSv13", func { b ->
 			benchmarkHandshakeServer(b, VersionTLS13, TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
 				CurveP521, testECDSACertificate, testECDSAPrivateKey)
 		})
-		b.Run("TLSv12", func { b |
+		b.Run("TLSv12", func { b ->
 			benchmarkHandshakeServer(b, VersionTLS12, TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
 				CurveP521, testECDSACertificate, testECDSAPrivateKey)
 		})
@@ -1571,7 +1571,7 @@ func TestGetConfigForClient(t *testing.T) {
 		}
 
 		var configReturned *Config
-		serverConfig.GetConfigForClient = func { clientHello |
+		serverConfig.GetConfigForClient = func { clientHello ->
 			config, err := test.callback(clientHello)
 			configReturned = config
 			return config, err
@@ -1821,7 +1821,7 @@ func TestAESCipherReordering(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		t.Run(tc.name, func { t |
+		t.Run(tc.name, func { t ->
 			hasAESGCMHardwareSupport = tc.serverHasAESGCM
 			hs := &serverHandshakeState{
 				c: &Conn{
@@ -1920,7 +1920,7 @@ func TestAESCipherReorderingTLS13(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		t.Run(tc.name, func { t |
+		t.Run(tc.name, func { t ->
 			hasAESGCMHardwareSupport = tc.serverHasAESGCM
 			pk, _ := ecdh.X25519().GenerateKey(rand.Reader)
 			hs := &serverHandshakeStateTLS13{
@@ -2000,7 +2000,7 @@ func TestHandshakeContextHierarchy(t *testing.T) {
 		defer c.Close()
 		var innerCtx context.Context
 		clientConfig.Certificates = nil
-		clientConfig.GetClientCertificate = func { certificateRequest |
+		clientConfig.GetClientCertificate = func { certificateRequest ->
 			if val, ok := certificateRequest.Context().Value(key).(bool); !ok || !val {
 				t.Errorf("GetClientCertificate context was not child of HandshakeContext")
 			}
@@ -2025,7 +2025,7 @@ func TestHandshakeContextHierarchy(t *testing.T) {
 	var innerCtx context.Context
 	serverConfig.Certificates = nil
 	serverConfig.ClientAuth = RequestClientCert
-	serverConfig.GetCertificate = func { clientHello |
+	serverConfig.GetCertificate = func { clientHello ->
 		if val, ok := clientHello.Context().Value(key).(bool); !ok || !val {
 			t.Errorf("GetClientCertificate context was not child of HandshakeContext")
 		}

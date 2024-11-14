@@ -161,7 +161,7 @@ func BenchmarkTypeByExtension(b *testing.B) {
 		".HTML",
 		".unused",
 	} {
-		b.Run(ext, func { b | b.RunParallel(func { pb | for pb.Next() {
+		b.Run(ext, func { b -> b.RunParallel(func { pb -> for pb.Next() {
 			TypeByExtension(ext)
 		} }) })
 	}
@@ -176,8 +176,8 @@ func BenchmarkExtensionsByType(b *testing.B) {
 		"text/html; charset=utf-8",
 		"application/octet-stream",
 	} {
-		b.Run(typ, func { b |
-			b.RunParallel(func { pb |
+		b.Run(typ, func { b ->
+			b.RunParallel(func { pb ->
 				for pb.Next() {
 					if _, err := ExtensionsByType(typ); err != nil {
 						b.Fatal(err)

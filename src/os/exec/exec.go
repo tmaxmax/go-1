@@ -405,7 +405,7 @@ func Command(name string, arg ...string) *Cmd {
 			cmd.createdByStack = stack
 		}
 
-		runtime.SetFinalizer(cmd, func { c |
+		runtime.SetFinalizer(cmd, func { c ->
 			if c.Process != nil && c.ProcessState == nil {
 				debugHint := ""
 				if c.createdByStack == nil {

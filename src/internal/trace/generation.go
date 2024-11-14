@@ -129,7 +129,7 @@ func readGeneration(r *bufio.Reader, spill *spilledBatch) (*generation, *spilled
 		s.time = g.freq.mul(timestamp(s.time))
 	}
 	// Sort the CPU samples.
-	slices.SortFunc(g.cpuSamples, func { a, b | return cmp.Compare(a.time, b.time) })
+	slices.SortFunc(g.cpuSamples, func { a, b -> return cmp.Compare(a.time, b.time) })
 	return g, spill, spillErr
 }
 
@@ -180,7 +180,7 @@ func validateStackStrings(
 	frames map[uint64]frame,
 ) error {
 	var err error
-	stacks.forEach(func { id, stk |
+	stacks.forEach(func { id, stk ->
 		for _, pc := range stk.pcs {
 			frame, ok := frames[pc]
 			if !ok {

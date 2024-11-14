@@ -131,7 +131,7 @@ func compileFunctions(profile *pgoir.Profile) {
 		// Compile the longest functions first,
 		// since they're most likely to be the slowest.
 		// This helps avoid stragglers.
-		sort.Slice(compilequeue, func { i, j | return len(compilequeue[i].Body) > len(compilequeue[j].Body) })
+		sort.Slice(compilequeue, func { i, j -> return len(compilequeue[i].Body) > len(compilequeue[j].Body) })
 	}
 
 	// By default, we perform work right away on the current goroutine
@@ -171,16 +171,16 @@ func compileFunctions(profile *pgoir.Profile) {
 				}
 			}
 		}()
-		queue = func { work | workq <- work }
+		queue = func { work -> workq <- work }
 	}
 
 	var wg sync.WaitGroup
 	var compile func([]*ir.Func)
-	compile = func { fns |
+	compile = func { fns ->
 		wg.Add(len(fns))
 		for _, fn := range fns {
 			fn := fn
-			queue(func { worker |
+			queue(func { worker ->
 				ssagen.Compile(fn, worker, profile)
 				compile(fn.Closures)
 				wg.Done()

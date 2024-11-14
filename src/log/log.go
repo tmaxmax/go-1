@@ -192,7 +192,7 @@ func putBuffer(p *[]byte) {
 // paths it will be 2.
 func (l *Logger) Output(calldepth int, s string) error {
 	calldepth++ // +1 for this frame.
-	return l.output(0, calldepth, func { b | return append(b, s...) })
+	return l.output(0, calldepth, func { b -> return append(b, s...) })
 }
 
 // output can take either a calldepth or a pc to get source line information.
@@ -245,25 +245,25 @@ func (l *Logger) output(pc uintptr, calldepth int, appendOutput func([]byte) []b
 }
 
 func init() {
-	internal.DefaultOutput = func { pc, data | return std.output(pc, 0, func { buf | return append(buf, data...) }) }
+	internal.DefaultOutput = func { pc, data -> return std.output(pc, 0, func { buf -> return append(buf, data...) }) }
 }
 
 // Print calls l.Output to print to the logger.
 // Arguments are handled in the manner of [fmt.Print].
 func (l *Logger) Print(v ...any) {
-	l.output(0, 2, func { b | return fmt.Append(b, v...) })
+	l.output(0, 2, func { b -> return fmt.Append(b, v...) })
 }
 
 // Printf calls l.Output to print to the logger.
 // Arguments are handled in the manner of [fmt.Printf].
 func (l *Logger) Printf(format string, v ...any) {
-	l.output(0, 2, func { b | return fmt.Appendf(b, format, v...) })
+	l.output(0, 2, func { b -> return fmt.Appendf(b, format, v...) })
 }
 
 // Println calls l.Output to print to the logger.
 // Arguments are handled in the manner of [fmt.Println].
 func (l *Logger) Println(v ...any) {
-	l.output(0, 2, func { b | return fmt.Appendln(b, v...) })
+	l.output(0, 2, func { b -> return fmt.Appendln(b, v...) })
 }
 
 // Fatal is equivalent to l.Print() followed by a call to [os.Exit](1).
@@ -374,19 +374,19 @@ func Writer() io.Writer {
 // Print calls Output to print to the standard logger.
 // Arguments are handled in the manner of [fmt.Print].
 func Print(v ...any) {
-	std.output(0, 2, func { b | return fmt.Append(b, v...) })
+	std.output(0, 2, func { b -> return fmt.Append(b, v...) })
 }
 
 // Printf calls Output to print to the standard logger.
 // Arguments are handled in the manner of [fmt.Printf].
 func Printf(format string, v ...any) {
-	std.output(0, 2, func { b | return fmt.Appendf(b, format, v...) })
+	std.output(0, 2, func { b -> return fmt.Appendf(b, format, v...) })
 }
 
 // Println calls Output to print to the standard logger.
 // Arguments are handled in the manner of [fmt.Println].
 func Println(v ...any) {
-	std.output(0, 2, func { b | return fmt.Appendln(b, v...) })
+	std.output(0, 2, func { b -> return fmt.Appendln(b, v...) })
 }
 
 // Fatal is equivalent to [Print] followed by a call to [os.Exit](1).

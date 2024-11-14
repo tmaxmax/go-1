@@ -60,7 +60,7 @@ type activeCert struct {
 func (cc *certCache) active(e *cacheEntry) *activeCert {
 	e.refs.Add(1)
 	a := &activeCert{e.cert}
-	runtime.SetFinalizer(a, func { _ | if e.refs.Add(-1) == 0 {
+	runtime.SetFinalizer(a, func { _ -> if e.refs.Add(-1) == 0 {
 		cc.evict(e)
 	} })
 	return a

@@ -92,7 +92,7 @@ func TestScripts(t *testing.T) {
 	// overview of the script status at an arbitrary point during the test.
 	// (We ignore the output because the expected failure mode is a friendly stack
 	// dump from the race detector.)
-	t.Run("overview", func { t |
+	t.Run("overview", func { t ->
 		t.Parallel()
 
 		time.Sleep(1 * time.Millisecond) // Give the other handlers time to race.
@@ -128,7 +128,7 @@ func TestScripts(t *testing.T) {
 		srv.Close()
 	})
 
-	err = filepath.WalkDir(scriptDir, func { path, d, err |
+	err = filepath.WalkDir(scriptDir, func { path, d, err ->
 		if err != nil || d.IsDir() {
 			return err
 		}
@@ -141,7 +141,7 @@ func TestScripts(t *testing.T) {
 			return nil
 		}
 
-		t.Run(filepath.ToSlash(rel), func { t |
+		t.Run(filepath.ToSlash(rel), func { t ->
 			t.Parallel()
 
 			buf := new(strings.Builder)

@@ -7,7 +7,7 @@ package html
 import "testing"
 
 func FuzzEscapeUnescape(f *testing.F) {
-	f.Fuzz(func { t, v |
+	f.Fuzz(func { t, v ->
 		e := EscapeString(v)
 		u := UnescapeString(e)
 		if u != v {

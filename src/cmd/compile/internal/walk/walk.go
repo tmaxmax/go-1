@@ -277,7 +277,7 @@ func mayCall(n ir.Node) bool {
 		return types.IsFloat[typ.Kind()] || types.IsComplex[typ.Kind()]
 	}
 
-	return ir.Any(n, func { n |
+	return ir.Any(n, func { n ->
 		// walk should have already moved any Init blocks off of
 		// expressions.
 		if len(n.Init()) != 0 {

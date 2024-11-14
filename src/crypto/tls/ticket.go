@@ -115,10 +115,10 @@ func (s *SessionState) Bytes() ([]byte, error) {
 	}
 	b.AddUint16(s.cipherSuite)
 	addUint64(&b, s.createdAt)
-	b.AddUint8LengthPrefixed(func { b | b.AddBytes(s.secret) })
-	b.AddUint24LengthPrefixed(func { b |
+	b.AddUint8LengthPrefixed(func { b -> b.AddBytes(s.secret) })
+	b.AddUint24LengthPrefixed(func { b ->
 		for _, extra := range s.Extra {
-			b.AddUint24LengthPrefixed(func { b | b.AddBytes(extra) })
+			b.AddUint24LengthPrefixed(func { b -> b.AddBytes(extra) })
 		}
 	})
 	if s.extMasterSecret {
@@ -136,22 +136,22 @@ func (s *SessionState) Bytes() ([]byte, error) {
 		OCSPStaple:                  s.ocspResponse,
 		SignedCertificateTimestamps: s.scts,
 	})
-	b.AddUint24LengthPrefixed(func { b |
+	b.AddUint24LengthPrefixed(func { b ->
 		for _, chain := range s.verifiedChains {
-			b.AddUint24LengthPrefixed(func { b |
+			b.AddUint24LengthPrefixed(func { b ->
 				// We elide the first certificate because it's always the leaf.
 				if len(chain) == 0 {
 					b.SetError(errors.New("tls: internal error: empty verified chain"))
 					return
 				}
 				for _, cert := range chain[1:] {
-					b.AddUint24LengthPrefixed(func { b | b.AddBytes(cert.Raw) })
+					b.AddUint24LengthPrefixed(func { b -> b.AddBytes(cert.Raw) })
 				}
 			})
 		}
 	})
 	if s.EarlyData {
-		b.AddUint8LengthPrefixed(func { b | b.AddBytes([]byte(s.alpnProtocol)) })
+		b.AddUint8LengthPrefixed(func { b -> b.AddBytes([]byte(s.alpnProtocol)) })
 	}
 	if s.isClient {
 		if s.version >= VersionTLS13 {

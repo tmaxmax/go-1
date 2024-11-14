@@ -129,7 +129,7 @@ func FuzzParse(f *testing.F) {
 		f.Add(seed)
 	}
 
-	f.Fuzz(func { t, s |
+	f.Fuzz(func { t, s ->
 		ip, _ := ParseAddr(s)
 		checkStringParseRoundTrip(t, ip, ParseAddr)
 		checkEncoding(t, ip)

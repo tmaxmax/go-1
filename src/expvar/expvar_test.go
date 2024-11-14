@@ -67,7 +67,7 @@ func TestInt(t *testing.T) {
 func BenchmarkIntAdd(b *testing.B) {
 	var v Int
 
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		v.Add(1)
 	} })
 }
@@ -75,7 +75,7 @@ func BenchmarkIntAdd(b *testing.B) {
 func BenchmarkIntSet(b *testing.B) {
 	var v Int
 
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		v.Set(1)
 	} })
 }
@@ -109,7 +109,7 @@ func TestFloat(t *testing.T) {
 func BenchmarkFloatAdd(b *testing.B) {
 	var f Float
 
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		f.Add(1.0)
 	} })
 }
@@ -117,7 +117,7 @@ func BenchmarkFloatAdd(b *testing.B) {
 func BenchmarkFloatSet(b *testing.B) {
 	var f Float
 
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		f.Set(1.0)
 	} })
 }
@@ -147,7 +147,7 @@ func TestString(t *testing.T) {
 func BenchmarkStringSet(b *testing.B) {
 	var s String
 
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		s.Set("red")
 	} })
 }
@@ -285,7 +285,7 @@ func BenchmarkMapSet(b *testing.B) {
 
 	v := new(Int)
 
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		m.Set("red", v)
 	} })
 }
@@ -305,7 +305,7 @@ func BenchmarkMapSetDifferent(b *testing.B) {
 	b.ResetTimer()
 
 	var n int32
-	b.RunParallel(func { pb |
+	b.RunParallel(func { pb ->
 		i := int(atomic.AddInt32(&n, 1)-1) % len(procKeys)
 		keys := procKeys[i]
 
@@ -343,13 +343,13 @@ func BenchmarkMapSetString(b *testing.B) {
 	v := new(String)
 	v.Set("Hello, !")
 
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		m.Set("red", v)
 	} })
 }
 
 func BenchmarkMapAddSame(b *testing.B) {
-	b.RunParallel(func { pb |
+	b.RunParallel(func { pb ->
 		for pb.Next() {
 			m := new(Map).Init()
 			m.Add("red", 1)
@@ -373,7 +373,7 @@ func BenchmarkMapAddDifferent(b *testing.B) {
 	b.ResetTimer()
 
 	var n int32
-	b.RunParallel(func { pb |
+	b.RunParallel(func { pb ->
 		i := int(atomic.AddInt32(&n, 1)-1) % len(procKeys)
 		keys := procKeys[i]
 
@@ -407,7 +407,7 @@ func BenchmarkMapAddDifferentRandom(b *testing.B) {
 
 func BenchmarkMapAddSameSteadyState(b *testing.B) {
 	m := new(Map).Init()
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		m.Add("red", 1)
 	} })
 }
@@ -426,7 +426,7 @@ func BenchmarkMapAddDifferentSteadyState(b *testing.B) {
 	b.ResetTimer()
 
 	var n int32
-	b.RunParallel(func { pb |
+	b.RunParallel(func { pb ->
 		i := int(atomic.AddInt32(&n, 1)-1) % len(procKeys)
 		keys := procKeys[i]
 

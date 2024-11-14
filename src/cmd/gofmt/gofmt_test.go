@@ -90,7 +90,7 @@ func runTest(t *testing.T, in, out string) {
 	const maxWeight = 2 << 20
 	var buf, errBuf bytes.Buffer
 	s := newSequencer(maxWeight, &buf, &errBuf)
-	s.Add(fileWeight(in, info), func { r | return processFile(in, info, nil, r) })
+	s.Add(fileWeight(in, info), func { r -> return processFile(in, info, nil, r) })
 	if errBuf.Len() > 0 {
 		t.Logf("%q", errBuf.Bytes())
 	}
@@ -143,7 +143,7 @@ func TestRewrite(t *testing.T) {
 
 	for _, in := range match {
 		name := filepath.Base(in)
-		t.Run(name, func { t |
+		t.Run(name, func { t ->
 			out := in // for files where input and output are identical
 			if strings.HasSuffix(in, ".input") {
 				out = in[:len(in)-len(".input")] + ".golden"

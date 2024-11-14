@@ -98,7 +98,7 @@ func BenchmarkSliceCap(b *testing.B) {
 
 func BenchmarkDeepEqual(b *testing.B) {
 	for _, bb := range deepEqualPerfTests {
-		b.Run(ValueOf(bb.x).Type().String(), func { b |
+		b.Run(ValueOf(bb.x).Type().String(), func { b ->
 			b.ReportAllocs()
 			for i := 0; i < b.N; i++ {
 				sink = DeepEqual(bb.x, bb.y)
@@ -148,7 +148,7 @@ func BenchmarkIsZero(b *testing.B) {
 	for i := 0; i < source.NumField(); i++ {
 		name := source.Type().Field(i).Name
 		value := source.Field(i)
-		b.Run(name, func { b | for i := 0; i < b.N; i++ {
+		b.Run(name, func { b -> for i := 0; i < b.N; i++ {
 			sink = value.IsZero()
 		} })
 	}
@@ -176,13 +176,13 @@ func BenchmarkSetZero(b *testing.B) {
 		name := source.Type().Field(i).Name
 		value := source.Field(i)
 		zero := Zero(value.Type())
-		b.Run(name+"/Direct", func { b | for i := 0; i < b.N; i++ {
+		b.Run(name+"/Direct", func { b -> for i := 0; i < b.N; i++ {
 			value.SetZero()
 		} })
-		b.Run(name+"/CachedZero", func { b | for i := 0; i < b.N; i++ {
+		b.Run(name+"/CachedZero", func { b -> for i := 0; i < b.N; i++ {
 			value.Set(zero)
 		} })
-		b.Run(name+"/NewZero", func { b | for i := 0; i < b.N; i++ {
+		b.Run(name+"/NewZero", func { b -> for i := 0; i < b.N; i++ {
 			value.Set(Zero(value.Type()))
 		} })
 	}
@@ -199,7 +199,7 @@ func BenchmarkSelect(b *testing.B) {
 		})
 	}
 	for _, numCases := range []int{1, 4, 8} {
-		b.Run(strconv.Itoa(numCases), func { b |
+		b.Run(strconv.Itoa(numCases), func { b ->
 			b.ReportAllocs()
 			for i := 0; i < b.N; i++ {
 				_, _, _ = Select(cases[:numCases])
@@ -209,9 +209,9 @@ func BenchmarkSelect(b *testing.B) {
 }
 
 func BenchmarkCall(b *testing.B) {
-	fv := ValueOf(func { a, b | })
+	fv := ValueOf(func { a, b -> })
 	b.ReportAllocs()
-	b.RunParallel(func { pb |
+	b.RunParallel(func { pb ->
 		args := []Value{ValueOf("a"), ValueOf("b")}
 		for pb.Next() {
 			fv.Call(args)
@@ -243,18 +243,18 @@ func BenchmarkCallArgCopy(b *testing.B) {
 		fv  Value
 		arg Value
 	}{
-		{ValueOf(func { a | }), byteArray(128)},
-		{ValueOf(func { a | }), byteArray(256)},
-		{ValueOf(func { a | }), byteArray(1024)},
-		{ValueOf(func { a | }), byteArray(4096)},
-		{ValueOf(func { a | }), byteArray(65536)},
+		{ValueOf(func { a -> }), byteArray(128)},
+		{ValueOf(func { a -> }), byteArray(256)},
+		{ValueOf(func { a -> }), byteArray(1024)},
+		{ValueOf(func { a -> }), byteArray(4096)},
+		{ValueOf(func { a -> }), byteArray(65536)},
 	}
 	for _, size := range sizes {
 		bench := func(b *testing.B) {
 			args := []Value{size.arg}
 			b.SetBytes(int64(size.arg.Len()))
 			b.ResetTimer()
-			b.RunParallel(func { pb | for pb.Next() {
+			b.RunParallel(func { pb -> for pb.Next() {
 				size.fv.Call(args)
 			} })
 		}
@@ -279,7 +279,7 @@ func BenchmarkPtrTo(b *testing.B) {
 
 	// Now benchmark calling PointerTo on it: we'll have to hit the ptrMap cache on
 	// every call.
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		PointerTo(t)
 	} })
 }
@@ -292,21 +292,21 @@ type B1 struct {
 
 func BenchmarkFieldByName1(b *testing.B) {
 	t := TypeOf(B1{})
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		t.FieldByName("Z")
 	} })
 }
 
 func BenchmarkFieldByName2(b *testing.B) {
 	t := TypeOf(S3{})
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		t.FieldByName("B")
 	} })
 }
 
 func BenchmarkFieldByName3(b *testing.B) {
 	t := TypeOf(R0{})
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		t.FieldByName("X")
 	} })
 }
@@ -318,7 +318,7 @@ type S struct {
 
 func BenchmarkInterfaceBig(b *testing.B) {
 	v := ValueOf(S{})
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		v.Interface()
 	} })
 	b.StopTimer()
@@ -326,14 +326,14 @@ func BenchmarkInterfaceBig(b *testing.B) {
 
 func BenchmarkInterfaceSmall(b *testing.B) {
 	v := ValueOf(int64(0))
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		v.Interface()
 	} })
 }
 
 func BenchmarkNew(b *testing.B) {
 	v := TypeOf(XM{})
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		New(v)
 	} })
 }
@@ -372,8 +372,8 @@ func BenchmarkMap(b *testing.B) {
 	}
 
 	for _, tt := range tests {
-		b.Run(tt.label, func { b |
-			b.Run("MapIndex", func { b |
+		b.Run(tt.label, func { b ->
+			b.Run("MapIndex", func { b ->
 				b.ReportAllocs()
 				for i := 0; i < b.N; i++ {
 					for j := tt.keys.Len() - 1; j >= 0; j-- {
@@ -381,7 +381,7 @@ func BenchmarkMap(b *testing.B) {
 					}
 				}
 			})
-			b.Run("SetMapIndex", func { b |
+			b.Run("SetMapIndex", func { b ->
 				b.ReportAllocs()
 				for i := 0; i < b.N; i++ {
 					for j := tt.keys.Len() - 1; j >= 0; j-- {

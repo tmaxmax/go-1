@@ -596,7 +596,7 @@ func BenchmarkCompressedZipGarbage(b *testing.B) {
 	runOnce(&bytes.Buffer{})
 	b.ResetTimer()
 
-	b.RunParallel(func { pb |
+	b.RunParallel(func { pb ->
 		var buf bytes.Buffer
 		for pb.Next() {
 			runOnce(&buf)

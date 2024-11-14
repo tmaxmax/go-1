@@ -573,7 +573,7 @@ func dextratype(lsym *obj.LSym, off int64, t *types.Type, dataAdd int) {
 	if mcount != int(uint16(mcount)) {
 		base.Fatalf("too many methods on %v: %d", t, mcount)
 	}
-	xcount := sort.Search(mcount, func { i | return !types.IsExported(m[i].name.Name) })
+	xcount := sort.Search(mcount, func { i -> return !types.IsExported(m[i].name.Name) })
 	if dataAdd != int(uint32(dataAdd)) {
 		base.Fatalf("methods are too far away on %v: %d", t, dataAdd)
 	}

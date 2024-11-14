@@ -558,7 +558,7 @@ func TestGoVerify(t *testing.T) {
 	t.Setenv("GODEBUG", "x509sha1=1")
 
 	for _, test := range verifyTests {
-		t.Run(test.name, func { t | testVerify(t, test, false) })
+		t.Run(test.name, func { t -> testVerify(t, test, false) })
 	}
 }
 
@@ -568,7 +568,7 @@ func TestSystemVerify(t *testing.T) {
 	}
 
 	for _, test := range verifyTests {
-		t.Run(test.name, func { t |
+		t.Run(test.name, func { t ->
 			if test.systemSkip {
 				t.SkipNow()
 			}
@@ -1503,7 +1503,7 @@ var unknownAuthorityErrorTests = []struct {
 
 func TestUnknownAuthorityError(t *testing.T) {
 	for i, tt := range unknownAuthorityErrorTests {
-		t.Run(tt.name, func { t |
+		t.Run(tt.name, func { t ->
 			der, _ := pem.Decode([]byte(tt.cert))
 			if der == nil {
 				t.Fatalf("#%d: Unable to decode PEM block", i)
@@ -1909,7 +1909,7 @@ func TestIssue51759(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	t.Run("leaf", func { t |
+	t.Run("leaf", func { t ->
 		opts := VerifyOptions{}
 		expectedErr := "invalid leaf certificate"
 		_, err = badCert.Verify(opts)
@@ -1923,7 +1923,7 @@ func TestIssue51759(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	t.Run("intermediate", func { t |
+	t.Run("intermediate", func { t ->
 		opts := VerifyOptions{
 			Intermediates: NewCertPool(),
 		}
@@ -2580,7 +2580,7 @@ func TestPathBuilding(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		t.Run(tc.name, func { t |
+		t.Run(tc.name, func { t ->
 			roots, intermediates, leaf := buildTrustGraph(t, tc.graph)
 			chains, err := leaf.Verify(VerifyOptions{
 				Roots:         roots,
@@ -2686,9 +2686,9 @@ func TestEKUEnforcement(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		t.Run(tc.name, func { t |
+		t.Run(tc.name, func { t ->
 			rootPool := NewCertPool()
-			root := genCertEdge(t, "root", k, func { c |
+			root := genCertEdge(t, "root", k, func { c ->
 				c.ExtKeyUsage = tc.root.EKUs
 				c.UnknownExtKeyUsage = tc.root.Unknown
 			}, rootCertificate, nil, k)
@@ -2697,7 +2697,7 @@ func TestEKUEnforcement(t *testing.T) {
 			parent := root
 			interPool := NewCertPool()
 			for i, interEKUs := range tc.inters {
-				inter := genCertEdge(t, fmt.Sprintf("inter %d", i), k, func { c |
+				inter := genCertEdge(t, fmt.Sprintf("inter %d", i), k, func { c ->
 					c.ExtKeyUsage = interEKUs.EKUs
 					c.UnknownExtKeyUsage = interEKUs.Unknown
 				}, intermediateCertificate, parent, k)
@@ -2705,7 +2705,7 @@ func TestEKUEnforcement(t *testing.T) {
 				parent = inter
 			}
 
-			leaf := genCertEdge(t, "leaf", k, func { c |
+			leaf := genCertEdge(t, "leaf", k, func { c ->
 				c.ExtKeyUsage = tc.leaf.EKUs
 				c.UnknownExtKeyUsage = tc.leaf.Unknown
 			}, intermediateCertificate, parent, k)
@@ -2760,7 +2760,7 @@ func TestVerifyEKURootAsLeaf(t *testing.T) {
 			succeed:    false,
 		},
 	} {
-		t.Run(fmt.Sprintf("root EKUs %#v, verify EKUs %#v", tc.rootEKUs, tc.verifyEKUs), func { t |
+		t.Run(fmt.Sprintf("root EKUs %#v, verify EKUs %#v", tc.rootEKUs, tc.verifyEKUs), func { t ->
 			tmpl := &Certificate{
 				SerialNumber: big.NewInt(1),
 				Subject:      pkix.Name{CommonName: "root"},

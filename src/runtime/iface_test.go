@@ -96,10 +96,10 @@ func BenchmarkNeIfaceConcrete(b *testing.B) {
 }
 
 func BenchmarkConvT2EByteSized(b *testing.B) {
-	b.Run("bool", func { b | for i := 0; i < b.N; i++ {
+	b.Run("bool", func { b -> for i := 0; i < b.N; i++ {
 		e = yes
 	} })
-	b.Run("uint8", func { b | for i := 0; i < b.N; i++ {
+	b.Run("uint8", func { b -> for i := 0; i < b.N; i++ {
 		e = eight8
 	} })
 }
@@ -307,7 +307,7 @@ func TestZeroConvT2x(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Run(test.name, func { t |
+		t.Run(test.name, func { t ->
 			n := testing.AllocsPerRun(1000, test.fn)
 			if n != 0 {
 				t.Errorf("want zero allocs, got %v", n)
@@ -349,56 +349,56 @@ var (
 )
 
 func BenchmarkConvT2Ezero(b *testing.B) {
-	b.Run("zero", func { b |
-		b.Run("16", func { b | for i := 0; i < b.N; i++ {
+	b.Run("zero", func { b ->
+		b.Run("16", func { b -> for i := 0; i < b.N; i++ {
 			e = zero16
 		} })
-		b.Run("32", func { b | for i := 0; i < b.N; i++ {
+		b.Run("32", func { b -> for i := 0; i < b.N; i++ {
 			e = zero32
 		} })
-		b.Run("64", func { b | for i := 0; i < b.N; i++ {
+		b.Run("64", func { b -> for i := 0; i < b.N; i++ {
 			e = zero64
 		} })
-		b.Run("str", func { b | for i := 0; i < b.N; i++ {
+		b.Run("str", func { b -> for i := 0; i < b.N; i++ {
 			e = zerostr
 		} })
-		b.Run("slice", func { b | for i := 0; i < b.N; i++ {
+		b.Run("slice", func { b -> for i := 0; i < b.N; i++ {
 			e = zeroslice
 		} })
-		b.Run("big", func { b | for i := 0; i < b.N; i++ {
+		b.Run("big", func { b -> for i := 0; i < b.N; i++ {
 			e = zerobig
 		} })
 	})
-	b.Run("nonzero", func { b |
-		b.Run("str", func { b | for i := 0; i < b.N; i++ {
+	b.Run("nonzero", func { b ->
+		b.Run("str", func { b -> for i := 0; i < b.N; i++ {
 			e = nzstr
 		} })
-		b.Run("slice", func { b | for i := 0; i < b.N; i++ {
+		b.Run("slice", func { b -> for i := 0; i < b.N; i++ {
 			e = nzslice
 		} })
-		b.Run("big", func { b | for i := 0; i < b.N; i++ {
+		b.Run("big", func { b -> for i := 0; i < b.N; i++ {
 			e = nzbig
 		} })
 	})
-	b.Run("smallint", func { b |
-		b.Run("16", func { b | for i := 0; i < b.N; i++ {
+	b.Run("smallint", func { b ->
+		b.Run("16", func { b -> for i := 0; i < b.N; i++ {
 			e = one16
 		} })
-		b.Run("32", func { b | for i := 0; i < b.N; i++ {
+		b.Run("32", func { b -> for i := 0; i < b.N; i++ {
 			e = one32
 		} })
-		b.Run("64", func { b | for i := 0; i < b.N; i++ {
+		b.Run("64", func { b -> for i := 0; i < b.N; i++ {
 			e = one64
 		} })
 	})
-	b.Run("largeint", func { b |
-		b.Run("16", func { b | for i := 0; i < b.N; i++ {
+	b.Run("largeint", func { b ->
+		b.Run("16", func { b -> for i := 0; i < b.N; i++ {
 			e = thousand16
 		} })
-		b.Run("32", func { b | for i := 0; i < b.N; i++ {
+		b.Run("32", func { b -> for i := 0; i < b.N; i++ {
 			e = thousand32
 		} })
-		b.Run("64", func { b | for i := 0; i < b.N; i++ {
+		b.Run("64", func { b -> for i := 0; i < b.N; i++ {
 			e = thousand64
 		} })
 	})

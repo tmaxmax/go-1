@@ -69,7 +69,7 @@ func TestExpand(t *testing.T) {
 var global any
 
 func BenchmarkExpand(b *testing.B) {
-	b.Run("noop", func { b |
+	b.Run("noop", func { b ->
 		var s string
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
@@ -77,7 +77,7 @@ func BenchmarkExpand(b *testing.B) {
 		}
 		global = s
 	})
-	b.Run("multiple", func { b |
+	b.Run("multiple", func { b ->
 		var s string
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {

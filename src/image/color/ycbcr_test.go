@@ -179,13 +179,13 @@ func BenchmarkYCbCrToRGB(b *testing.B) {
 	// YCbCrToRGB does saturating arithmetic.
 	// Low, middle, and high values can take
 	// different paths through the generated code.
-	b.Run("0", func { b | for i := 0; i < b.N; i++ {
+	b.Run("0", func { b -> for i := 0; i < b.N; i++ {
 		sink8, sink8, sink8 = YCbCrToRGB(0, 0, 0)
 	} })
-	b.Run("128", func { b | for i := 0; i < b.N; i++ {
+	b.Run("128", func { b -> for i := 0; i < b.N; i++ {
 		sink8, sink8, sink8 = YCbCrToRGB(128, 128, 128)
 	} })
-	b.Run("255", func { b | for i := 0; i < b.N; i++ {
+	b.Run("255", func { b -> for i := 0; i < b.N; i++ {
 		sink8, sink8, sink8 = YCbCrToRGB(255, 255, 255)
 	} })
 }
@@ -194,13 +194,13 @@ func BenchmarkRGBToYCbCr(b *testing.B) {
 	// RGBToYCbCr does saturating arithmetic.
 	// Different values can take different paths
 	// through the generated code.
-	b.Run("0", func { b | for i := 0; i < b.N; i++ {
+	b.Run("0", func { b -> for i := 0; i < b.N; i++ {
 		sink8, sink8, sink8 = RGBToYCbCr(0, 0, 0)
 	} })
-	b.Run("Cb", func { b | for i := 0; i < b.N; i++ {
+	b.Run("Cb", func { b -> for i := 0; i < b.N; i++ {
 		sink8, sink8, sink8 = RGBToYCbCr(0, 0, 255)
 	} })
-	b.Run("Cr", func { b | for i := 0; i < b.N; i++ {
+	b.Run("Cr", func { b -> for i := 0; i < b.N; i++ {
 		sink8, sink8, sink8 = RGBToYCbCr(255, 0, 0)
 	} })
 }
@@ -209,19 +209,19 @@ func BenchmarkYCbCrToRGBA(b *testing.B) {
 	// RGB does saturating arithmetic.
 	// Low, middle, and high values can take
 	// different paths through the generated code.
-	b.Run("0", func { b |
+	b.Run("0", func { b ->
 		c := YCbCr{0, 0, 0}
 		for i := 0; i < b.N; i++ {
 			sink32, sink32, sink32, sink32 = c.RGBA()
 		}
 	})
-	b.Run("128", func { b |
+	b.Run("128", func { b ->
 		c := YCbCr{128, 128, 128}
 		for i := 0; i < b.N; i++ {
 			sink32, sink32, sink32, sink32 = c.RGBA()
 		}
 	})
-	b.Run("255", func { b |
+	b.Run("255", func { b ->
 		c := YCbCr{255, 255, 255}
 		for i := 0; i < b.N; i++ {
 			sink32, sink32, sink32, sink32 = c.RGBA()
@@ -233,19 +233,19 @@ func BenchmarkNYCbCrAToRGBA(b *testing.B) {
 	// RGBA does saturating arithmetic.
 	// Low, middle, and high values can take
 	// different paths through the generated code.
-	b.Run("0", func { b |
+	b.Run("0", func { b ->
 		c := NYCbCrA{YCbCr{0, 0, 0}, 0xff}
 		for i := 0; i < b.N; i++ {
 			sink32, sink32, sink32, sink32 = c.RGBA()
 		}
 	})
-	b.Run("128", func { b |
+	b.Run("128", func { b ->
 		c := NYCbCrA{YCbCr{128, 128, 128}, 0xff}
 		for i := 0; i < b.N; i++ {
 			sink32, sink32, sink32, sink32 = c.RGBA()
 		}
 	})
-	b.Run("255", func { b |
+	b.Run("255", func { b ->
 		c := NYCbCrA{YCbCr{255, 255, 255}, 0xff}
 		for i := 0; i < b.N; i++ {
 			sink32, sink32, sink32, sink32 = c.RGBA()

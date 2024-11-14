@@ -16,7 +16,7 @@ func TestWork(t *testing.T) {
 	const N = 10000
 	n := int32(0)
 	w.Add(N)
-	w.Do(100, func { i |
+	w.Do(100, func { i ->
 		atomic.AddInt32(&n, 1)
 		if i >= 2 {
 			w.Add(i - 1)
@@ -39,7 +39,7 @@ func TestWorkParallel(t *testing.T) {
 		}
 		start := time.Now()
 		var n int32
-		w.Do(N, func { x |
+		w.Do(N, func { x ->
 			time.Sleep(1 * time.Millisecond)
 			atomic.AddInt32(&n, +1)
 		})

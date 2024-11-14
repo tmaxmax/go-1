@@ -158,7 +158,7 @@ func (m *Map) Iterate(f func(key types.Type, value any)) {
 // The order is unspecified.
 func (m *Map) Keys() []types.Type {
 	keys := make([]types.Type, 0, m.Len())
-	m.Iterate(func { key, _ | keys = append(keys, key) })
+	m.Iterate(func { key, _ -> keys = append(keys, key) })
 	return keys
 }
 
@@ -169,7 +169,7 @@ func (m *Map) toString(values bool) string {
 	var buf bytes.Buffer
 	fmt.Fprint(&buf, "{")
 	sep := ""
-	m.Iterate(func { key, value |
+	m.Iterate(func { key, value ->
 		fmt.Fprint(&buf, sep)
 		sep = ", "
 		fmt.Fprint(&buf, key)

@@ -86,7 +86,7 @@ func test(t *testing.T, mode Mode) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		filter = func { fi | return isGoFile(fi) && rx.MatchString(fi.Name()) }
+		filter = func { fi -> return isGoFile(fi) && rx.MatchString(fi.Name()) }
 	}
 
 	// get packages
@@ -98,7 +98,7 @@ func test(t *testing.T, mode Mode) {
 
 	// test packages
 	for _, pkg := range pkgs {
-		t.Run(pkg.Name, func { t |
+		t.Run(pkg.Name, func { t ->
 			importPath := dataDir + "/" + pkg.Name
 			var files []*ast.File
 			for _, f := range pkg.Files {
@@ -145,9 +145,9 @@ func test(t *testing.T, mode Mode) {
 }
 
 func Test(t *testing.T) {
-	t.Run("default", func { t | test(t, 0) })
-	t.Run("AllDecls", func { t | test(t, AllDecls) })
-	t.Run("AllMethods", func { t | test(t, AllMethods) })
+	t.Run("default", func { t -> test(t, 0) })
+	t.Run("AllDecls", func { t -> test(t, AllDecls) })
+	t.Run("AllMethods", func { t -> test(t, AllMethods) })
 }
 
 func TestFuncs(t *testing.T) {
@@ -187,7 +187,7 @@ func TestFuncs(t *testing.T) {
 	}
 
 	compareSlices(t, "Funcs", doc.Funcs, funcsPackage.Funcs, compareFuncs)
-	compareSlices(t, "Types", doc.Types, funcsPackage.Types, func { t, msg, got, want |
+	compareSlices(t, "Types", doc.Types, funcsPackage.Types, func { t, msg, got, want ->
 		if got.Name != want.Name {
 			t.Errorf("%s.Name: got %q, want %q", msg, got.Name, want.Name)
 		} else {

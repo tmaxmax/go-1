@@ -331,7 +331,7 @@ func (check *Checker) implements(pos syntax.Pos, V, T Type, constraint bool, cau
 
 	// Otherwise, V's type must be included in the iface type set.
 	var alt Type
-	if Ti.typeSet().is(func { t |
+	if Ti.typeSet().is(func { t ->
 		if !t.includes(V) {
 			// If V ∉ t.typ but V ∈ ~t.typ then remember this type
 			// so we can suggest it as an alternative in the error
