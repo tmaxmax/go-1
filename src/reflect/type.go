@@ -1288,7 +1288,7 @@ func (t *structType) FieldByName(name string) (f StructField, present bool) {
 	if !hasEmbeds {
 		return
 	}
-	return t.FieldByNameFunc(func { s | s == name })
+	return t.FieldByNameFunc(func { s | return s == name })
 }
 
 // TypeOf returns the reflection [Type] that represents the dynamic type of i.
@@ -1842,7 +1842,7 @@ func MapOf(key, elem Type) Type {
 	mt.Key = ktyp
 	mt.Elem = etyp
 	mt.Bucket = bucketOf(ktyp, etyp)
-	mt.Hasher = func { p, seed | typehash(ktyp, p, seed) }
+	mt.Hasher = func { p, seed | return typehash(ktyp, p, seed) }
 	mt.Flags = 0
 	if ktyp.Size_ > abi.MapMaxKeyBytes {
 		mt.KeySize = uint8(goarch.PtrSize)

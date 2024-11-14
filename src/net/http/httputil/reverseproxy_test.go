@@ -1815,7 +1815,7 @@ func TestReverseProxyQueryParameterSmugglingDirectorParsesForm(t *testing.T) {
 }
 
 func TestReverseProxyQueryParameterSmugglingRewrite(t *testing.T) {
-	testReverseProxyQueryParameterSmuggling(t, testWantsCleanQuery, func { u | &ReverseProxy{
+	testReverseProxyQueryParameterSmuggling(t, testWantsCleanQuery, func { u | return &ReverseProxy{
 		Rewrite: func(r *ProxyRequest) {
 			r.SetURL(u)
 		},

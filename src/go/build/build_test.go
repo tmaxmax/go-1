@@ -412,7 +412,7 @@ func TestMatchFile(t *testing.T) {
 			}
 			return &readNopCloser{strings.NewReader(tt.data)}, nil
 		}
-		ctxt.JoinPath = func { elem | strings.Join(elem, "+") }
+		ctxt.JoinPath = func { elem | return strings.Join(elem, "+") }
 		match, err := ctxt.MatchFile("x", tt.name)
 		if match != tt.match || err != nil {
 			t.Fatalf("MatchFile(%q) = %v, %v, want %v, nil", tt.name, match, err, tt.match)

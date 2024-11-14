@@ -38,8 +38,8 @@ func TestEverything(t *testing.T) {
 	String("test_string", "0", "string value")
 	Float64("test_float64", 0, "float64 value")
 	Duration("test_duration", 0, "time.Duration value")
-	Func("test_func", "func value", func { nil })
-	BoolFunc("test_boolfunc", "func", func { nil })
+	Func("test_func", "func value", func { return nil })
+	BoolFunc("test_boolfunc", "func", func { return nil })
 
 	m := make(map[string]*Flag)
 	desired := "0"
@@ -294,7 +294,7 @@ func TestUserDefinedFunc(t *testing.T) {
 	// test Func error
 	flags = NewFlagSet("test", ContinueOnError)
 	flags.SetOutput(io.Discard)
-	flags.Func("v", "usage", func { s | fmt.Errorf("test error") })
+	flags.Func("v", "usage", func { s | return fmt.Errorf("test error") })
 	// flag not set, so no error
 	if err := flags.Parse(nil); err != nil {
 		t.Error(err)
@@ -829,7 +829,7 @@ func TestUserDefinedBoolFunc(t *testing.T) {
 	// test BoolFunc error
 	flags = NewFlagSet("test", ContinueOnError)
 	flags.SetOutput(io.Discard)
-	flags.BoolFunc("v", "usage", func { s | fmt.Errorf("test error") })
+	flags.BoolFunc("v", "usage", func { s | return fmt.Errorf("test error") })
 	// flag not set, so no error
 	if err := flags.Parse(nil); err != nil {
 		t.Error(err)

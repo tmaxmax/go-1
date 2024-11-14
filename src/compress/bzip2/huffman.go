@@ -132,7 +132,7 @@ func newHuffmanTree(lengths []uint8) (huffmanTree, error) {
 
 	// Now we can sort by the code so that the left half of each branch are
 	// grouped together, recursively.
-	slices.SortFunc(codes, func { a, b | cmp.Compare(a.code, b.code) })
+	slices.SortFunc(codes, func { a, b | return cmp.Compare(a.code, b.code) })
 
 	t.nodes = make([]huffmanNode, len(codes))
 	_, err := buildHuffmanNode(&t, codes, 0)

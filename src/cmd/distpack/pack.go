@@ -409,7 +409,7 @@ func writeZip(name string, a *Archive) {
 	}()
 
 	zw := zip.NewWriter(out)
-	zw.RegisterCompressor(zip.Deflate, func { out | flate.NewWriter(out, flate.BestCompression) })
+	zw.RegisterCompressor(zip.Deflate, func { out | return flate.NewWriter(out, flate.BestCompression) })
 	for _, f = range a.Files {
 		h := check(zip.FileInfoHeader(f.Info()))
 		h.Name = f.Name

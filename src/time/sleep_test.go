@@ -407,7 +407,7 @@ func testAfterStop(t *testing.T, newTimer func(Duration) *Timer) {
 
 func TestAfterQueuing(t *testing.T) {
 	t.Run("impl=chan", func { t | testAfterQueuing(t, After) })
-	t.Run("impl=func", func { t | testAfterQueuing(t, func { d | newTimerFunc(d).C }) })
+	t.Run("impl=func", func { t | testAfterQueuing(t, func { d | return newTimerFunc(d).C }) })
 }
 
 func testAfterQueuing(t *testing.T, after func(Duration) <-chan Time) {

@@ -759,7 +759,7 @@ func (me mapEncoder) encode(e *encodeState, v reflect.Value, opts encOpts) {
 		}
 		sv[i].v = mi.Value()
 	}
-	slices.SortFunc(sv, func { i, j | strings.Compare(i.ks, j.ks) })
+	slices.SortFunc(sv, func { i, j | return strings.Compare(i.ks, j.ks) })
 
 	for i, kv := range sv {
 		if i > 0 {
@@ -1229,7 +1229,7 @@ func typeFields(t reflect.Type) structFields {
 	}
 
 	fields = out
-	slices.SortFunc(fields, func { i, j | slices.Compare(i.index, j.index) })
+	slices.SortFunc(fields, func { i, j | return slices.Compare(i.index, j.index) })
 
 	for i := range fields {
 		f := &fields[i]

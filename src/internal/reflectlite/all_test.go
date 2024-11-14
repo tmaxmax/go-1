@@ -819,7 +819,7 @@ func TestAllocations(t *testing.T) {
 		var i any
 		var v Value
 
-		i = func { j | j }
+		i = func { j | return j }
 		v = ValueOf(i)
 		if ToInterface(v).(func(int) int)(j) != j {
 			panic("wrong result")

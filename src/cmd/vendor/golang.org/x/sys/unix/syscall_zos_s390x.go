@@ -2363,7 +2363,7 @@ func errnoErr2(e Errno, e2 uintptr) error {
 
 // ErrnoName returns the error name for error number e.
 func ErrnoName(e Errno) string {
-	i := sort.Search(len(errorList), func { i | errorList[i].num >= e })
+	i := sort.Search(len(errorList), func { i | return errorList[i].num >= e })
 	if i < len(errorList) && errorList[i].num == e {
 		return errorList[i].name
 	}
@@ -2372,7 +2372,7 @@ func ErrnoName(e Errno) string {
 
 // SignalName returns the signal name for signal number s.
 func SignalName(s syscall.Signal) string {
-	i := sort.Search(len(signalList), func { i | signalList[i].num >= s })
+	i := sort.Search(len(signalList), func { i | return signalList[i].num >= s })
 	if i < len(signalList) && signalList[i].num == s {
 		return signalList[i].name
 	}

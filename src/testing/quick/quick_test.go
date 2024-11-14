@@ -250,7 +250,7 @@ func TestFailure(t *testing.T) {
 		t.Errorf("#2 Error was not a SetupError: %s", err)
 	}
 
-	err = CheckEqual(func { x | 0 }, func { x | 0 }, nil)
+	err = CheckEqual(func { x | return 0 }, func { x | return 0 }, nil)
 	if err == nil {
 		t.Errorf("#3 CheckEqual didn't return an error")
 	}

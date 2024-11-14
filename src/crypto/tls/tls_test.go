@@ -1104,7 +1104,7 @@ func TestConnectionState(t *testing.T) {
 	rootCAs := x509.NewCertPool()
 	rootCAs.AddCert(issuer)
 
-	now := func { time.Unix(1476984729, 0) }
+	now := func { return time.Unix(1476984729, 0) }
 
 	const alpnProtocol = "golang"
 	const serverName = "example.golang"
@@ -1752,7 +1752,7 @@ func testVerifyCertificates(t *testing.T, version uint16) {
 			var serverVerifyPeerCertificates, clientVerifyPeerCertificates bool
 
 			clientConfig := testConfig.Clone()
-			clientConfig.Time = func { time.Unix(1476984729, 0) }
+			clientConfig.Time = func { return time.Unix(1476984729, 0) }
 			clientConfig.MaxVersion = version
 			clientConfig.MinVersion = version
 			clientConfig.RootCAs = rootCAs

@@ -201,7 +201,7 @@ func NewMethodSet(T Type) *MethodSet {
 		}
 	}
 	// sort by unique name
-	sort.Slice(list, func { i, j | list[i].obj.Id() < list[j].obj.Id() })
+	sort.Slice(list, func { i, j | return list[i].obj.Id() < list[j].obj.Id() })
 	return &MethodSet{list}
 }
 

@@ -42,14 +42,14 @@ func benchmarkEndToEnd(b *testing.B, ctor func() any, pipe func() (r io.Reader, 
 }
 
 func BenchmarkEndToEndPipe(b *testing.B) {
-	benchmarkEndToEnd(b, func { &Bench{7, 3.2, "now is the time", bytes.Repeat([]byte("for all good men"), 100)} }, func() (r io.Reader, w io.Writer, err error) {
+	benchmarkEndToEnd(b, func { return &Bench{7, 3.2, "now is the time", bytes.Repeat([]byte("for all good men"), 100)} }, func() (r io.Reader, w io.Writer, err error) {
 		r, w, err = os.Pipe()
 		return
 	})
 }
 
 func BenchmarkEndToEndByteBuffer(b *testing.B) {
-	benchmarkEndToEnd(b, func { &Bench{7, 3.2, "now is the time", bytes.Repeat([]byte("for all good men"), 100)} }, func() (r io.Reader, w io.Writer, err error) {
+	benchmarkEndToEnd(b, func { return &Bench{7, 3.2, "now is the time", bytes.Repeat([]byte("for all good men"), 100)} }, func() (r io.Reader, w io.Writer, err error) {
 		var buf bytes.Buffer
 		return &buf, &buf, nil
 	})

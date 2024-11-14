@@ -54,7 +54,7 @@ func allNumericOrString(t Type) bool { return allBasic(t, IsNumeric|IsString) }
 // allBasic(t, info) is an optimized version of isBasic(coreType(t), info).
 func allBasic(t Type, info BasicInfo) bool {
 	if tpar, _ := Unalias(t).(*TypeParam); tpar != nil {
-		return tpar.is(func { t | t != nil && isBasic(t.typ, info) })
+		return tpar.is(func { t | return t != nil && isBasic(t.typ, info) })
 	}
 	return isBasic(t, info)
 }
@@ -212,7 +212,7 @@ func hasNil(t Type) bool {
 	case *Slice, *Pointer, *Signature, *Map, *Chan:
 		return true
 	case *Interface:
-		return !isTypeParam(t) || u.typeSet().underIs(func { u | u != nil && hasNil(u) })
+		return !isTypeParam(t) || u.typeSet().underIs(func { u | return u != nil && hasNil(u) })
 	}
 	return false
 }

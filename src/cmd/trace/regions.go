@@ -203,10 +203,10 @@ func UserRegionHandlerFunc(t *parsedTrace) http.HandlerFunc {
 		// Sort.
 		sortBy := r.FormValue("sortby")
 		if _, ok := validNonOverlappingStats[sortBy]; ok {
-			slices.SortFunc(regions, func { a, b | cmp.Compare(b.NonOverlappingStats[sortBy], a.NonOverlappingStats[sortBy]) })
+			slices.SortFunc(regions, func { a, b | return cmp.Compare(b.NonOverlappingStats[sortBy], a.NonOverlappingStats[sortBy]) })
 		} else {
 			// Sort by total time by default.
-			slices.SortFunc(regions, func { a, b | cmp.Compare(b.TotalTime, a.TotalTime) })
+			slices.SortFunc(regions, func { a, b | return cmp.Compare(b.TotalTime, a.TotalTime) })
 		}
 
 		// Write down all the non-overlapping stats and sort them.
@@ -472,24 +472,24 @@ func newRegionFilter(r *http.Request) (*regionFilter, error) {
 	param := r.Form
 	if typ, ok := param["type"]; ok && len(typ) > 0 {
 		name = append(name, fmt.Sprintf("%q", typ[0]))
-		conditions = append(conditions, func { _, r | r.Name == typ[0] })
+		conditions = append(conditions, func { _, r | return r.Name == typ[0] })
 		filterParams.Add("type", typ[0])
 	}
 	if pc, err := strconv.ParseUint(r.FormValue("pc"), 16, 64); err == nil {
 		encPC := fmt.Sprintf("0x%x", pc)
 		name = append(name, "@ "+encPC)
-		conditions = append(conditions, func { _, r | regionTopStackFrame(r).PC == pc })
+		conditions = append(conditions, func { _, r | return regionTopStackFrame(r).PC == pc })
 		filterParams.Add("pc", encPC)
 	}
 
 	if lat, err := time.ParseDuration(r.FormValue("latmin")); err == nil {
 		name = append(name, fmt.Sprintf("(latency >= %s)", lat))
-		conditions = append(conditions, func { t, r | regionInterval(t, r).duration() >= lat })
+		conditions = append(conditions, func { t, r | return regionInterval(t, r).duration() >= lat })
 		filterParams.Add("latmin", lat.String())
 	}
 	if lat, err := time.ParseDuration(r.FormValue("latmax")); err == nil {
 		name = append(name, fmt.Sprintf("(latency <= %s)", lat))
-		conditions = append(conditions, func { t, r | regionInterval(t, r).duration() <= lat })
+		conditions = append(conditions, func { t, r | return regionInterval(t, r).duration() <= lat })
 		filterParams.Add("latmax", lat.String())
 	}
 

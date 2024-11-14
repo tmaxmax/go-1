@@ -28,7 +28,7 @@ func getCoreIndex(t language.Tag) (id ID, ok bool) {
 	if !ok {
 		return 0, false
 	}
-	i := sort.Search(len(coreTags), func { i | cci <= coreTags[i] })
+	i := sort.Search(len(coreTags), func { i | return cci <= coreTags[i] })
 	if i == len(coreTags) || coreTags[i] != cci {
 		return 0, false
 	}

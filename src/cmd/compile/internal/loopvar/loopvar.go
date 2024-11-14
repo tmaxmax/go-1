@@ -101,7 +101,7 @@ func ForCapture(fn *ir.Func) []VarAndLoop {
 		// subject to hash-variable debugging.
 		maybeReplaceVar := func(k ir.Node, x *ir.RangeStmt) ir.Node {
 			if n, ok := k.(*ir.Name); ok && possiblyLeaked[n] {
-				desc := func { describe(n) }
+				desc := func { return describe(n) }
 				if base.LoopVarHash.MatchPos(n.Pos(), desc) {
 					// Rename the loop key, prefix body with assignment from loop key
 					transformed = append(transformed, VarAndLoop{n, x, lastPos})
@@ -209,7 +209,7 @@ func ForCapture(fn *ir.Func) []VarAndLoop {
 				// Collect the leaking variables for the much-more-complex transformation.
 				forAllDefInInit(x, func { z |
 					if n, ok := z.(*ir.Name); ok && possiblyLeaked[n] {
-						desc := func { describe(n) }
+						desc := func { return describe(n) }
 						// Hash on n.Pos() for most precise failure location.
 						if base.LoopVarHash.MatchPos(n.Pos(), desc) {
 							leaked = append(leaked, n)

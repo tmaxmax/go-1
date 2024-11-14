@@ -682,7 +682,7 @@ func testServerTimeouts(t *testing.T, mode testMode) {
 		100 * time.Millisecond,
 		500 * time.Millisecond,
 		1 * time.Second,
-	}, func { t, timeout | testServerTimeoutsWithTimeout(t, timeout, mode) })
+	}, func { t, timeout | return testServerTimeoutsWithTimeout(t, timeout, mode) })
 }
 
 func testServerTimeoutsWithTimeout(t *testing.T, timeout time.Duration, mode testMode) error {
@@ -987,7 +987,7 @@ func TestWriteDeadlineEnforcedPerStream(t *testing.T) {
 	}
 	setParallel(t)
 	run(t, func { t, mode |
-		tryTimeouts(t, func { timeout | testWriteDeadlineEnforcedPerStream(t, mode, timeout) })
+		tryTimeouts(t, func { timeout | return testWriteDeadlineEnforcedPerStream(t, mode, timeout) })
 	})
 }
 
@@ -1043,7 +1043,7 @@ func TestNoWriteDeadline(t *testing.T) {
 	setParallel(t)
 	defer afterTest(t)
 	run(t, func { t, mode |
-		tryTimeouts(t, func { timeout | testNoWriteDeadline(t, mode, timeout) })
+		tryTimeouts(t, func { timeout | return testNoWriteDeadline(t, mode, timeout) })
 	})
 }
 
@@ -5584,7 +5584,7 @@ func testServerSetKeepAlivesEnabledClosesConns(t *testing.T, mode testMode) {
 	c := ts.Client()
 	tr := c.Transport.(*Transport)
 
-	get := func { get(t, c, ts.URL) }
+	get := func { return get(t, c, ts.URL) }
 
 	a1, a2 := get(), get()
 	if a1 == a2 {

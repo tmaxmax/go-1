@@ -225,7 +225,7 @@ func sortSpecs(fset *token.FileSet, f *File, specs []Spec) []Spec {
 		}
 	}
 
-	slices.SortFunc(comments, func { a, b | cmp.Compare(a.Pos(), b.Pos()) })
+	slices.SortFunc(comments, func { a, b | return cmp.Compare(a.Pos(), b.Pos()) })
 
 	return specs
 }

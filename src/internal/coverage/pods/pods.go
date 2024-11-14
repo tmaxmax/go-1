@@ -186,7 +186,7 @@ func collectPodsImpl(files []string, dirIndices []int, warn bool) []Pod {
 		}
 		pods = append(pods, pod)
 	}
-	slices.SortFunc(pods, func { a, b | strings.Compare(a.MetaFile, b.MetaFile) })
+	slices.SortFunc(pods, func { a, b | return strings.Compare(a.MetaFile, b.MetaFile) })
 	return pods
 }
 

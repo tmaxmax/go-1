@@ -642,7 +642,7 @@ func oaslit(n *ir.AssignStmt, init *ir.Nodes) bool {
 		return false
 
 	case ir.OSTRUCTLIT, ir.OARRAYLIT, ir.OSLICELIT, ir.OMAPLIT:
-		if ir.Any(n.Y, func { y | ir.Uses(y, x) }) {
+		if ir.Any(n.Y, func { y | return ir.Uses(y, x) }) {
 			// not safe to do a special composite literal assignment if RHS uses LHS.
 			return false
 		}

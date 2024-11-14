@@ -3409,7 +3409,7 @@ func testIdleConnChannelLeak(t *testing.T, mode testMode) {
 
 	c := ts.Client()
 	tr := c.Transport.(*Transport)
-	tr.Dial = func { netw, addr | net.Dial(netw, ts.Listener.Addr().String()) }
+	tr.Dial = func { netw, addr | return net.Dial(netw, ts.Listener.Addr().String()) }
 
 	// First, without keep-alives.
 	for _, disableKeep := range []bool{true, false} {
@@ -5197,7 +5197,7 @@ func testTransportMaxIdleConns(t *testing.T, mode testMode) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ctx := context.WithValue(context.Background(), nettrace.LookupIPAltResolverKey{}, func { ctx, _, host | []net.IPAddr{{IP: net.ParseIP(ip)}}, nil })
+	ctx := context.WithValue(context.Background(), nettrace.LookupIPAltResolverKey{}, func { ctx, _, host | return []net.IPAddr{{IP: net.ParseIP(ip)}}, nil })
 
 	hitHost := func(n int) {
 		req, _ := NewRequest("GET", fmt.Sprintf("http://host-%d.dns-is-faked.golang:"+port, n), nil)
@@ -5506,7 +5506,7 @@ func testTransportProxyConnectHeader(t *testing.T, mode testMode) {
 	})).ts
 
 	c := ts.Client()
-	c.Transport.(*Transport).Proxy = func { r | url.Parse(ts.URL) }
+	c.Transport.(*Transport).Proxy = func { r | return url.Parse(ts.URL) }
 	c.Transport.(*Transport).ProxyConnectHeader = Header{
 		"User-Agent": {"foo"},
 		"Other":      {"bar"},
@@ -5546,13 +5546,13 @@ func testTransportProxyGetConnectHeader(t *testing.T, mode testMode) {
 	})).ts
 
 	c := ts.Client()
-	c.Transport.(*Transport).Proxy = func { r | url.Parse(ts.URL) }
+	c.Transport.(*Transport).Proxy = func { r | return url.Parse(ts.URL) }
 	// These should be ignored:
 	c.Transport.(*Transport).ProxyConnectHeader = Header{
 		"User-Agent": {"foo"},
 		"Other":      {"bar"},
 	}
-	c.Transport.(*Transport).GetProxyConnectHeader = func { ctx, proxyURL, target | Header{
+	c.Transport.(*Transport).GetProxyConnectHeader = func { ctx, proxyURL, target | return Header{
 		"User-Agent": {"foo2"},
 		"Other":      {"bar2"},
 	}, nil }
@@ -6119,7 +6119,7 @@ func testTransportRequestWriteRoundTrip(t *testing.T, mode testMode) {
 		return f, done, nil
 	}
 
-	newBufferFunc := func { bytes.NewBuffer(make([]byte, nBytes)), func() {}, nil }
+	newBufferFunc := func { return bytes.NewBuffer(make([]byte, nBytes)), func() {}, nil }
 
 	cases := []struct {
 		name             string

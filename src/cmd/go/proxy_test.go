@@ -470,7 +470,7 @@ func proxyGoSum(path, vers string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	h1mod, err := dirhash.Hash1([]string{"go.mod"}, func { io.NopCloser(bytes.NewReader(gomod)), nil })
+	h1mod, err := dirhash.Hash1([]string{"go.mod"}, func { return io.NopCloser(bytes.NewReader(gomod)), nil })
 	if err != nil {
 		return nil, err
 	}

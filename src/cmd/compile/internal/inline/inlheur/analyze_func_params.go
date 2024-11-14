@@ -150,7 +150,7 @@ func (pa *paramsAnalyzer) checkParams(x ir.Node, flag ParamPropBits, mayflag Par
 // specific parameter had a constant value.
 func (pa *paramsAnalyzer) foldCheckParams(x ir.Node) {
 	pa.checkParams(x, ParamFeedsIfOrSwitch, ParamMayFeedIfOrSwitch,
-		func { x, p, idx | ShouldFoldIfNameConstant(x, []*ir.Name{p}), false })
+		func { x, p, idx | return ShouldFoldIfNameConstant(x, []*ir.Name{p}), false })
 }
 
 // callCheckParams examines the target of call expression 'ce' to see

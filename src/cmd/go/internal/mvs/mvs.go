@@ -152,7 +152,7 @@ func buildList(targets []module.Version, reqs Reqs, upgrade func(module.Version)
 	// If there was an error, find the shortest path from the target to the
 	// node where the error occurred so we can report a useful error message.
 	if len(errs) > 0 {
-		errPath := g.FindPath(func { m | errs[m] != nil })
+		errPath := g.FindPath(func { m | return errs[m] != nil })
 		if len(errPath) == 0 {
 			panic("internal error: could not reconstruct path to module with error")
 		}
@@ -263,7 +263,7 @@ func Req(mainModule module.Version, base []string, reqs Reqs) ([]module.Version,
 			walk(m)
 		}
 	}
-	sort.Slice(min, func { i, j | min[i].Path < min[j].Path })
+	sort.Slice(min, func { i, j | return min[i].Path < min[j].Path })
 	return min, nil
 }
 

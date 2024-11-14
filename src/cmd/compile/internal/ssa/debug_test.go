@@ -668,7 +668,7 @@ func (s *gdbState) stepnext(ss string) bool {
 	// Look for //gdb-<tag>=(v1,v2,v3) and print v1, v2, v3
 	vars := varsToPrint(excerpt, "//"+s.tag()+"=(")
 	for _, v := range vars {
-		response := printVariableAndNormalize(v, func { v | s.ioState.writeReadExpect("p "+v+"\n", "[(]gdb[)] ").String() })
+		response := printVariableAndNormalize(v, func { v | return s.ioState.writeReadExpect("p "+v+"\n", "[(]gdb[)] ").String() })
 		s.ioState.history.addVar(response)
 	}
 	return true

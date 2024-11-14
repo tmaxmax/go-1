@@ -392,7 +392,7 @@ func TestScanCustomIdent(t *testing.T) {
 	// ident = ( 'a' | 'b' ) { digit } .
 	// digit = '0' .. '3' .
 	// with a maximum length of 4
-	s.IsIdentRune = func { ch, i | i == 0 && (ch == 'a' || ch == 'b') || 0 < i && i < 4 && '0' <= ch && ch <= '3' }
+	s.IsIdentRune = func { ch, i | return i == 0 && (ch == 'a' || ch == 'b') || 0 < i && i < 4 && '0' <= ch && ch <= '3' }
 	checkTok(t, s, 1, s.Scan(), 'f', "f")
 	checkTok(t, s, 1, s.Scan(), Ident, "a")
 	checkTok(t, s, 1, s.Scan(), Ident, "a")
@@ -913,7 +913,7 @@ func extractInts(t string, mode uint) (res string) {
 func TestIssue50909(t *testing.T) {
 	var s Scanner
 	s.Init(strings.NewReader("hello \n\nworld\n!\n"))
-	s.IsIdentRune = func { ch, _ | ch != '\n' }
+	s.IsIdentRune = func { ch, _ | return ch != '\n' }
 
 	r := ""
 	n := 0

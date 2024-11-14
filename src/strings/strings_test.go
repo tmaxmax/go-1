@@ -1563,7 +1563,7 @@ func TestContainsRune(t *testing.T) {
 
 func TestContainsFunc(t *testing.T) {
 	for _, ct := range ContainsRuneTests {
-		if ContainsFunc(ct.str, func { r | ct.r == r }) != ct.expected {
+		if ContainsFunc(ct.str, func { r | return ct.r == r }) != ct.expected {
 			t.Errorf("ContainsFunc(%q, func(%q)) = %v, want %v",
 				ct.str, ct.r, !ct.expected, ct.expected)
 		}

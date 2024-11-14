@@ -43,7 +43,7 @@ func rename(oldname, newname string) error {
 			return &LinkError{"rename", oldname, newname, syscall.EEXIST}
 		}
 	}
-	err = ignoringEINTR(func { syscall.Rename(oldname, newname) })
+	err = ignoringEINTR(func { return syscall.Rename(oldname, newname) })
 	if err != nil {
 		return &LinkError{"rename", oldname, newname, err}
 	}
@@ -182,7 +182,7 @@ func newFile(fd int, name string, kind newFileKind, nonBlocking bool) *File {
 		switch runtime.GOOS {
 		case "darwin", "ios", "dragonfly", "freebsd", "netbsd", "openbsd":
 			var st syscall.Stat_t
-			err := ignoringEINTR(func { syscall.Fstat(fd, &st) })
+			err := ignoringEINTR(func { return syscall.Fstat(fd, &st) })
 			typ := st.Mode & syscall.S_IFMT
 			// Don't try to use kqueue with regular files on *BSDs.
 			// On FreeBSD a regular file is always
@@ -357,7 +357,7 @@ func (f *File) seek(offset int64, whence int) (ret int64, err error) {
 // If the file is a symbolic link, it changes the size of the link's target.
 // If there is an error, it will be of type *PathError.
 func Truncate(name string, size int64) error {
-	e := ignoringEINTR(func { syscall.Truncate(name, size) })
+	e := ignoringEINTR(func { return syscall.Truncate(name, size) })
 	if e != nil {
 		return &PathError{Op: "truncate", Path: name, Err: e}
 	}
@@ -371,11 +371,11 @@ func Remove(name string) error {
 	// whether name is a file or directory.
 	// Try both: it is cheaper on average than
 	// doing a Stat plus the right one.
-	e := ignoringEINTR(func { syscall.Unlink(name) })
+	e := ignoringEINTR(func { return syscall.Unlink(name) })
 	if e == nil {
 		return nil
 	}
-	e1 := ignoringEINTR(func { syscall.Rmdir(name) })
+	e1 := ignoringEINTR(func { return syscall.Rmdir(name) })
 	if e1 == nil {
 		return nil
 	}
@@ -410,7 +410,7 @@ func tempDir() string {
 // Link creates newname as a hard link to the oldname file.
 // If there is an error, it will be of type *LinkError.
 func Link(oldname, newname string) error {
-	e := ignoringEINTR(func { syscall.Link(oldname, newname) })
+	e := ignoringEINTR(func { return syscall.Link(oldname, newname) })
 	if e != nil {
 		return &LinkError{"link", oldname, newname, e}
 	}
@@ -422,7 +422,7 @@ func Link(oldname, newname string) error {
 // if oldname is later created as a directory the symlink will not work.
 // If there is an error, it will be of type *LinkError.
 func Symlink(oldname, newname string) error {
-	e := ignoringEINTR(func { syscall.Symlink(oldname, newname) })
+	e := ignoringEINTR(func { return syscall.Symlink(oldname, newname) })
 	if e != nil {
 		return &LinkError{"symlink", oldname, newname, e}
 	}

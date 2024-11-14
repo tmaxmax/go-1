@@ -2480,7 +2480,7 @@ func (p *Package) setBuildInfo(ctx context.Context, autoVCS bool) {
 			goto omitVCS
 		}
 
-		st, err := vcsStatusCache.Do(repoDir, func { vcsCmd.Status(vcsCmd, repoDir) })
+		st, err := vcsStatusCache.Do(repoDir, func { return vcsCmd.Status(vcsCmd, repoDir) })
 		if err != nil {
 			setVCSError(err)
 			return
@@ -2894,7 +2894,7 @@ func setPGOProfilePath(pkgs []*Package) {
 			appendBuildSetting(p.Internal.BuildInfo, "-pgo", file)
 		}
 		// Adding -pgo breaks the sort order in BuildInfo.Settings. Restore it.
-		slices.SortFunc(p.Internal.BuildInfo.Settings, func { x, y | strings.Compare(x.Key, y.Key) })
+		slices.SortFunc(p.Internal.BuildInfo.Settings, func { x, y | return strings.Compare(x.Key, y.Key) })
 	}
 
 	switch cfg.BuildPGO {
@@ -3151,7 +3151,7 @@ func GoFilesPackage(ctx context.Context, opts PackageOpts, gofiles []string) *Pa
 		}
 		dirent = append(dirent, fi)
 	}
-	ctxt.ReadDir = func { dirent, nil }
+	ctxt.ReadDir = func { return dirent, nil }
 
 	if cfg.ModulesEnabled {
 		modload.ImportFromFiles(ctx, gofiles)

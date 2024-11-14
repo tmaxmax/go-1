@@ -312,7 +312,7 @@ func os_beforeExit(exitCode int) {
 
 func init() {
 	exithook.Gosched = Gosched
-	exithook.Goid = func { getg().goid }
+	exithook.Goid = func { return getg().goid }
 	exithook.Throw = throw
 }
 

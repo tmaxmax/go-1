@@ -274,7 +274,7 @@ func BenchmarkOnceFunc(b *testing.B) {
 }
 
 var (
-	onceValue = sync.OnceValue(func { 42 })
+	onceValue = sync.OnceValue(func { return 42 })
 
 	onceValueOnce  sync.Once
 	onceValueValue int
@@ -307,7 +307,7 @@ func BenchmarkOnceValue(b *testing.B) {
 	})
 	b.Run("v=Local", func { b |
 		b.ReportAllocs()
-		onceValue := sync.OnceValue(func { 42 })
+		onceValue := sync.OnceValue(func { return 42 })
 		for i := 0; i < b.N; i++ {
 			if want, got := 42, onceValue(); want != got {
 				b.Fatalf("want %d, got %d", want, got)

@@ -215,7 +215,7 @@ func (r *rleBuffer) ReadAt(p []byte, off int64) (n int, err error) {
 	if len(p) == 0 {
 		return
 	}
-	skipParts, _ := slices.BinarySearchFunc(r.buf, off, func { rb, off | cmp.Compare(rb.off+rb.n, off) })
+	skipParts, _ := slices.BinarySearchFunc(r.buf, off, func { rb, off | return cmp.Compare(rb.off+rb.n, off) })
 	parts := r.buf[skipParts:]
 	if len(parts) > 0 {
 		skipBytes := off - parts[0].off

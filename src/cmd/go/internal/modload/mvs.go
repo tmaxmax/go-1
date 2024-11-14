@@ -123,7 +123,7 @@ func previousVersion(ctx context.Context, m module.Version) (module.Version, err
 		}
 		return module.Version{}, err
 	}
-	i := sort.Search(len(list), func { i | gover.ModCompare(m.Path, list[i], m.Version) >= 0 })
+	i := sort.Search(len(list), func { i | return gover.ModCompare(m.Path, list[i], m.Version) >= 0 })
 	if i > 0 {
 		return module.Version{Path: m.Path, Version: list[i-1]}, nil
 	}

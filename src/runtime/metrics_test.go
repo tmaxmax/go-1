@@ -464,7 +464,7 @@ func BenchmarkReadMetricsLatency(b *testing.B) {
 	b.ReportMetric(0, "allocs/op")
 
 	// Sort latencies then report percentiles.
-	sort.Slice(latencies, func { i, j | latencies[i] < latencies[j] })
+	sort.Slice(latencies, func { i, j | return latencies[i] < latencies[j] })
 	b.ReportMetric(float64(latencies[len(latencies)*50/100]), "p50-ns")
 	b.ReportMetric(float64(latencies[len(latencies)*90/100]), "p90-ns")
 	b.ReportMetric(float64(latencies[len(latencies)*99/100]), "p99-ns")
@@ -1064,7 +1064,7 @@ func TestRuntimeLockMetricsAndProfile(t *testing.T) {
 			acceptStacks = append([][]string(nil), acceptStacks...)
 			for i, stk := range acceptStacks {
 				if goexperiment.StaticLockRanking {
-					if !slices.ContainsFunc(stk, func { s | s == "runtime.systemstack" || s == "runtime.mcall" || s == "runtime.mstart" }) {
+					if !slices.ContainsFunc(stk, func { s | return s == "runtime.systemstack" || s == "runtime.mcall" || s == "runtime.mstart" }) {
 						// stk is a call stack that is still on the user stack when
 						// it calls runtime.unlock. Add the extra function that
 						// we'll see, when the static lock ranking implementation of

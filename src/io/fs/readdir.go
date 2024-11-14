@@ -43,7 +43,7 @@ func ReadDir(fsys FS, name string) ([]DirEntry, error) {
 	}
 
 	list, err := dir.ReadDir(-1)
-	slices.SortFunc(list, func { a, b | bytealg.CompareString(a.Name(), b.Name()) })
+	slices.SortFunc(list, func { a, b | return bytealg.CompareString(a.Name(), b.Name()) })
 	return list, err
 }
 
