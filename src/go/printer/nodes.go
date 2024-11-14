@@ -880,6 +880,53 @@ func (p *printer) expr1(expr ast.Expr, prec1, depth int) {
 		p.signature(x.Type)
 		p.funcBody(p.distanceFrom(x.Type.Pos(), startCol), blank, x.Body)
 
+	case *ast.FuncLight:
+		p.setPos(x.Func)
+		p.print(token.FUNC, blank)
+		p.setPos(x.Lbrace)
+		p.print(token.LBRACE)
+
+		if len(x.Params) > 0 {
+			p.print(blank)
+			p.identList(x.Params, true)
+			p.setPos(x.SepPos)
+			p.print(blank, x.SepTok)
+		}
+
+		if len(x.Body) == 1 {
+			bodySize := int(x.Body[0].End()-x.Body[0].Pos()) + 1
+			if bodySize < 100 {
+				p.print(blank)
+				p.stmt(x.Body[0], true)
+				p.print(blank, noExtraLinebreak)
+				p.setPos(x.Rbrace)
+				p.print(token.RBRACE, noExtraLinebreak)
+				break
+			}
+		}
+
+		if len(x.Body) > 0 {
+			p.stmtList(x.Body, 1, true)
+			p.print(newline)
+		} else {
+			if len(x.Params) > 0 {
+				p.print(blank)
+			}
+			p.print(noExtraLinebreak)
+		}
+
+		p.setPos(x.Rbrace)
+		p.print(noExtraBlank, token.RBRACE)
+
+	case ast.ExprList:
+		if p.indentList(x) {
+			p.print(indent)
+			p.exprList(token.NoPos, x, 1, noIndent, token.NoPos, false)
+			p.print(unindent)
+		} else {
+			p.exprList(token.NoPos, x, 1, 0, token.NoPos, false)
+		}
+
 	case *ast.ParenExpr:
 		if _, hasParens := x.X.(*ast.ParenExpr); hasParens {
 			// don't print parentheses around an already parenthesized expression

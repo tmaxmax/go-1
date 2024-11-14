@@ -8,12 +8,28 @@ import (
 	"go/ast"
 	"go/token"
 	"reflect"
+	"strings"
 )
 
-type simplifier struct{}
+var count struct {
+	funcLit             int
+	funcLight           int
+	testFuncLight       int
+	singleStatement     int
+	longSingleStatement int
+	singleReturn        int
+	returnVals          [10]int
+}
+
+type simplifier struct {
+	inTestFile *bool
+}
 
 func (s simplifier) Visit(node ast.Node) ast.Visitor {
 	switch n := node.(type) {
+	case *ast.File:
+		*s.inTestFile = strings.Contains(n.Name.Name, "_test")
+
 	case *ast.CompositeLit:
 		// array, slice, and map composite literals may be simplified
 		outer := n
@@ -87,6 +103,44 @@ func (s simplifier) Visit(node ast.Node) ast.Visitor {
 		// An example where it does not:
 		//       x, y := b[:n], b[n:]
 
+	case *ast.CallExpr:
+		// Call/conversion arguments that are ordinary function literals
+		// can be simplified to lightweight function literals assuming
+		// that the source code typechecks correctly in the first place.
+		for i, x := range n.Args {
+			if f, _ := x.(*ast.FuncLit); f != nil {
+				count.funcLit++
+				n.Args[i] = s.simplifyFuncLit(f)
+			}
+		}
+
+	case *ast.AssignStmt:
+		// Ordinary function literals on the LHS of assignments
+		// (but not short variable declarations) can be simplified
+		// to lightweight function literals assuming that the source
+		// code typechecks correctly in the first place.
+		for i, x := range n.Rhs {
+			f, ok := x.(*ast.FuncLit)
+			if !ok {
+				continue
+			}
+
+			count.funcLit++
+
+			mustHaveNoParams := n.Tok == token.DEFINE
+			if i < len(n.Lhs) { // guard against incorrect code
+				if v, _ := n.Lhs[i].(*ast.Ident); v != nil && v.Name == "_" {
+					mustHaveNoParams = true
+				}
+			}
+
+			if mustHaveNoParams && len(f.Type.Params.List) != 0 {
+				continue
+			}
+
+			n.Rhs[i] = s.simplifyFuncLit(f)
+		}
+
 	case *ast.RangeStmt:
 		// - a range of the form: for x, _ = range v {...}
 		// can be simplified to: for x = range v {...}
@@ -101,6 +155,77 @@ func (s simplifier) Visit(node ast.Node) ast.Visitor {
 	}
 
 	return s
+}
+
+func (s simplifier) simplifyFuncLit(f *ast.FuncLit) ast.Expr {
+	if f.Type == nil {
+		return f
+	}
+
+	// Do not simplify any func()
+	if len(f.Type.Params.List) == 0 && (f.Type.Results == nil || len(f.Type.Results.List) == 0) {
+		return f
+	}
+
+	// Simplification is not possible if the result parameters are named
+	// as they may be used in the function body. We don't check for that.
+	if f.Type.Results != nil {
+		for _, field := range f.Type.Results.List {
+			for _, ident := range field.Names {
+				if ident.Name != "_" {
+					return f
+				}
+			}
+		}
+	}
+
+	var params []*ast.Ident
+	for _, field := range f.Type.Params.List {
+		params = append(params, field.Names...)
+	}
+
+	fl := &ast.FuncLight{
+		Func: f.Type.Pos(), Lbrace: f.Type.Pos() + 2,
+		Params: params, SepPos: f.Body.Lbrace,
+		Body: f.Body.List, Rbrace: f.Body.Rbrace,
+	}
+
+	if *useArrow {
+		fl.SepTok = token.RARROW
+	} else {
+		fl.SepTok = token.OR
+	}
+
+	count.funcLight++
+	if *s.inTestFile {
+		count.testFuncLight++
+	}
+
+	if len(fl.Body) == 1 {
+		count.singleStatement++
+
+		long := int(fl.Body[0].End()-fl.Body[0].Pos())+1 >= 100
+		if long {
+			count.longSingleStatement++
+		}
+
+		if ret, _ := fl.Body[0].(*ast.ReturnStmt); ret != nil {
+			count.singleReturn++
+
+			n := len(ret.Results)
+			if n >= len(count.returnVals) {
+				n = len(count.returnVals) - 1
+			}
+
+			if *simplifySingleReturn && !long {
+				fl.Body[0] = &ast.ExprStmt{X: ast.ExprList(ret.Results)}
+			}
+
+			count.returnVals[n]++
+		}
+	}
+
+	return fl
 }
 
 func (s simplifier) simplifyLiteral(typ reflect.Value, astType, x ast.Expr, px *ast.Expr) {
@@ -139,6 +264,10 @@ func simplify(f *ast.File) {
 	removeEmptyDeclGroups(f)
 
 	var s simplifier
+
+	var inTest bool
+	s.inTestFile = &inTest
+
 	ast.Walk(s, f)
 }
 

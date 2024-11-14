@@ -76,6 +76,10 @@ func runTest(t *testing.T, in, out string) {
 			*rewriteRule = value
 		case "-s":
 			*simplifyAST = true
+		case "-R":
+			*simplifySingleReturn = true
+		case "-A":
+			*useArrow = true
 		case "-stdin":
 			// fake flag - pretend input is from stdin
 			info = nil

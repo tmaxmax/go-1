@@ -1,0 +1,6 @@
+{
+    "go.alternateTools": {
+        "customFormatter": "${workspaceRoot}/bin/gofmt",
+        "go": "${workspaceRoot}/bin/go"
+    }
+}

@@ -1,0 +1,13 @@
+//gofmt -s -R
+
+package funclit1
+
+func _() {
+    f = func(a, b int) int { return a + b }
+    f = func(a, b int) (int, string) {
+        return a + b, strconv.Itoa(a * b)
+    }
+	f = func() (_, _, _, _, _) {
+		return "long", "expression", "list", "this", "should absolutely be printed with return on a separate line because it is too long"
+	}
+}

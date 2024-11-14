@@ -1,0 +1,12 @@
+package p
+
+var (
+	_ = func {}
+	_ = func { x + y }
+	_ = func { fmt.Println("Hello") }
+	_ = func { return x + y }
+	_ = func { x | }
+	_ = func { x -> }
+	_ = func { x -> return x + 1 }
+	_ = func { x, y, z | }
+)

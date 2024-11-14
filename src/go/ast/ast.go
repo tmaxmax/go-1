@@ -311,6 +311,15 @@ type (
 		Body *BlockStmt // function body
 	}
 
+	FuncLight struct {
+		Func, Lbrace token.Pos
+		Params       []*Ident
+		SepPos       token.Pos
+		SepTok       token.Token
+		Body         []Stmt
+		Rbrace       token.Pos
+	}
+
 	// A CompositeLit node represents a composite literal.
 	CompositeLit struct {
 		Type       Expr      // literal type; or nil
@@ -413,6 +422,8 @@ type (
 		Colon token.Pos // position of ":"
 		Value Expr
 	}
+
+	ExprList []Expr
 )
 
 // The direction of a channel type is indicated by a bit
@@ -477,11 +488,13 @@ type (
 
 // Pos and End implementations for expression/type nodes.
 
-func (x *BadExpr) Pos() token.Pos  { return x.From }
-func (x *Ident) Pos() token.Pos    { return x.NamePos }
-func (x *Ellipsis) Pos() token.Pos { return x.Ellipsis }
-func (x *BasicLit) Pos() token.Pos { return x.ValuePos }
-func (x *FuncLit) Pos() token.Pos  { return x.Type.Pos() }
+func (x *BadExpr) Pos() token.Pos   { return x.From }
+func (x *Ident) Pos() token.Pos     { return x.NamePos }
+func (x *Ellipsis) Pos() token.Pos  { return x.Ellipsis }
+func (x *BasicLit) Pos() token.Pos  { return x.ValuePos }
+func (x *FuncLit) Pos() token.Pos   { return x.Type.Pos() }
+func (x *FuncLight) Pos() token.Pos { return x.Func }
+func (x ExprList) Pos() token.Pos   { return x[0].Pos() }
 func (x *CompositeLit) Pos() token.Pos {
 	if x.Type != nil {
 		return x.Type.Pos()
@@ -521,6 +534,8 @@ func (x *Ellipsis) End() token.Pos {
 }
 func (x *BasicLit) End() token.Pos       { return token.Pos(int(x.ValuePos) + len(x.Value)) }
 func (x *FuncLit) End() token.Pos        { return x.Body.End() }
+func (x *FuncLight) End() token.Pos      { return x.Rbrace + 1 }
+func (x ExprList) End() token.Pos        { return x[len(x)-1].End() }
 func (x *CompositeLit) End() token.Pos   { return x.Rbrace + 1 }
 func (x *ParenExpr) End() token.Pos      { return x.Rparen + 1 }
 func (x *SelectorExpr) End() token.Pos   { return x.Sel.End() }
@@ -552,6 +567,7 @@ func (*Ident) exprNode()          {}
 func (*Ellipsis) exprNode()       {}
 func (*BasicLit) exprNode()       {}
 func (*FuncLit) exprNode()        {}
+func (*FuncLight) exprNode()      {}
 func (*CompositeLit) exprNode()   {}
 func (*ParenExpr) exprNode()      {}
 func (*SelectorExpr) exprNode()   {}
@@ -564,6 +580,7 @@ func (*StarExpr) exprNode()       {}
 func (*UnaryExpr) exprNode()      {}
 func (*BinaryExpr) exprNode()     {}
 func (*KeyValueExpr) exprNode()   {}
+func (ExprList) exprNode()        {}
 
 func (*ArrayType) exprNode()     {}
 func (*StructType) exprNode()    {}

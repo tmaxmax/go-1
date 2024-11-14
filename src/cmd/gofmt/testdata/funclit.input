@@ -1,0 +1,37 @@
+//gofmt -s
+
+// Copyright 2022 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+// Test for function literal lightening.
+
+package p
+
+func _() {
+	f(func() {})
+	f(func(x int) {})
+	f(func(x, y, z string) {})
+	f(func(x, y, z string, a, b int) {})
+	f(func() int {})
+	f(func() (int, string) {})
+	f(func() (_, _ int, _ string) {})
+	f(func(x int) int {})
+	f(func(x, y, z string) (int, string) {})
+	f(func(x, y, z string, a, b int) (_, _ int, _ string) {})
+}
+
+func _() {
+	f = func() {}
+	f = func(x int) {}
+	f = func(x, y int) bool { return x < y }
+	f = func(x int) {fmt.Println("Hello there, this should surely go way over the allowed single-line character limit...")}
+	f = func(x, y int) bool {
+		x = y ^ x
+		y = x ^ y
+		x = y ^ x
+		return x < y
+	}
+	f, g, h = 1, func(x, y int){}, 2
+	_ = func(x int) {} // cannot be simplified
+	f, _, g = 1, func(x, y int){}, 2
+}

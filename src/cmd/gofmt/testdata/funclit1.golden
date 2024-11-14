@@ -1,0 +1,11 @@
+//gofmt -s -R
+
+package funclit1
+
+func _() {
+    f = func { a, b | a + b }
+    f = func { a, b | a + b, strconv.Itoa(a * b) }
+	f = func {
+		return "long", "expression", "list", "this", "should absolutely be printed with return on a separate line because it is too long"
+	}
+}

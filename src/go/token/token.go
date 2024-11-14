@@ -61,11 +61,12 @@ const (
 	SHR_ASSIGN     // >>=
 	AND_NOT_ASSIGN // &^=
 
-	LAND  // &&
-	LOR   // ||
-	ARROW // <-
-	INC   // ++
-	DEC   // --
+	LAND   // &&
+	LOR    // ||
+	ARROW  // <-
+	RARROW // ->
+	INC    // ++
+	DEC    // --
 
 	EQL    // ==
 	LSS    // <
@@ -170,11 +171,12 @@ var tokens = [...]string{
 	SHR_ASSIGN:     ">>=",
 	AND_NOT_ASSIGN: "&^=",
 
-	LAND:  "&&",
-	LOR:   "||",
-	ARROW: "<-",
-	INC:   "++",
-	DEC:   "--",
+	LAND:   "&&",
+	LOR:    "||",
+	RARROW: "->",
+	ARROW:  "<-",
+	INC:    "++",
+	DEC:    "--",
 
 	EQL:    "==",
 	LSS:    "<",

@@ -1,0 +1,16 @@
+package funclight
+
+var (
+    _ = func {}
+	_ = func { fmt.Println("Hello") }
+	_ = func { x | }
+	_ = func { x, y, z | }
+)
+
+func _() {
+    f(func {})
+	f(func {})
+	f(func { x | })
+	f(func { x | })
+	f(func { x, y | return x < y })
+}

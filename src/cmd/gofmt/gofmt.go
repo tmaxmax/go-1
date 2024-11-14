@@ -32,12 +32,14 @@ import (
 
 var (
 	// main operation modes
-	list        = flag.Bool("l", false, "list files whose formatting differs from gofmt's")
-	write       = flag.Bool("w", false, "write result to (source) file instead of stdout")
-	rewriteRule = flag.String("r", "", "rewrite rule (e.g., 'a[b:len(a)] -> a[b:]')")
-	simplifyAST = flag.Bool("s", false, "simplify code")
-	doDiff      = flag.Bool("d", false, "display diffs instead of rewriting files")
-	allErrors   = flag.Bool("e", false, "report all errors (not just the first 10 on different lines)")
+	list                 = flag.Bool("l", false, "list files whose formatting differs from gofmt's")
+	write                = flag.Bool("w", false, "write result to (source) file instead of stdout")
+	rewriteRule          = flag.String("r", "", "rewrite rule (e.g., 'a[b:len(a)] -> a[b:]')")
+	simplifyAST          = flag.Bool("s", false, "simplify code")
+	simplifySingleReturn = flag.Bool("R", false, "drop return keyword for single return lightweight function literals")
+	useArrow             = flag.Bool("A", false, "use '->' instead of '|' to separate lightweight function parameter list from body")
+	doDiff               = flag.Bool("d", false, "display diffs instead of rewriting files")
+	allErrors            = flag.Bool("e", false, "report all errors (not just the first 10 on different lines)")
 
 	// debugging
 	cpuprofile = flag.String("cpuprofile", "", "write cpu profile to this file")
@@ -363,6 +365,7 @@ func main() {
 	// The actual overhead for the parse tree and output will depend on the
 	// specifics of the file, but this at least keeps the footprint of the process
 	// roughly proportional to GOMAXPROCS.
+	runtime.GOMAXPROCS(1)
 	maxWeight := (2 << 20) * int64(runtime.GOMAXPROCS(0))
 	s := newSequencer(maxWeight, os.Stdout, os.Stderr)
 
@@ -370,6 +373,17 @@ func main() {
 	// so that it can use defer and have them
 	// run before the exit.
 	gofmtMain(s)
+
+	if *simplifyAST {
+		perc := func(a, b int) float64 { return 100 * float64(a) / float64(b) }
+
+		fmt.Printf("found %d function literals, %d (%0.1f%%) rewritten into lightweight form\n", count.funcLit, count.funcLight, perc(count.funcLight, count.funcLit))
+		fmt.Printf("%d lightweight function literals (%0.1f%%) are in test files\n", count.testFuncLight, perc(count.testFuncLight, count.funcLight))
+		fmt.Printf("%d lightweight function literals contain a single statement\n\t(from which %d, %0.1f%% are long)\n", count.singleStatement, count.longSingleStatement, perc(count.longSingleStatement, count.singleStatement))
+		fmt.Printf("%d lightweight function literals contain a single return statement (%0.1f%% of all rewritten literals, %0.1f%% of single statement literals)\n", count.singleReturn, perc(count.singleReturn, count.funcLight), perc(count.singleReturn, count.singleStatement))
+		fmt.Printf("return value count histogram for single-return lightweight function literals:\n\t%v\n", count.returnVals)
+	}
+
 	os.Exit(s.GetExitCode())
 }
 
@@ -421,9 +435,9 @@ func gofmtMain(s *sequencer) {
 				return processFile(arg, info, nil, r)
 			})
 		default:
-			// Directories are walked, ignoring non-Go files.
+			// Directories are walked, ignoring testdata directories and non-Go files.
 			err := filepath.WalkDir(arg, func(path string, f fs.DirEntry, err error) error {
-				if err != nil || !isGoFile(f) {
+				if err != nil || !isGoFile(f) || strings.Contains(filepath.ToSlash(path), "/testdata/") || strings.Contains(path, ".generated") {
 					return err
 				}
 				info, err := f.Info()
