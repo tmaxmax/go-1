@@ -145,8 +145,8 @@ func TestDialError(t *testing.T) {
 
 	origTestHookLookupIP := testHookLookupIP
 	defer func() { testHookLookupIP = origTestHookLookupIP }()
-	testHookLookupIP = func { ctx, fn, network, host -> nil, &DNSError{Err: "dial error test", Name: "name", Server: "server", IsTimeout: true} }
-	sw.Set(socktest.FilterConnect, func { so -> nil, errOpNotSupported })
+	testHookLookupIP = func { ctx, fn, network, host -> return nil, &DNSError{Err: "dial error test", Name: "name", Server: "server", IsTimeout: true} }
+	sw.Set(socktest.FilterConnect, func { so -> return nil, errOpNotSupported })
 	defer sw.Set(socktest.FilterConnect, nil)
 
 	d := Dialer{Timeout: someTimeout}
@@ -297,8 +297,8 @@ func TestListenError(t *testing.T) {
 
 	origTestHookLookupIP := testHookLookupIP
 	defer func() { testHookLookupIP = origTestHookLookupIP }()
-	testHookLookupIP = func { _, fn, network, host -> nil, &DNSError{Err: "listen error test", Name: "name", Server: "server", IsTimeout: true} }
-	sw.Set(socktest.FilterListen, func { so -> nil, errOpNotSupported })
+	testHookLookupIP = func { _, fn, network, host -> return nil, &DNSError{Err: "listen error test", Name: "name", Server: "server", IsTimeout: true} }
+	sw.Set(socktest.FilterListen, func { so -> return nil, errOpNotSupported })
 	defer sw.Set(socktest.FilterListen, nil)
 
 	for i, tt := range listenErrorTests {
@@ -353,7 +353,7 @@ func TestListenPacketError(t *testing.T) {
 
 	origTestHookLookupIP := testHookLookupIP
 	defer func() { testHookLookupIP = origTestHookLookupIP }()
-	testHookLookupIP = func { _, fn, network, host -> nil, &DNSError{Err: "listen error test", Name: "name", Server: "server", IsTimeout: true} }
+	testHookLookupIP = func { _, fn, network, host -> return nil, &DNSError{Err: "listen error test", Name: "name", Server: "server", IsTimeout: true} }
 
 	for i, tt := range listenPacketErrorTests {
 		t.Run(fmt.Sprintf("%s_%s", tt.network, tt.address), func { t ->

@@ -216,7 +216,7 @@ func (r *cachingRepo) ModulePath() string {
 }
 
 func (r *cachingRepo) Versions(ctx context.Context, prefix string) (*Versions, error) {
-	v, err := r.versionsCache.Do(prefix, func { r.repo(ctx).Versions(ctx, prefix) })
+	v, err := r.versionsCache.Do(prefix, func { return r.repo(ctx).Versions(ctx, prefix) })
 
 	if err != nil {
 		return nil, err
@@ -249,7 +249,7 @@ func (r *cachingRepo) Stat(ctx context.Context, rev string) (*RevInfo, error) {
 			// then save the information under the proper version, for future use.
 			if info.Version != rev {
 				file, _ = CachePath(ctx, module.Version{Path: r.path, Version: info.Version}, "info")
-				r.statCache.Do(info.Version, func { info, nil })
+				r.statCache.Do(info.Version, func { return info, nil })
 			}
 
 			if err := writeDiskStat(ctx, file, info); err != nil {
@@ -275,7 +275,7 @@ func (r *cachingRepo) Latest(ctx context.Context) (*RevInfo, error) {
 
 		// Save info for likely future Stat call.
 		if err == nil {
-			r.statCache.Do(info.Version, func { info, nil })
+			r.statCache.Do(info.Version, func { return info, nil })
 			if file, _, err := readDiskStat(ctx, r.path, info.Version); err != nil {
 				writeDiskStat(ctx, file, info)
 			}

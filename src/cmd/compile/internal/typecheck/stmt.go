@@ -434,7 +434,7 @@ func tcReturn(n *ir.ReturnStmt) ir.Node {
 
 	typecheckargs(n)
 	if len(n.Results) != 0 {
-		typecheckaste(ir.ORETURN, nil, false, ir.CurFunc.Type().Results(), n.Results, func { "return argument" })
+		typecheckaste(ir.ORETURN, nil, false, ir.CurFunc.Type().Results(), n.Results, func { return "return argument" })
 	}
 	return n
 }

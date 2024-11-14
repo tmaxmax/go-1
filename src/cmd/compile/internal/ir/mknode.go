@@ -143,7 +143,7 @@ func main() {
 		}
 	}
 	// Sort for deterministic output.
-	sort.Slice(concreteNodes, func { i, j -> concreteNodes[i].Name.Name < concreteNodes[j].Name.Name })
+	sort.Slice(concreteNodes, func { i, j -> return concreteNodes[i].Name.Name < concreteNodes[j].Name.Name })
 	// Generate code for each concrete type.
 	for _, t := range concreteNodes {
 		processType(t)

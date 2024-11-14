@@ -1308,7 +1308,7 @@ func startHang(t *testing.T, ctx context.Context, hangTime time.Duration, interr
 	if interrupt == nil {
 		cmd.Cancel = nil
 	} else {
-		cmd.Cancel = func { cmd.Process.Signal(interrupt) }
+		cmd.Cancel = func { return cmd.Process.Signal(interrupt) }
 	}
 	cmd.WaitDelay = waitDelay
 	out, err := cmd.StdoutPipe()

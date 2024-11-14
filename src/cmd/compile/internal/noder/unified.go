@@ -501,7 +501,7 @@ func writeUnifiedExport(out io.Writer) {
 		for _, idx := range l.decls {
 			idxs = append(idxs, idx)
 		}
-		sort.Slice(idxs, func { i, j -> idxs[i] < idxs[j] })
+		sort.Slice(idxs, func { i, j -> return idxs[i] < idxs[j] })
 
 		w := publicRootWriter
 
@@ -530,7 +530,7 @@ func writeUnifiedExport(out io.Writer) {
 		for sym, idx := range l.bodies {
 			bodies = append(bodies, symIdx{sym, idx})
 		}
-		sort.Slice(bodies, func { i, j -> bodies[i].idx < bodies[j].idx })
+		sort.Slice(bodies, func { i, j -> return bodies[i].idx < bodies[j].idx })
 
 		w := privateRootWriter
 

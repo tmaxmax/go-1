@@ -13,5 +13,5 @@ import (
 )
 
 func init() {
-	setCrashOutput = func { f -> debug.SetCrashOutput(f, debug.CrashOptions{}) }
+	setCrashOutput = func { f -> return debug.SetCrashOutput(f, debug.CrashOptions{}) }
 }

@@ -279,7 +279,7 @@ func (check *Checker) infer(pos syntax.Pos, tparams []*TypeParam, targs []Type, 
 					//           Eventually, unify should return an error with cause.
 					var cause string
 					constraint := tpar.iface()
-					if m, _ := check.missingMethod(tx, constraint, true, func { x, y -> u.unify(x, y, exact) }, &cause); m != nil {
+					if m, _ := check.missingMethod(tx, constraint, true, func { x, y -> return u.unify(x, y, exact) }, &cause); m != nil {
 						// TODO(gri) better error message (see TODO above)
 						err.addf(pos, "%s (type %s) does not satisfy %s %s", tpar, tx, tpar.Constraint(), cause)
 						return nil
@@ -600,7 +600,7 @@ func (w *tpWalker) isParameterized(typ Type) (res bool) {
 				return true
 			}
 		}
-		return tset.is(func { t -> t != nil && w.isParameterized(t.typ) })
+		return tset.is(func { t -> return t != nil && w.isParameterized(t.typ) })
 
 	case *Map:
 		return w.isParameterized(t.key) || w.isParameterized(t.elem)

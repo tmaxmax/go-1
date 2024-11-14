@@ -637,7 +637,7 @@ func (fd *FD) Fchmod(mode uint32) error {
 		return err
 	}
 	defer fd.decref()
-	return ignoringEINTR(func { syscall.Fchmod(fd.Sysfd, mode) })
+	return ignoringEINTR(func { return syscall.Fchmod(fd.Sysfd, mode) })
 }
 
 // Fstat wraps syscall.Fstat
@@ -646,7 +646,7 @@ func (fd *FD) Fstat(s *syscall.Stat_t) error {
 		return err
 	}
 	defer fd.decref()
-	return ignoringEINTR(func { syscall.Fstat(fd.Sysfd, s) })
+	return ignoringEINTR(func { return syscall.Fstat(fd.Sysfd, s) })
 }
 
 // dupCloexecUnsupported indicates whether F_DUPFD_CLOEXEC is supported by the kernel.

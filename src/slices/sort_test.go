@@ -30,7 +30,7 @@ func TestSortIntSlice(t *testing.T) {
 
 func TestSortFuncIntSlice(t *testing.T) {
 	data := Clone(ints[:])
-	SortFunc(data, func { a, b -> a - b })
+	SortFunc(data, func { a, b -> return a - b })
 	if !IsSorted(data) {
 		t.Errorf("sorted %v", ints)
 		t.Errorf("   got %v", data)

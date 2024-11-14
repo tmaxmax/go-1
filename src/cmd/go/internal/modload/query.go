@@ -208,7 +208,7 @@ func queryProxy(ctx context.Context, proxy, path, query, current string, allowed
 		return nil, errQueryDisabled
 	}
 	if allowed == nil {
-		allowed = func { nil }
+		allowed = func { return nil }
 	}
 
 	if MainModules.Contains(path) && (query == "upgrade" || query == "patch") {
@@ -453,7 +453,7 @@ func newQueryMatcher(path string, query, current string, allowed AllowedFunc) (*
 			qm.mayUseLatest = true
 		} else {
 			qm.mayUseLatest = module.IsPseudoVersion(current)
-			qm.filter = func { mv -> gover.ModCompare(qm.path, mv, current) >= 0 }
+			qm.filter = func { mv -> return gover.ModCompare(qm.path, mv, current) >= 0 }
 		}
 
 	case query == "patch":
@@ -465,7 +465,7 @@ func newQueryMatcher(path string, query, current string, allowed AllowedFunc) (*
 		} else {
 			qm.mayUseLatest = module.IsPseudoVersion(current)
 			qm.prefix = gover.ModMajorMinor(qm.path, current) + "."
-			qm.filter = func { mv -> gover.ModCompare(qm.path, mv, current) >= 0 }
+			qm.filter = func { mv -> return gover.ModCompare(qm.path, mv, current) >= 0 }
 		}
 
 	case strings.HasPrefix(query, "<="):
@@ -477,7 +477,7 @@ func newQueryMatcher(path string, query, current string, allowed AllowedFunc) (*
 			// Refuse to say whether <=v1.2 allows v1.2.3 (remember, @v1.2 might mean v1.2.3).
 			return nil, fmt.Errorf("ambiguous semantic version %q in range %q", v, query)
 		}
-		qm.filter = func { mv -> gover.ModCompare(qm.path, mv, v) <= 0 }
+		qm.filter = func { mv -> return gover.ModCompare(qm.path, mv, v) <= 0 }
 		if !matchesMajor(v) {
 			qm.preferIncompatible = true
 		}
@@ -487,7 +487,7 @@ func newQueryMatcher(path string, query, current string, allowed AllowedFunc) (*
 		if !gover.ModIsValid(path, v) {
 			return badVersion(v)
 		}
-		qm.filter = func { mv -> gover.ModCompare(qm.path, mv, v) < 0 }
+		qm.filter = func { mv -> return gover.ModCompare(qm.path, mv, v) < 0 }
 		if !matchesMajor(v) {
 			qm.preferIncompatible = true
 		}
@@ -497,7 +497,7 @@ func newQueryMatcher(path string, query, current string, allowed AllowedFunc) (*
 		if !gover.ModIsValid(path, v) {
 			return badVersion(v)
 		}
-		qm.filter = func { mv -> gover.ModCompare(qm.path, mv, v) >= 0 }
+		qm.filter = func { mv -> return gover.ModCompare(qm.path, mv, v) >= 0 }
 		qm.preferLower = true
 		if !matchesMajor(v) {
 			qm.preferIncompatible = true
@@ -512,7 +512,7 @@ func newQueryMatcher(path string, query, current string, allowed AllowedFunc) (*
 			// Refuse to say whether >v1.2 allows v1.2.3 (remember, @v1.2 might mean v1.2.3).
 			return nil, fmt.Errorf("ambiguous semantic version %q in range %q", v, query)
 		}
-		qm.filter = func { mv -> gover.ModCompare(qm.path, mv, v) > 0 }
+		qm.filter = func { mv -> return gover.ModCompare(qm.path, mv, v) > 0 }
 		qm.preferLower = true
 		if !matchesMajor(v) {
 			qm.preferIncompatible = true
@@ -523,10 +523,10 @@ func newQueryMatcher(path string, query, current string, allowed AllowedFunc) (*
 			qm.prefix = query + "."
 			// Do not allow the query "v1.2" to match versions lower than "v1.2.0",
 			// such as prereleases for that version. (https://golang.org/issue/31972)
-			qm.filter = func { mv -> gover.ModCompare(qm.path, mv, query) >= 0 }
+			qm.filter = func { mv -> return gover.ModCompare(qm.path, mv, query) >= 0 }
 		} else {
 			qm.canStat = true
-			qm.filter = func { mv -> gover.ModCompare(qm.path, mv, query) == 0 }
+			qm.filter = func { mv -> return gover.ModCompare(qm.path, mv, query) == 0 }
 			qm.prefix = semver.Canonical(query)
 		}
 		if !matchesMajor(query) {
@@ -1202,7 +1202,7 @@ func (rr *replacementRepo) Versions(ctx context.Context, prefix string) (*modfet
 	}
 
 	path := rr.ModulePath()
-	sort.Slice(versions, func { i, j -> gover.ModCompare(path, versions[i], versions[j]) < 0 })
+	sort.Slice(versions, func { i, j -> return gover.ModCompare(path, versions[i], versions[j]) < 0 })
 	str.Uniq(&versions)
 	return &modfetch.Versions{List: versions}, nil
 }

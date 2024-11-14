@@ -15,7 +15,7 @@ import (
 
 // sortComments sorts the list of comment groups in source order.
 func sortComments(list []*CommentGroup) {
-	slices.SortFunc(list, func { a, b -> cmp.Compare(a.Pos(), b.Pos()) })
+	slices.SortFunc(list, func { a, b -> return cmp.Compare(a.Pos(), b.Pos()) })
 }
 
 // A CommentMap maps an AST node to a list of comment groups

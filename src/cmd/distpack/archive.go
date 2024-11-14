@@ -112,7 +112,7 @@ func nameLess(x, y string) bool {
 // NewArchive returns a sorted archive, and the other methods
 // preserve the sorting of the archive.
 func (a *Archive) Sort() {
-	sort.Slice(a.Files, func { i, j -> nameLess(a.Files[i].Name, a.Files[j].Name) })
+	sort.Slice(a.Files, func { i, j -> return nameLess(a.Files[i].Name, a.Files[j].Name) })
 }
 
 // Clone returns a copy of the Archive.

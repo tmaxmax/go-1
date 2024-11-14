@@ -591,7 +591,7 @@ func (po *poset) dfs(r uint32, strict bool, f func(i uint32) bool) bool {
 // If strict == false: if the function returns true, then i1 <= i2.
 // If the function returns false, no relation is known.
 func (po *poset) reaches(i1, i2 uint32, strict bool) bool {
-	return po.dfs(i1, strict, func { n -> n == i2 })
+	return po.dfs(i1, strict, func { n -> return n == i2 })
 }
 
 // findroot finds i's root, that is which DAG contains i.

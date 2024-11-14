@@ -419,7 +419,7 @@ func ExampleTrimSuffix() {
 }
 
 func ExampleTrimFunc() {
-	fmt.Print(strings.TrimFunc("¡¡¡Hello, Gophers!!!", func { r -> !unicode.IsLetter(r) && !unicode.IsNumber(r) }))
+	fmt.Print(strings.TrimFunc("¡¡¡Hello, Gophers!!!", func { r -> return !unicode.IsLetter(r) && !unicode.IsNumber(r) }))
 	// Output: Hello, Gophers
 }
 
@@ -429,7 +429,7 @@ func ExampleTrimLeft() {
 }
 
 func ExampleTrimLeftFunc() {
-	fmt.Print(strings.TrimLeftFunc("¡¡¡Hello, Gophers!!!", func { r -> !unicode.IsLetter(r) && !unicode.IsNumber(r) }))
+	fmt.Print(strings.TrimLeftFunc("¡¡¡Hello, Gophers!!!", func { r -> return !unicode.IsLetter(r) && !unicode.IsNumber(r) }))
 	// Output: Hello, Gophers!!!
 }
 
@@ -439,7 +439,7 @@ func ExampleTrimRight() {
 }
 
 func ExampleTrimRightFunc() {
-	fmt.Print(strings.TrimRightFunc("¡¡¡Hello, Gophers!!!", func { r -> !unicode.IsLetter(r) && !unicode.IsNumber(r) }))
+	fmt.Print(strings.TrimRightFunc("¡¡¡Hello, Gophers!!!", func { r -> return !unicode.IsLetter(r) && !unicode.IsNumber(r) }))
 	// Output: ¡¡¡Hello, Gophers
 }
 

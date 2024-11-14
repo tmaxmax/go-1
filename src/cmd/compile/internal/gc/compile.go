@@ -131,7 +131,7 @@ func compileFunctions(profile *pgoir.Profile) {
 		// Compile the longest functions first,
 		// since they're most likely to be the slowest.
 		// This helps avoid stragglers.
-		sort.Slice(compilequeue, func { i, j -> len(compilequeue[i].Body) > len(compilequeue[j].Body) })
+		sort.Slice(compilequeue, func { i, j -> return len(compilequeue[i].Body) > len(compilequeue[j].Body) })
 	}
 
 	// By default, we perform work right away on the current goroutine

@@ -441,7 +441,7 @@ func BenchmarkMapAddDifferentSteadyState(b *testing.B) {
 func TestFunc(t *testing.T) {
 	RemoveAll()
 	var x any = []string{"a", "b"}
-	f := Func(func { x })
+	f := Func(func { return x })
 	if s, exp := f.String(), `["a","b"]`; s != exp {
 		t.Errorf(`f.String() = %q, want %q`, s, exp)
 	}

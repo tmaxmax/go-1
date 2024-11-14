@@ -23,7 +23,7 @@ func scriptCommands(interrupt os.Signal, waitDelay time.Duration) map[string]scr
 	// Customize the "exec" interrupt signal and grace period.
 	var cancel func(cmd *exec.Cmd) error
 	if interrupt != nil {
-		cancel = func { cmd -> cmd.Process.Signal(interrupt) }
+		cancel = func { cmd -> return cmd.Process.Signal(interrupt) }
 	}
 
 	cmdExec := script.Exec(cancel, waitDelay)

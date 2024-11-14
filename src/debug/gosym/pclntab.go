@@ -334,7 +334,7 @@ func (t *LineTable) findFunc(pc uint64) funcData {
 	if pc < ft.pc(0) || pc >= ft.pc(ft.Count()) {
 		return funcData{}
 	}
-	idx := sort.Search(int(t.nfunctab), func { i -> ft.pc(i) > pc })
+	idx := sort.Search(int(t.nfunctab), func { i -> return ft.pc(i) > pc })
 	idx--
 	return t.funcData(uint32(idx))
 }

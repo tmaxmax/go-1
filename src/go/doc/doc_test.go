@@ -86,7 +86,7 @@ func test(t *testing.T, mode Mode) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		filter = func { fi -> isGoFile(fi) && rx.MatchString(fi.Name()) }
+		filter = func { fi -> return isGoFile(fi) && rx.MatchString(fi.Name()) }
 	}
 
 	// get packages

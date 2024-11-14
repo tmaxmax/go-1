@@ -1367,8 +1367,8 @@ func TestLinuxSendfileChild(*testing.T) {
 // Issues 18984, 49552: tests that requests for paths beyond files return not-found errors
 func TestFileServerNotDirError(t *testing.T) {
 	run(t, func { t, mode ->
-		t.Run("Dir", func { t -> testFileServerNotDirError(t, mode, func { path -> Dir(path) }) })
-		t.Run("FS", func { t -> testFileServerNotDirError(t, mode, func { path -> FS(os.DirFS(path)) }) })
+		t.Run("Dir", func { t -> testFileServerNotDirError(t, mode, func { path -> return Dir(path) }) })
+		t.Run("FS", func { t -> testFileServerNotDirError(t, mode, func { path -> return FS(os.DirFS(path)) }) })
 	})
 }
 

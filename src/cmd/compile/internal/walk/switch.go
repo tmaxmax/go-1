@@ -248,7 +248,7 @@ func (s *exprSwitch) flush() {
 		return
 	}
 
-	sort.Slice(cc, func { i, j -> constant.Compare(cc[i].lo.Val(), token.LSS, cc[j].lo.Val()) })
+	sort.Slice(cc, func { i, j -> return constant.Compare(cc[i].lo.Val(), token.LSS, cc[j].lo.Val()) })
 
 	// Merge consecutive integer cases.
 	if s.exprname.Type().IsInteger() {
@@ -277,7 +277,7 @@ func (s *exprSwitch) search(cc []exprClause, out *ir.Nodes) {
 		return
 	}
 	binarySearch(len(cc), out,
-		func { i -> ir.NewBinaryExpr(base.Pos, ir.OLE, s.exprname, cc[i-1].hi) },
+		func { i -> return ir.NewBinaryExpr(base.Pos, ir.OLE, s.exprname, cc[i-1].hi) },
 		func { i, nif ->
 			c := &cc[i]
 			nif.Cond = c.test(s.exprname)
@@ -724,7 +724,7 @@ func (s *typeSwitch) flush(cc []typeClause, compiled *ir.Nodes) {
 		return
 	}
 
-	sort.Slice(cc, func { i, j -> cc[i].hash < cc[j].hash })
+	sort.Slice(cc, func { i, j -> return cc[i].hash < cc[j].hash })
 
 	// Combine adjacent cases with the same hash.
 	merged := cc[:1]
@@ -742,7 +742,7 @@ func (s *typeSwitch) flush(cc []typeClause, compiled *ir.Nodes) {
 		return
 	}
 	binarySearch(len(cc), compiled,
-		func { i -> ir.NewBinaryExpr(base.Pos, ir.OLE, s.hashName, ir.NewInt(base.Pos, int64(cc[i-1].hash))) },
+		func { i -> return ir.NewBinaryExpr(base.Pos, ir.OLE, s.hashName, ir.NewInt(base.Pos, int64(cc[i-1].hash))) },
 		func { i, nif ->
 			// TODO(mdempsky): Omit hash equality check if
 			// there's only one type.
@@ -777,7 +777,7 @@ func (s *typeSwitch) tryJumpTable(cc []typeClause, out *ir.Nodes) bool {
 				hashes = append(hashes, h)
 			}
 			// Order by increasing hash.
-			sort.Slice(hashes, func { j, k -> hashes[j] < hashes[k] })
+			sort.Slice(hashes, func { j, k -> return hashes[j] < hashes[k] })
 			for j := 1; j < len(hashes); j++ {
 				if hashes[j] == hashes[j-1] {
 					// There is a duplicate hash; try a different b/i pair.

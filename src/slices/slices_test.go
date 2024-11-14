@@ -132,7 +132,7 @@ func BenchmarkEqualFunc_Large(b *testing.B) {
 	xs := make([]Large, 1024)
 	ys := make([]Large, 1024)
 	for i := 0; i < b.N; i++ {
-		_ = EqualFunc(xs, ys, func { x, y -> x == y })
+		_ = EqualFunc(xs, ys, func { x, y -> return x == y })
 	}
 }
 
@@ -419,7 +419,7 @@ func BenchmarkIndexFunc_Large(b *testing.B) {
 
 	ss := make([]Large, 1024)
 	for i := 0; i < b.N; i++ {
-		_ = IndexFunc(ss, func { e -> e == Large{1} })
+		_ = IndexFunc(ss, func { e -> return e == Large{1} })
 	}
 }
 
@@ -708,7 +708,7 @@ func TestDeleteFuncClearTail(t *testing.T) {
 	*mem[2], *mem[3] = 42, 42
 	s := mem[0:5] // there is 1 element beyond len(s), within cap(s)
 
-	s = DeleteFunc(s, func { i -> i != nil && *i == 42 })
+	s = DeleteFunc(s, func { i -> return i != nil && *i == 42 })
 
 	if mem[3] != nil || mem[4] != nil {
 		// Check that potential memory leak is avoided
@@ -890,7 +890,7 @@ func BenchmarkCompactFunc(b *testing.B) {
 			for k := 0; k < b.N; k++ {
 				ss = ss[:0]
 				ss = append(ss, c.s...)
-				_ = CompactFunc(ss, func { a, b -> a == b })
+				_ = CompactFunc(ss, func { a, b -> return a == b })
 			}
 		})
 	}
@@ -904,7 +904,7 @@ func BenchmarkCompactFunc_Large(b *testing.B) {
 		ss := make([]Element, N)
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			_ = CompactFunc(ss, func { a, b -> a == b })
+			_ = CompactFunc(ss, func { a, b -> return a == b })
 		}
 	})
 	b.Run("no_dup", func { b ->
@@ -914,7 +914,7 @@ func BenchmarkCompactFunc_Large(b *testing.B) {
 		}
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			_ = CompactFunc(ss, func { a, b -> a == b })
+			_ = CompactFunc(ss, func { a, b -> return a == b })
 		}
 	})
 }

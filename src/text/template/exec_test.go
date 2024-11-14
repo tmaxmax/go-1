@@ -934,7 +934,7 @@ func (*CustomError) Error() string { return "heyo !" }
 
 // Check that a custom error can be returned.
 func TestExecError_CustomError(t *testing.T) {
-	failingFunc := func { "", &CustomError{} }
+	failingFunc := func { return "", &CustomError{} }
 	tmpl := Must(New("top").Funcs(FuncMap{
 		"err": failingFunc,
 	}).Parse("{{ err }}"))
@@ -1807,7 +1807,7 @@ func TestIssue31810(t *testing.T) {
 	}
 
 	// Even a plain function fails - need to use call.
-	f := func { "result" }
+	f := func { return "result" }
 	b.Reset()
 	err = tmpl.Execute(&b, f)
 	if err == nil {

@@ -976,7 +976,7 @@ func TestSignalingNaNArgument(t *testing.T) {
 }
 
 func TestSignalingNaNReturn(t *testing.T) {
-	v := reflect.ValueOf(func { math.Float32frombits(snan) })
+	v := reflect.ValueOf(func { return math.Float32frombits(snan) })
 	var x float32
 	reflect.ValueOf(&x).Elem().Set(v.Call(nil)[0])
 	// make sure x is a signaling NaN.

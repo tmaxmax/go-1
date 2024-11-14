@@ -670,7 +670,7 @@ func (r *Resolver) goLookupIPCNAMEOrder(ctx context.Context, network, name strin
 				dnsWaitGroup.Done()
 			}(qtype)
 		}
-		responseFn = func { fqdn, qtype -> <-lane }
+		responseFn = func { fqdn, qtype -> return <-lane }
 	}
 	var lastErr error
 	for _, fqdn := range conf.nameList(name) {

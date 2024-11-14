@@ -28,7 +28,7 @@ func initRewrite() {
 	}
 	pattern := parseExpr(f[0], "pattern")
 	replace := parseExpr(f[1], "replacement")
-	rewrite = func { fset, p -> rewriteFile(fset, pattern, replace, p) }
+	rewrite = func { fset, p -> return rewriteFile(fset, pattern, replace, p) }
 }
 
 // parseExpr parses s as an expression.

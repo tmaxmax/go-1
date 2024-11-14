@@ -27,7 +27,7 @@ func Parse(filename string, data []byte) (*File, error) {
 	}
 	corrupt := func {
 	// TODO(rfindley): return a useful error message.
-	nil, fmt.Errorf("%s: corrupt counter file", filename) }
+	return nil, fmt.Errorf("%s: corrupt counter file", filename) }
 
 	f := &File{
 		Meta:  make(map[string]string),

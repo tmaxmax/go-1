@@ -1748,7 +1748,7 @@ func TestIssue6651(t *testing.T) {
 	var v string
 
 	want := "error in rows.Next"
-	rowsCursorNextHook = func { dest -> errors.New(want) }
+	rowsCursorNextHook = func { dest -> return errors.New(want) }
 	defer func() { rowsCursorNextHook = nil }()
 
 	err := db.QueryRow("SELECT|people|name|").Scan(&v)
@@ -2333,7 +2333,7 @@ func TestConnMaxLifetime(t *testing.T) {
 	t0 := time.Unix(1000000, 0)
 	offset := time.Duration(0)
 
-	nowFunc = func { t0.Add(offset) }
+	nowFunc = func { return t0.Add(offset) }
 	defer func() { nowFunc = time.Now }()
 
 	db := newTestDB(t, "magicquery")
@@ -2490,7 +2490,7 @@ func TestStmtCloseDeps(t *testing.T) {
 		db.dumpDeps(t)
 	}
 
-	if !waitCondition(t, func { len(stmt.css) <= nquery }) {
+	if !waitCondition(t, func { return len(stmt.css) <= nquery }) {
 		t.Errorf("len(stmt.css) = %d; want <= %d", len(stmt.css), nquery)
 	}
 
@@ -3932,7 +3932,7 @@ func testUseConns(t *testing.T, count int, tm time.Time, db *DB) time.Time {
 	ctx := context.Background()
 	for i := range conns {
 		tm = tm.Add(time.Nanosecond)
-		nowFunc = func { tm }
+		nowFunc = func { return tm }
 		c, err := db.Conn(ctx)
 		if err != nil {
 			t.Error(err)
@@ -3942,7 +3942,7 @@ func testUseConns(t *testing.T, count int, tm time.Time, db *DB) time.Time {
 
 	for i := len(conns) - 1; i >= 0; i-- {
 		tm = tm.Add(time.Nanosecond)
-		nowFunc = func { tm }
+		nowFunc = func { return tm }
 		if err := conns[i].Close(); err != nil {
 			t.Error(err)
 		}
@@ -4001,7 +4001,7 @@ func TestMaxIdleTime(t *testing.T) {
 		nowFunc = time.Now
 	}()
 	for _, item := range list {
-		nowFunc = func { baseTime }
+		nowFunc = func { return baseTime }
 		t.Run(fmt.Sprintf("%v", item.wantMaxIdleTime), func { t ->
 			db := newTestDB(t, "people")
 			defer closeDB(t, db)
@@ -4023,7 +4023,7 @@ func TestMaxIdleTime(t *testing.T) {
 			tm = testUseConns(t, reusedConns, tm, db)
 
 			tm = tm.Add(item.secondTimeOffset)
-			nowFunc = func { tm }
+			nowFunc = func { return tm }
 
 			db.mu.Lock()
 			nc, closing := db.connectionCleanerRunLocked(time.Second)

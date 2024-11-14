@@ -1055,7 +1055,7 @@ func TestHandshakeServerSNIGetCertificate(t *testing.T) {
 func TestHandshakeServerSNIGetCertificateNotFound(t *testing.T) {
 	config := testConfig.Clone()
 
-	config.GetCertificate = func { clientHello -> nil, nil }
+	config.GetCertificate = func { clientHello -> return nil, nil }
 	test := &serverTest{
 		name:    "SNI-GetCertificateNotFound",
 		command: []string{"openssl", "s_client", "-no_ticket", "-cipher", "AES128-SHA", "-servername", "snitest.com"},
@@ -1070,7 +1070,7 @@ func TestHandshakeServerSNIGetCertificateError(t *testing.T) {
 	const errMsg = "TestHandshakeServerSNIGetCertificateError error"
 
 	serverConfig := testConfig.Clone()
-	serverConfig.GetCertificate = func { clientHello -> nil, errors.New(errMsg) }
+	serverConfig.GetCertificate = func { clientHello -> return nil, errors.New(errMsg) }
 
 	clientHello := &clientHelloMsg{
 		vers:               VersionTLS10,
@@ -1088,7 +1088,7 @@ func TestHandshakeServerEmptyCertificates(t *testing.T) {
 	const errMsg = "TestHandshakeServerEmptyCertificates error"
 
 	serverConfig := testConfig.Clone()
-	serverConfig.GetCertificate = func { clientHello -> nil, errors.New(errMsg) }
+	serverConfig.GetCertificate = func { clientHello -> return nil, errors.New(errMsg) }
 	serverConfig.Certificates = nil
 
 	clientHello := &clientHelloMsg{

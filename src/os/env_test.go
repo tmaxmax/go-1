@@ -73,7 +73,7 @@ func BenchmarkExpand(b *testing.B) {
 		var s string
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			s = Expand("tick tick tick tick", func { "" })
+			s = Expand("tick tick tick tick", func { return "" })
 		}
 		global = s
 	})
@@ -81,7 +81,7 @@ func BenchmarkExpand(b *testing.B) {
 		var s string
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			s = Expand("$a $a $a $a", func { "boom" })
+			s = Expand("$a $a $a $a", func { return "boom" })
 		}
 		global = s
 	})

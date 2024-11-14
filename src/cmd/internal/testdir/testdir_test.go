@@ -1535,7 +1535,7 @@ func (a asmChecks) Envs() []buildEnv {
 	for e := range a {
 		envs = append(envs, e)
 	}
-	sort.Slice(envs, func { i, j -> string(envs[i]) < string(envs[j]) })
+	sort.Slice(envs, func { i, j -> return string(envs[i]) < string(envs[j]) })
 	return envs
 }
 
@@ -1707,7 +1707,7 @@ func (t test) asmCheck(outStr string, fn string, env buildEnv, fullops map[strin
 	lastFunction := -1
 	var errbuf bytes.Buffer
 	fmt.Fprintln(&errbuf)
-	sort.Slice(failed, func { i, j -> failed[i].line < failed[j].line })
+	sort.Slice(failed, func { i, j -> return failed[i].line < failed[j].line })
 	for _, o := range failed {
 		// Dump the function in which this opcode check was supposed to
 		// pass but failed.

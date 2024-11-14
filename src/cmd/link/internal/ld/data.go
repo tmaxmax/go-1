@@ -2058,7 +2058,7 @@ func (state *dodataState) allocateDataSections(ctxt *Link) {
 		}
 
 		if !ctxt.IsDarwin() { // We don't need the special names on darwin.
-			genrelrosecname = func { suffix -> ".data.rel.ro" + suffix }
+			genrelrosecname = func { suffix -> return ".data.rel.ro" + suffix }
 		}
 
 		relroReadOnly := []sym.SymKind{}

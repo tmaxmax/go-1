@@ -59,7 +59,7 @@ func Sort(mapValue reflect.Value) SortedMap {
 	for iter.Next() {
 		sorted = append(sorted, KeyValue{iter.Key(), iter.Value()})
 	}
-	slices.SortStableFunc(sorted, func { a, b -> compare(a.Key, b.Key) })
+	slices.SortStableFunc(sorted, func { a, b -> return compare(a.Key, b.Key) })
 	return sorted
 }
 

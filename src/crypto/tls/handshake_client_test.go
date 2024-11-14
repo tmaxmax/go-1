@@ -914,7 +914,7 @@ func testResumption(t *testing.T, version uint16) {
 
 	// An old session ticket is replaced with a ticket encrypted with a fresh key.
 	ticket = getTicket()
-	serverConfig.Time = func { time.Now().Add(24*time.Hour + time.Minute) }
+	serverConfig.Time = func { return time.Now().Add(24*time.Hour + time.Minute) }
 	testResumeState("ResumeWithOldTicket", true)
 	if bytes.Equal(ticket, getTicket()) {
 		t.Fatal("old first ticket matches the fresh one")
@@ -922,13 +922,13 @@ func testResumption(t *testing.T, version uint16) {
 
 	// Once the session master secret is expired, a full handshake should occur.
 	ticket = getTicket()
-	serverConfig.Time = func { time.Now().Add(24*8*time.Hour + time.Minute) }
+	serverConfig.Time = func { return time.Now().Add(24*8*time.Hour + time.Minute) }
 	testResumeState("ResumeWithExpiredTicket", false)
 	if bytes.Equal(ticket, getTicket()) {
 		t.Fatal("expired first ticket matches the fresh one")
 	}
 
-	serverConfig.Time = func { time.Now() } // reset the time back
+	serverConfig.Time = func { return time.Now() } // reset the time back
 	key1 := randomKey()
 	serverConfig.SetSessionTicketKeys([][32]byte{key1})
 
@@ -945,11 +945,11 @@ func testResumption(t *testing.T, version uint16) {
 	testResumeState("KeyChangeFinish", true)
 
 	// Age the session ticket a bit, but not yet expired.
-	serverConfig.Time = func { time.Now().Add(24*time.Hour + time.Minute) }
+	serverConfig.Time = func { return time.Now().Add(24*time.Hour + time.Minute) }
 	testResumeState("OldSessionTicket", true)
 	ticket = getTicket()
 	// Expire the session ticket, which would force a full handshake.
-	serverConfig.Time = func { time.Now().Add(24*8*time.Hour + time.Minute) }
+	serverConfig.Time = func { return time.Now().Add(24*8*time.Hour + time.Minute) }
 	testResumeState("ExpiredSessionTicket", false)
 	if bytes.Equal(ticket, getTicket()) {
 		t.Fatal("new ticket wasn't provided after old ticket expired")
@@ -957,7 +957,7 @@ func testResumption(t *testing.T, version uint16) {
 
 	// Age the session ticket a bit at a time, but don't expire it.
 	d := 0 * time.Hour
-	serverConfig.Time = func { time.Now().Add(d) }
+	serverConfig.Time = func { return time.Now().Add(d) }
 	deleteTicket()
 	testResumeState("GetFreshSessionTicket", false)
 	for i := 0; i < 13; i++ {
@@ -1791,7 +1791,7 @@ func testVerifyPeerCertificate(t *testing.T, version uint16) {
 	rootCAs := x509.NewCertPool()
 	rootCAs.AddCert(issuer)
 
-	now := func { time.Unix(1476984729, 0) }
+	now := func { return time.Unix(1476984729, 0) }
 
 	sentinelErr := errors.New("TestVerifyPeerCertificate")
 
@@ -1827,11 +1827,11 @@ func testVerifyPeerCertificate(t *testing.T, version uint16) {
 		{
 			configureServer: func(config *Config, called *bool) {
 				config.InsecureSkipVerify = false
-				config.VerifyPeerCertificate = func { rawCerts, validatedChains -> verifyPeerCertificateCallback(called, rawCerts, validatedChains) }
+				config.VerifyPeerCertificate = func { rawCerts, validatedChains -> return verifyPeerCertificateCallback(called, rawCerts, validatedChains) }
 			},
 			configureClient: func(config *Config, called *bool) {
 				config.InsecureSkipVerify = false
-				config.VerifyPeerCertificate = func { rawCerts, validatedChains -> verifyPeerCertificateCallback(called, rawCerts, validatedChains) }
+				config.VerifyPeerCertificate = func { rawCerts, validatedChains -> return verifyPeerCertificateCallback(called, rawCerts, validatedChains) }
 			},
 			validate: func(t *testing.T, testNo int, clientCalled, serverCalled bool, clientErr, serverErr error) {
 				if clientErr != nil {
@@ -1851,7 +1851,7 @@ func testVerifyPeerCertificate(t *testing.T, version uint16) {
 		{
 			configureServer: func(config *Config, called *bool) {
 				config.InsecureSkipVerify = false
-				config.VerifyPeerCertificate = func { rawCerts, validatedChains -> sentinelErr }
+				config.VerifyPeerCertificate = func { rawCerts, validatedChains -> return sentinelErr }
 			},
 			configureClient: func(config *Config, called *bool) {
 				config.VerifyPeerCertificate = nil
@@ -1867,7 +1867,7 @@ func testVerifyPeerCertificate(t *testing.T, version uint16) {
 				config.InsecureSkipVerify = false
 			},
 			configureClient: func(config *Config, called *bool) {
-				config.VerifyPeerCertificate = func { rawCerts, validatedChains -> sentinelErr }
+				config.VerifyPeerCertificate = func { rawCerts, validatedChains -> return sentinelErr }
 			},
 			validate: func(t *testing.T, testNo int, clientCalled, serverCalled bool, clientErr, serverErr error) {
 				if clientErr != sentinelErr {
@@ -1910,11 +1910,11 @@ func testVerifyPeerCertificate(t *testing.T, version uint16) {
 		{
 			configureServer: func(config *Config, called *bool) {
 				config.InsecureSkipVerify = false
-				config.VerifyConnection = func { c -> verifyConnectionCallback(called, false, c) }
+				config.VerifyConnection = func { c -> return verifyConnectionCallback(called, false, c) }
 			},
 			configureClient: func(config *Config, called *bool) {
 				config.InsecureSkipVerify = false
-				config.VerifyConnection = func { c -> verifyConnectionCallback(called, true, c) }
+				config.VerifyConnection = func { c -> return verifyConnectionCallback(called, true, c) }
 			},
 			validate: func(t *testing.T, testNo int, clientCalled, serverCalled bool, clientErr, serverErr error) {
 				if clientErr != nil {
@@ -1934,7 +1934,7 @@ func testVerifyPeerCertificate(t *testing.T, version uint16) {
 		{
 			configureServer: func(config *Config, called *bool) {
 				config.InsecureSkipVerify = false
-				config.VerifyConnection = func { c -> sentinelErr }
+				config.VerifyConnection = func { c -> return sentinelErr }
 			},
 			configureClient: func(config *Config, called *bool) {
 				config.InsecureSkipVerify = false
@@ -1953,7 +1953,7 @@ func testVerifyPeerCertificate(t *testing.T, version uint16) {
 			},
 			configureClient: func(config *Config, called *bool) {
 				config.InsecureSkipVerify = false
-				config.VerifyConnection = func { c -> sentinelErr }
+				config.VerifyConnection = func { c -> return sentinelErr }
 			},
 			validate: func(t *testing.T, testNo int, clientCalled, serverCalled bool, clientErr, serverErr error) {
 				if clientErr != sentinelErr {
@@ -1964,8 +1964,8 @@ func testVerifyPeerCertificate(t *testing.T, version uint16) {
 		{
 			configureServer: func(config *Config, called *bool) {
 				config.InsecureSkipVerify = false
-				config.VerifyPeerCertificate = func { rawCerts, validatedChains -> verifyPeerCertificateCallback(called, rawCerts, validatedChains) }
-				config.VerifyConnection = func { c -> sentinelErr }
+				config.VerifyPeerCertificate = func { rawCerts, validatedChains -> return verifyPeerCertificateCallback(called, rawCerts, validatedChains) }
+				config.VerifyConnection = func { c -> return sentinelErr }
 			},
 			configureClient: func(config *Config, called *bool) {
 				config.InsecureSkipVerify = false
@@ -1989,8 +1989,8 @@ func testVerifyPeerCertificate(t *testing.T, version uint16) {
 			},
 			configureClient: func(config *Config, called *bool) {
 				config.InsecureSkipVerify = false
-				config.VerifyPeerCertificate = func { rawCerts, validatedChains -> verifyPeerCertificateCallback(called, rawCerts, validatedChains) }
-				config.VerifyConnection = func { c -> sentinelErr }
+				config.VerifyPeerCertificate = func { rawCerts, validatedChains -> return verifyPeerCertificateCallback(called, rawCerts, validatedChains) }
+				config.VerifyConnection = func { c -> return sentinelErr }
 			},
 			validate: func(t *testing.T, testNo int, clientCalled, serverCalled bool, clientErr, serverErr error) {
 				if clientErr != sentinelErr {
@@ -2297,7 +2297,7 @@ var getClientCertificateTests = []struct {
 		func(clientConfig, serverConfig *Config) {
 			// Returning an error should abort the handshake with
 			// that error.
-			clientConfig.GetClientCertificate = func { cri -> nil, errors.New("GetClientCertificate") }
+			clientConfig.GetClientCertificate = func { cri -> return nil, errors.New("GetClientCertificate") }
 		},
 		"GetClientCertificate",
 		func(t *testing.T, testNum int, cs *ConnectionState) {
@@ -2342,7 +2342,7 @@ func testGetClientCertificate(t *testing.T, version uint16) {
 		serverConfig.RootCAs = x509.NewCertPool()
 		serverConfig.RootCAs.AddCert(issuer)
 		serverConfig.ClientCAs = serverConfig.RootCAs
-		serverConfig.Time = func { time.Unix(1476984729, 0) }
+		serverConfig.Time = func { return time.Unix(1476984729, 0) }
 		serverConfig.MaxVersion = version
 
 		clientConfig := testConfig.Clone()

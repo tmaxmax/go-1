@@ -141,7 +141,7 @@ func (s *sequencer) Add(weight int64, f func(*reporter) error) {
 	if err := s.sem.Acquire(context.TODO(), weight); err != nil {
 		// Change the task from "execute f" to "report err".
 		weight = 0
-		f = func { err }
+		f = func { return err }
 	}
 
 	r := &reporter{prev: s.prev}
@@ -162,7 +162,7 @@ func (s *sequencer) Add(weight int64, f func(*reporter) error) {
 // AddReport prints an error to s after the output of any previously-added
 // tasks, causing the final exit code to be nonzero.
 func (s *sequencer) AddReport(err error) {
-	s.Add(0, func { err })
+	s.Add(0, func { return err })
 }
 
 // GetExitCode waits for all previously-added tasks to complete, then returns an
@@ -404,7 +404,7 @@ func gofmtMain(s *sequencer) {
 			s.AddReport(fmt.Errorf("error: cannot use -w with standard input"))
 			return
 		}
-		s.Add(0, func { r -> processFile("<standard input>", nil, os.Stdin, r) })
+		s.Add(0, func { r -> return processFile("<standard input>", nil, os.Stdin, r) })
 		return
 	}
 
@@ -415,7 +415,7 @@ func gofmtMain(s *sequencer) {
 		case !info.IsDir():
 			// Non-directory arguments are always formatted.
 			arg := arg
-			s.Add(fileWeight(arg, info), func { r -> processFile(arg, info, nil, r) })
+			s.Add(fileWeight(arg, info), func { r -> return processFile(arg, info, nil, r) })
 		default:
 			// Directories are walked, ignoring non-Go files.
 			err := filepath.WalkDir(arg, func { path, f, err ->
@@ -427,7 +427,7 @@ func gofmtMain(s *sequencer) {
 					s.AddReport(err)
 					return nil
 				}
-				s.Add(fileWeight(path, info), func { r -> processFile(path, info, nil, r) })
+				s.Add(fileWeight(path, info), func { r -> return processFile(path, info, nil, r) })
 				return nil
 			})
 			if err != nil {
@@ -538,7 +538,7 @@ func backupFile(filename string, data []byte, perm fs.FileMode) (string, error) 
 	fdSem <- true
 	defer func() { <-fdSem }()
 
-	nextRandom := func { strconv.Itoa(rand.Int()) }
+	nextRandom := func { return strconv.Itoa(rand.Int()) }
 
 	dir, base := filepath.Split(filename)
 	var (

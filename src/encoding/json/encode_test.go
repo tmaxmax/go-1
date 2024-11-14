@@ -1012,7 +1012,7 @@ func TestMarshalFloat(t *testing.T) {
 					}
 					next := math.Nextafter
 					if bits == 32 {
-						next = func { g, h -> float64(math.Nextafter32(float32(g), float32(h))) }
+						next = func { g, h -> return float64(math.Nextafter32(float32(g), float32(h))) }
 					}
 					test(f, bits)
 					test(next(f, bigger), bits)
