@@ -8,21 +8,28 @@ import (
 	"go/ast"
 	"go/token"
 	"reflect"
+	"strings"
 )
 
 var count struct {
 	funcLit             int
 	funcLight           int
+	testFuncLight       int
 	singleStatement     int
 	longSingleStatement int
 	singleReturn        int
 	returnVals          [10]int
 }
 
-type simplifier struct{}
+type simplifier struct {
+	inTestFile *bool
+}
 
 func (s simplifier) Visit(node ast.Node) ast.Visitor {
 	switch n := node.(type) {
+	case *ast.File:
+		*s.inTestFile = strings.Contains(n.Name.Name, "_test")
+
 	case *ast.CompositeLit:
 		// array, slice, and map composite literals may be simplified
 		outer := n
@@ -184,6 +191,9 @@ func (s simplifier) simplifyFuncLit(f *ast.FuncLit) ast.Expr {
 	}
 
 	count.funcLight++
+	if *s.inTestFile {
+		count.testFuncLight++
+	}
 
 	if len(fl.Body) == 1 {
 		count.singleStatement++
@@ -248,6 +258,10 @@ func simplify(f *ast.File) {
 	removeEmptyDeclGroups(f)
 
 	var s simplifier
+
+	var inTest bool
+	s.inTestFile = &inTest
+
 	ast.Walk(s, f)
 }
 
