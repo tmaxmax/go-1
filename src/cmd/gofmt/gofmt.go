@@ -435,7 +435,7 @@ func gofmtMain(s *sequencer) {
 		default:
 			// Directories are walked, ignoring testdata directories and non-Go files.
 			err := filepath.WalkDir(arg, func(path string, f fs.DirEntry, err error) error {
-				if err != nil || !isGoFile(f) || strings.Contains(filepath.ToSlash(path), "/testdata/") {
+				if err != nil || !isGoFile(f) || strings.Contains(filepath.ToSlash(path), "/testdata/") || strings.Contains(path, ".generated") {
 					return err
 				}
 				info, err := f.Info()
