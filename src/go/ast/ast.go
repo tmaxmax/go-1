@@ -314,7 +314,8 @@ type (
 	FuncLight struct {
 		Func, Lbrace token.Pos
 		Params       []*Ident
-		Sep          token.Pos
+		SepPos       token.Pos
+		SepTok       token.Token
 		Body         []Stmt
 		Rbrace       token.Pos
 	}

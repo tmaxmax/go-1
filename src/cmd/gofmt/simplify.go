@@ -186,8 +186,14 @@ func (s simplifier) simplifyFuncLit(f *ast.FuncLit) ast.Expr {
 
 	fl := &ast.FuncLight{
 		Func: f.Type.Pos(), Lbrace: f.Type.Pos() + 2,
-		Params: params, Sep: f.Body.Lbrace,
+		Params: params, SepPos: f.Body.Lbrace,
 		Body: f.Body.List, Rbrace: f.Body.Rbrace,
+	}
+
+	if *useArrow {
+		fl.SepTok = token.RARROW
+	} else {
+		fl.SepTok = token.OR
 	}
 
 	count.funcLight++

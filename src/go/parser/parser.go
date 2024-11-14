@@ -1442,9 +1442,19 @@ func (p *parser) parseFuncTypeOrLit() ast.Expr {
 
 		var params []*ast.Ident
 		var sep token.Pos
+		var sepTok token.Token
+
 		if p.tok == token.IDENT {
 			params = p.parseIdentList()
-			sep = p.expect(token.OR)
+
+			if p.tok != token.OR && p.tok != token.RARROW {
+				p.errorExpected(p.pos, "'"+token.OR.String()+"' or '"+token.RARROW.String()+"'")
+			} else {
+				sep = p.pos
+				sepTok = p.tok
+			}
+
+			p.next()
 		}
 
 		p.exprLev++
@@ -1454,7 +1464,7 @@ func (p *parser) parseFuncTypeOrLit() ast.Expr {
 
 		return &ast.FuncLight{
 			Func: pos, Lbrace: lbrace,
-			Params: params, Sep: sep,
+			Params: params, SepPos: sep, SepTok: sepTok,
 			Body: stmts, Rbrace: rbrace,
 		}
 	}

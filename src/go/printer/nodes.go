@@ -889,8 +889,8 @@ func (p *printer) expr1(expr ast.Expr, prec1, depth int) {
 		if len(x.Params) > 0 {
 			p.print(blank)
 			p.identList(x.Params, true)
-			p.setPos(x.Sep)
-			p.print(blank, token.OR)
+			p.setPos(x.SepPos)
+			p.print(blank, x.SepTok)
 		}
 
 		if len(x.Body) == 1 {

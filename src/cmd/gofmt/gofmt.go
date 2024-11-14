@@ -37,6 +37,7 @@ var (
 	rewriteRule          = flag.String("r", "", "rewrite rule (e.g., 'a[b:len(a)] -> a[b:]')")
 	simplifyAST          = flag.Bool("s", false, "simplify code")
 	simplifySingleReturn = flag.Bool("R", false, "drop return keyword for single return lightweight function literals")
+	useArrow             = flag.Bool("A", false, "use '->' instead of '|' to separate lightweight function parameter list from body")
 	doDiff               = flag.Bool("d", false, "display diffs instead of rewriting files")
 	allErrors            = flag.Bool("e", false, "report all errors (not just the first 10 on different lines)")
 

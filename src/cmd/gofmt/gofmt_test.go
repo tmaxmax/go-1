@@ -78,6 +78,8 @@ func runTest(t *testing.T, in, out string) {
 			*simplifyAST = true
 		case "-R":
 			*simplifySingleReturn = true
+		case "-A":
+			*useArrow = true
 		case "-stdin":
 			// fake flag - pretend input is from stdin
 			info = nil
