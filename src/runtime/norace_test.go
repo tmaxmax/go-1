@@ -32,7 +32,7 @@ func BenchmarkSyscallExcessWork(b *testing.B) {
 
 func benchmarkSyscall(b *testing.B, work, excess int) {
 	b.SetParallelism(excess)
-	b.RunParallel(func { pb |
+	b.RunParallel(func { pb ->
 		foo := 42
 		for pb.Next() {
 			runtime.Entersyscall()

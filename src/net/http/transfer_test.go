@@ -233,7 +233,7 @@ func TestTransferWriterWriteBodyReaderTypes(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		t.Run(tc.name, func { t |
+		t.Run(tc.name, func { t ->
 			body, cleanup, err := tc.bodyFunc()
 			if err != nil {
 				t.Fatal(err)

@@ -84,7 +84,7 @@ func runGraph(ctx context.Context, cmd *base.Command, args []string) {
 		}
 	}
 
-	mg.WalkBreadthFirst(func { m |
+	mg.WalkBreadthFirst(func { m ->
 		reqs, _ := mg.RequiredBy(m)
 		for _, r := range reqs {
 			format(m)

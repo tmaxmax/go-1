@@ -257,7 +257,7 @@ func TestCloneOrMakeHeader(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func { t |
+		t.Run(tt.name, func { t ->
 			got := cloneOrMakeHeader(tt.in)
 			if got == nil {
 				t.Fatal("unexpected nil Header")

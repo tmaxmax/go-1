@@ -157,7 +157,7 @@ func TestValueSeq(t *testing.T) {
 				t.Fatalf("should loop three times")
 			}
 		}},
-		{"func", ValueOf(func { yield | for i := range 4 {
+		{"func", ValueOf(func { yield -> for i := range 4 {
 			if !yield(i) {
 				return
 			}
@@ -275,7 +275,7 @@ func TestValueSeq2(t *testing.T) {
 				t.Fatalf("should loop four times")
 			}
 		}},
-		{"func", ValueOf(func { f | for i := range 4 {
+		{"func", ValueOf(func { f -> for i := range 4 {
 			f(i, i+1)
 		} }), func(t *testing.T, s iter.Seq2[Value, Value]) {
 			i := int64(0)

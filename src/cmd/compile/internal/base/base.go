@@ -35,7 +35,7 @@ func forEachGC(fn func() bool) {
 	type T [32]byte // large enough to avoid runtime's tiny object allocator
 
 	var finalizer func(*T)
-	finalizer = func { p | if fn() {
+	finalizer = func { p -> if fn() {
 		runtime.SetFinalizer(p, finalizer)
 	} }
 

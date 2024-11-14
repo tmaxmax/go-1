@@ -252,7 +252,7 @@ func TestPGOSingleIndex(t *testing.T) {
 	}, {
 		originalIndex: 1,
 	}} {
-		t.Run(fmt.Sprintf("originalIndex=%d", tc.originalIndex), func { t |
+		t.Run(fmt.Sprintf("originalIndex=%d", tc.originalIndex), func { t ->
 			wd, err := os.Getwd()
 			if err != nil {
 				t.Fatalf("error getting wd: %v", err)

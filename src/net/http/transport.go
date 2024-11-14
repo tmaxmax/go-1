@@ -846,7 +846,7 @@ func (t *Transport) CloseIdleConnections() {
 		}
 	}
 	t.connsPerHostMu.Lock()
-	t.dialsInProgress.all(func { w | if w.cancelCtx != nil && !w.waiting() {
+	t.dialsInProgress.all(func { w -> if w.cancelCtx != nil && !w.waiting() {
 		w.cancelCtx()
 	} })
 	t.connsPerHostMu.Unlock()
@@ -1764,7 +1764,7 @@ func (t *Transport) dialConn(ctx context.Context, cm connectMethod) (pconn *pers
 	case cm.targetScheme == "http":
 		pconn.isProxy = true
 		if pa := cm.proxyAuth(); pa != "" {
-			pconn.mutateHeaderFunc = func { h | h.Set("Proxy-Authorization", pa) }
+			pconn.mutateHeaderFunc = func { h -> h.Set("Proxy-Authorization", pa) }
 		}
 	case cm.targetScheme == "https":
 		conn := pconn.conn

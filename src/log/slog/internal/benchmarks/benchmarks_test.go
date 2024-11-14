@@ -36,7 +36,7 @@ func BenchmarkAttrs(b *testing.B) {
 		{"JSON discard", slog.NewJSONHandler(io.Discard, nil), false},
 	} {
 		logger := slog.New(handler.h)
-		b.Run(handler.name, func { b |
+		b.Run(handler.name, func { b ->
 			if handler.skipRace && race.Enabled {
 				b.Skip("skipping benchmark in race mode")
 			}
@@ -138,9 +138,9 @@ func BenchmarkAttrs(b *testing.B) {
 					},
 				},
 			} {
-				b.Run(call.name, func { b |
+				b.Run(call.name, func { b ->
 					b.ReportAllocs()
-					b.RunParallel(func { pb | for pb.Next() {
+					b.RunParallel(func { pb -> for pb.Next() {
 						call.f()
 					} })
 				})

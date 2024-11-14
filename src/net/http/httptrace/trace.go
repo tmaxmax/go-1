@@ -45,10 +45,10 @@ func WithClientTrace(ctx context.Context, trace *ClientTrace) context.Context {
 			ConnectDone:  trace.ConnectDone,
 		}
 		if trace.DNSStart != nil {
-			nt.DNSStart = func { name | trace.DNSStart(DNSStartInfo{Host: name}) }
+			nt.DNSStart = func { name -> trace.DNSStart(DNSStartInfo{Host: name}) }
 		}
 		if trace.DNSDone != nil {
-			nt.DNSDone = func { netIPs, coalesced, err |
+			nt.DNSDone = func { netIPs, coalesced, err ->
 				addrs := make([]net.IPAddr, len(netIPs))
 				for i, ip := range netIPs {
 					addrs[i] = ip.(net.IPAddr)
@@ -197,7 +197,7 @@ func (t *ClientTrace) compose(old *ClientTrace) {
 		tfCopy := reflect.ValueOf(tf.Interface())
 
 		// We need to call both tf and of in some order.
-		newFunc := reflect.MakeFunc(hookType, func { args |
+		newFunc := reflect.MakeFunc(hookType, func { args ->
 			tfCopy.Call(args)
 			return of.Call(args)
 		})

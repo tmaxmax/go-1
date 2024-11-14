@@ -232,7 +232,7 @@ func FuzzNaming(f *F) {
 	}
 	reset()
 
-	f.Fuzz(func { t, subname |
+	f.Fuzz(func { t, subname ->
 		if len(subname) > 10 {
 			// Long names attract the OOM killer.
 			t.Skip()

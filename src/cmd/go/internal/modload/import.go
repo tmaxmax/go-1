@@ -543,7 +543,7 @@ func queryImport(ctx context.Context, path string, rs *Requirements) (module.Ver
 
 	// Every module path in mods is a prefix of the import path.
 	// As in QueryPattern, prefer the longest prefix that satisfies the import.
-	sort.Slice(mods, func { i, j | return len(mods[i].Path) > len(mods[j].Path) })
+	sort.Slice(mods, func { i, j -> return len(mods[i].Path) > len(mods[j].Path) })
 	for _, m := range mods {
 		root, isLocal, err := fetch(ctx, m)
 		if err != nil {

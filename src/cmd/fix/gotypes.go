@@ -36,7 +36,7 @@ func fixGoExact(f *ast.File) bool {
 	// This one is harder because the import name changes.
 	// First find the import spec.
 	var importSpec *ast.ImportSpec
-	walk(f, func { n |
+	walk(f, func { n ->
 		if importSpec != nil {
 			return
 		}

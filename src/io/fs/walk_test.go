@@ -55,7 +55,7 @@ func walkTree(n *Node, path string, f func(path string, n *Node)) {
 
 func makeTree() FS {
 	fsys := fstest.MapFS{}
-	walkTree(tree, tree.name, func { path, n |
+	walkTree(tree, tree.name, func { path, n ->
 		if n.entries == nil {
 			fsys[path] = &fstest.MapFile{}
 		} else {
@@ -70,7 +70,7 @@ func makeTree() FS {
 // are always accumulated, though.
 func mark(entry DirEntry, err error, errors *[]error, clear bool) error {
 	name := entry.Name()
-	walkTree(tree, tree.name, func { path, n | if n.name == name {
+	walkTree(tree, tree.name, func { path, n -> if n.name == name {
 		n.mark++
 	} })
 	if err != nil {
@@ -109,7 +109,7 @@ func TestWalkDir(t *testing.T) {
 	if len(errors) != 0 {
 		t.Fatalf("unexpected errors: %s", errors)
 	}
-	walkTree(tree, tree.name, func { path, n |
+	walkTree(tree, tree.name, func { path, n ->
 		if n.mark != 1 {
 			t.Errorf("node %s mark = %d; expected 1", path, n.mark)
 		}
@@ -130,7 +130,7 @@ func TestIssue51617(t *testing.T) {
 	}
 	defer os.Chmod(bad, 0700) // avoid errors on cleanup
 	var saw []string
-	err := WalkDir(os.DirFS(dir), ".", func { path, d, err |
+	err := WalkDir(os.DirFS(dir), ".", func { path, d, err ->
 		if err != nil {
 			return filepath.SkipDir
 		}

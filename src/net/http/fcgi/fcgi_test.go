@@ -243,7 +243,7 @@ func TestChildServeCleansUp(t *testing.T) {
 		rc := nopWriteCloser{bytes.NewReader(input)}
 		done := make(chan struct{})
 		c := newChild(rc, http.HandlerFunc(func { w,
-			r |
+			r ->
 			// block on reading body of request
 			_, err := io.Copy(io.Discard, r.Body)
 			if err != tt.err {
@@ -331,7 +331,7 @@ func TestChildServeReadsEnvVars(t *testing.T) {
 		rc := nopWriteCloser{bytes.NewReader(input)}
 		done := make(chan struct{})
 		c := newChild(rc, http.HandlerFunc(func { w,
-			r |
+			r ->
 			env := ProcessEnv(r)
 			if _, ok := env[tt.envVar]; ok && tt.expectedFilteredOut {
 				t.Errorf("Expected environment variable %s to not be set, but set to %s",
@@ -373,14 +373,14 @@ func TestResponseWriterSniffsContentType(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func { t |
+		t.Run(tt.name, func { t ->
 			input := make([]byte, len(streamFullRequestStdin))
 			copy(input, streamFullRequestStdin)
 			rc := nopWriteCloser{bytes.NewReader(input)}
 			done := make(chan struct{})
 			var resp *response
 			c := newChild(rc, http.HandlerFunc(func { w,
-				r |
+				r ->
 				io.WriteString(w, tt.body)
 				resp = w.(*response)
 				close(done)
@@ -433,7 +433,7 @@ func TestSlowRequest(t *testing.T) {
 	handlerDone := make(chan bool)
 
 	c := newChild(rc, http.HandlerFunc(func { w,
-		r |
+		r ->
 		w.WriteHeader(200)
 		close(handlerDone)
 	}))

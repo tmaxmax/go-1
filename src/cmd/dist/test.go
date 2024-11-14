@@ -484,7 +484,7 @@ func (opts *goTest) buildArgs(t *tester) (build, run, pkgs, testFlags []string, 
 		testFlags = append(testFlags, "-target="+goos+"/"+goarch)
 	}
 
-	setupCmd = func { cmd |
+	setupCmd = func { cmd ->
 		setDir(cmd, filepath.Join(goroot, "src"))
 		if len(opts.env) != 0 {
 			for _, kv := range opts.env {
@@ -550,7 +550,7 @@ func (t *tester) registerStdTest(pkg string) {
 	if t.runRx == nil || t.runRx.MatchString(name) == t.runRxWant {
 		stdMatches = append(stdMatches, pkg)
 	}
-	t.addTest(name, stdTestHeading, func { dt |
+	t.addTest(name, stdTestHeading, func { dt ->
 		if ranGoTest {
 			return nil
 		}
@@ -580,7 +580,7 @@ func (t *tester) registerRaceBenchTest(pkg string) {
 	if t.runRx == nil || t.runRx.MatchString(name) == t.runRxWant {
 		benchMatches = append(benchMatches, pkg)
 	}
-	t.addTest(name, raceBenchHeading, func { dt |
+	t.addTest(name, raceBenchHeading, func { dt ->
 		if ranGoBench {
 			return nil
 		}
@@ -969,7 +969,7 @@ func (t *tester) registerTest(heading string, test *goTest, opts ...registerTest
 			panic("empty variant")
 		}
 		name := testName(test.pkg, test.variant)
-		t.addTest(name, heading, func { dt |
+		t.addTest(name, heading, func { dt ->
 			if skipFunc != nil {
 				msg, skip := skipFunc(dt)
 				if skip {
@@ -1518,7 +1518,7 @@ func (t *tester) makeGOROOTUnwritable() (undo func()) {
 		}
 	}
 
-	filepath.WalkDir(dir, func { path, d, err |
+	filepath.WalkDir(dir, func { path, d, err ->
 		if suffix := strings.TrimPrefix(path, dir+string(filepath.Separator)); suffix != "" {
 			if suffix == ".git" {
 				// Leave Git metadata in whatever state it was in. It may contain a lot

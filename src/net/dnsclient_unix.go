@@ -654,15 +654,15 @@ func (r *Resolver) goLookupIPCNAMEOrder(ctx context.Context, network, name strin
 	var queryFn func(fqdn string, qtype dnsmessage.Type)
 	var responseFn func(fqdn string, qtype dnsmessage.Type) result
 	if conf.singleRequest {
-		queryFn = func { fqdn, qtype | }
-		responseFn = func { fqdn, qtype |
+		queryFn = func { fqdn, qtype -> }
+		responseFn = func { fqdn, qtype ->
 			dnsWaitGroup.Add(1)
 			defer dnsWaitGroup.Done()
 			p, server, err := r.tryOneName(ctx, conf, fqdn, qtype)
 			return result{p, server, err}
 		}
 	} else {
-		queryFn = func { fqdn, qtype |
+		queryFn = func { fqdn, qtype ->
 			dnsWaitGroup.Add(1)
 			go func(qtype dnsmessage.Type) {
 				p, server, err := r.tryOneName(ctx, conf, fqdn, qtype)
@@ -670,7 +670,7 @@ func (r *Resolver) goLookupIPCNAMEOrder(ctx context.Context, network, name strin
 				dnsWaitGroup.Done()
 			}(qtype)
 		}
-		responseFn = func { fqdn, qtype | return <-lane }
+		responseFn = func { fqdn, qtype -> return <-lane }
 	}
 	var lastErr error
 	for _, fqdn := range conf.nameList(name) {

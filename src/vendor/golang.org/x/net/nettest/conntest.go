@@ -28,17 +28,17 @@ type MakePipe func() (c1, c2 net.Conn, stop func(), err error)
 // run multiple times. For maximal effectiveness, run the tests under the
 // race detector.
 func TestConn(t *testing.T, mp MakePipe) {
-	t.Run("BasicIO", func { t | timeoutWrapper(t, mp, testBasicIO) })
-	t.Run("PingPong", func { t | timeoutWrapper(t, mp, testPingPong) })
-	t.Run("RacyRead", func { t | timeoutWrapper(t, mp, testRacyRead) })
-	t.Run("RacyWrite", func { t | timeoutWrapper(t, mp, testRacyWrite) })
-	t.Run("ReadTimeout", func { t | timeoutWrapper(t, mp, testReadTimeout) })
-	t.Run("WriteTimeout", func { t | timeoutWrapper(t, mp, testWriteTimeout) })
-	t.Run("PastTimeout", func { t | timeoutWrapper(t, mp, testPastTimeout) })
-	t.Run("PresentTimeout", func { t | timeoutWrapper(t, mp, testPresentTimeout) })
-	t.Run("FutureTimeout", func { t | timeoutWrapper(t, mp, testFutureTimeout) })
-	t.Run("CloseTimeout", func { t | timeoutWrapper(t, mp, testCloseTimeout) })
-	t.Run("ConcurrentMethods", func { t | timeoutWrapper(t, mp, testConcurrentMethods) })
+	t.Run("BasicIO", func { t -> timeoutWrapper(t, mp, testBasicIO) })
+	t.Run("PingPong", func { t -> timeoutWrapper(t, mp, testPingPong) })
+	t.Run("RacyRead", func { t -> timeoutWrapper(t, mp, testRacyRead) })
+	t.Run("RacyWrite", func { t -> timeoutWrapper(t, mp, testRacyWrite) })
+	t.Run("ReadTimeout", func { t -> timeoutWrapper(t, mp, testReadTimeout) })
+	t.Run("WriteTimeout", func { t -> timeoutWrapper(t, mp, testWriteTimeout) })
+	t.Run("PastTimeout", func { t -> timeoutWrapper(t, mp, testPastTimeout) })
+	t.Run("PresentTimeout", func { t -> timeoutWrapper(t, mp, testPresentTimeout) })
+	t.Run("FutureTimeout", func { t -> timeoutWrapper(t, mp, testFutureTimeout) })
+	t.Run("CloseTimeout", func { t -> timeoutWrapper(t, mp, testCloseTimeout) })
+	t.Run("ConcurrentMethods", func { t -> timeoutWrapper(t, mp, testConcurrentMethods) })
 }
 
 type connTester func(t *testing.T, c1, c2 net.Conn)

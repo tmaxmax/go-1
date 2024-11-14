@@ -292,7 +292,7 @@ func TestIssue25627(t *testing.T) {
 			}
 		}
 
-		syntax.Inspect(f, func { n |
+		syntax.Inspect(f, func { n ->
 			if decl, _ := n.(*syntax.TypeDecl); decl != nil {
 				if tv, ok := info.Types[decl.Type]; ok && decl.Name.Value == "T" {
 					want := strings.Count(src, ";") + 1
@@ -895,7 +895,7 @@ func _cgoCheckPointer(interface{}, interface{})
 //go:linkname _cgoCheckResult runtime.cgoCheckResult
 func _cgoCheckResult(interface{})
 `
-	testFiles(t, []string{"p.go", "_cgo_gotypes.go"}, [][]byte{[]byte(src), []byte(cgoTypes)}, 0, false, func { cfg | *boolFieldAddr(cfg, "go115UsesCgo") = true })
+	testFiles(t, []string{"p.go", "_cgo_gotypes.go"}, [][]byte{[]byte(src), []byte(cgoTypes)}, 0, false, func { cfg -> *boolFieldAddr(cfg, "go115UsesCgo") = true })
 }
 
 func TestIssue61931(t *testing.T) {

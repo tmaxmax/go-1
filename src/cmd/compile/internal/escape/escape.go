@@ -205,7 +205,7 @@ func (b *batch) walkFunc(fn *ir.Func) {
 	fn.SetEsc(escFuncStarted)
 
 	// Identify labels that mark the head of an unstructured loop.
-	ir.Visit(fn, func { n |
+	ir.Visit(fn, func { n ->
 		switch n.Op() {
 		case ir.OLABEL:
 			n := n.(*ir.LabelStmt)

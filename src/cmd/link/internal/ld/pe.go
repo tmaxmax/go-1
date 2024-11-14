@@ -1396,7 +1396,7 @@ func initdynexport(ctxt *Link) {
 		dexport = append(dexport, s)
 	}
 
-	sort.Slice(dexport, func { i, j | return ldr.SymExtname(dexport[i]) < ldr.SymExtname(dexport[j]) })
+	sort.Slice(dexport, func { i, j -> return ldr.SymExtname(dexport[i]) < ldr.SymExtname(dexport[j]) })
 }
 
 func addexports(ctxt *Link) {

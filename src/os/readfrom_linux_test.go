@@ -30,29 +30,29 @@ func TestCopyFileRange(t *testing.T) {
 		syscall.Getpagesize() + 1,
 		32769,
 	}
-	t.Run("Basic", func { t |
+	t.Run("Basic", func { t ->
 		for _, size := range sizes {
-			t.Run(strconv.Itoa(size), func { t | testCopyFileRange(t, int64(size), -1) })
+			t.Run(strconv.Itoa(size), func { t -> testCopyFileRange(t, int64(size), -1) })
 		}
 	})
-	t.Run("Limited", func { t |
-		t.Run("OneLess", func { t |
+	t.Run("Limited", func { t ->
+		t.Run("OneLess", func { t ->
 			for _, size := range sizes {
-				t.Run(strconv.Itoa(size), func { t | testCopyFileRange(t, int64(size), int64(size)-1) })
+				t.Run(strconv.Itoa(size), func { t -> testCopyFileRange(t, int64(size), int64(size)-1) })
 			}
 		})
-		t.Run("Half", func { t |
+		t.Run("Half", func { t ->
 			for _, size := range sizes {
-				t.Run(strconv.Itoa(size), func { t | testCopyFileRange(t, int64(size), int64(size)/2) })
+				t.Run(strconv.Itoa(size), func { t -> testCopyFileRange(t, int64(size), int64(size)/2) })
 			}
 		})
-		t.Run("More", func { t |
+		t.Run("More", func { t ->
 			for _, size := range sizes {
-				t.Run(strconv.Itoa(size), func { t | testCopyFileRange(t, int64(size), int64(size)+7) })
+				t.Run(strconv.Itoa(size), func { t -> testCopyFileRange(t, int64(size), int64(size)+7) })
 			}
 		})
 	})
-	t.Run("DoesntTryInAppendMode", func { t |
+	t.Run("DoesntTryInAppendMode", func { t ->
 		dst, src, data, hook := newCopyFileRangeTest(t, 42)
 
 		dst2, err := OpenFile(dst.Name(), O_RDWR|O_APPEND, 0755)
@@ -70,7 +70,7 @@ func TestCopyFileRange(t *testing.T) {
 		mustSeekStart(t, dst2)
 		mustContainData(t, dst2, data) // through traditional means
 	})
-	t.Run("CopyFileItself", func { t |
+	t.Run("CopyFileItself", func { t ->
 		hook := hookCopyFileRange(t)
 
 		f, err := CreateTemp("", "file-readfrom-itself-test")
@@ -120,8 +120,8 @@ func TestCopyFileRange(t *testing.T) {
 			t.Fatalf("data mismatch: %s != %s", string(data), string(data2))
 		}
 	})
-	t.Run("NotRegular", func { t |
-		t.Run("BothPipes", func { t |
+	t.Run("NotRegular", func { t ->
+		t.Run("BothPipes", func { t ->
 			hook := hookCopyFileRange(t)
 
 			pr1, pw1, err := Pipe()
@@ -160,7 +160,7 @@ func TestCopyFileRange(t *testing.T) {
 			pw2.Close()
 			mustContainData(t, pr2, data)
 		})
-		t.Run("DstPipe", func { t |
+		t.Run("DstPipe", func { t ->
 			dst, src, data, hook := newCopyFileRangeTest(t, 255)
 			dst.Close()
 
@@ -184,7 +184,7 @@ func TestCopyFileRange(t *testing.T) {
 			pw.Close()
 			mustContainData(t, pr, data)
 		})
-		t.Run("SrcPipe", func { t |
+		t.Run("SrcPipe", func { t ->
 			dst, src, data, hook := newCopyFileRangeTest(t, 255)
 			src.Close()
 
@@ -217,7 +217,7 @@ func TestCopyFileRange(t *testing.T) {
 			mustContainData(t, dst, data)
 		})
 	})
-	t.Run("Nil", func { t |
+	t.Run("Nil", func { t ->
 		var nilFile *File
 		anyFile, err := CreateTemp("", "")
 		if err != nil {
@@ -256,47 +256,47 @@ func TestSpliceFile(t *testing.T) {
 		syscall.Getpagesize() + 1,
 		32769,
 	}
-	t.Run("Basic-TCP", func { t |
+	t.Run("Basic-TCP", func { t ->
 		for _, size := range sizes {
-			t.Run(strconv.Itoa(size), func { t | testSpliceFile(t, "tcp", int64(size), -1) })
+			t.Run(strconv.Itoa(size), func { t -> testSpliceFile(t, "tcp", int64(size), -1) })
 		}
 	})
-	t.Run("Basic-Unix", func { t |
+	t.Run("Basic-Unix", func { t ->
 		for _, size := range sizes {
-			t.Run(strconv.Itoa(size), func { t | testSpliceFile(t, "unix", int64(size), -1) })
+			t.Run(strconv.Itoa(size), func { t -> testSpliceFile(t, "unix", int64(size), -1) })
 		}
 	})
-	t.Run("TCP-To-TTY", func { t | testSpliceToTTY(t, "tcp", 32768) })
-	t.Run("Unix-To-TTY", func { t | testSpliceToTTY(t, "unix", 32768) })
-	t.Run("Limited", func { t |
-		t.Run("OneLess-TCP", func { t |
+	t.Run("TCP-To-TTY", func { t -> testSpliceToTTY(t, "tcp", 32768) })
+	t.Run("Unix-To-TTY", func { t -> testSpliceToTTY(t, "unix", 32768) })
+	t.Run("Limited", func { t ->
+		t.Run("OneLess-TCP", func { t ->
 			for _, size := range sizes {
-				t.Run(strconv.Itoa(size), func { t | testSpliceFile(t, "tcp", int64(size), int64(size)-1) })
+				t.Run(strconv.Itoa(size), func { t -> testSpliceFile(t, "tcp", int64(size), int64(size)-1) })
 			}
 		})
-		t.Run("OneLess-Unix", func { t |
+		t.Run("OneLess-Unix", func { t ->
 			for _, size := range sizes {
-				t.Run(strconv.Itoa(size), func { t | testSpliceFile(t, "unix", int64(size), int64(size)-1) })
+				t.Run(strconv.Itoa(size), func { t -> testSpliceFile(t, "unix", int64(size), int64(size)-1) })
 			}
 		})
-		t.Run("Half-TCP", func { t |
+		t.Run("Half-TCP", func { t ->
 			for _, size := range sizes {
-				t.Run(strconv.Itoa(size), func { t | testSpliceFile(t, "tcp", int64(size), int64(size)/2) })
+				t.Run(strconv.Itoa(size), func { t -> testSpliceFile(t, "tcp", int64(size), int64(size)/2) })
 			}
 		})
-		t.Run("Half-Unix", func { t |
+		t.Run("Half-Unix", func { t ->
 			for _, size := range sizes {
-				t.Run(strconv.Itoa(size), func { t | testSpliceFile(t, "unix", int64(size), int64(size)/2) })
+				t.Run(strconv.Itoa(size), func { t -> testSpliceFile(t, "unix", int64(size), int64(size)/2) })
 			}
 		})
-		t.Run("More-TCP", func { t |
+		t.Run("More-TCP", func { t ->
 			for _, size := range sizes {
-				t.Run(strconv.Itoa(size), func { t | testSpliceFile(t, "tcp", int64(size), int64(size)+1) })
+				t.Run(strconv.Itoa(size), func { t -> testSpliceFile(t, "tcp", int64(size), int64(size)+1) })
 			}
 		})
-		t.Run("More-Unix", func { t |
+		t.Run("More-Unix", func { t ->
 			for _, size := range sizes {
-				t.Run(strconv.Itoa(size), func { t | testSpliceFile(t, "unix", int64(size), int64(size)+1) })
+				t.Run(strconv.Itoa(size), func { t -> testSpliceFile(t, "unix", int64(size), int64(size)+1) })
 			}
 		})
 	})
@@ -341,7 +341,7 @@ func testSpliceFile(t *testing.T, proto string, size, limit int64) {
 	if err != nil {
 		t.Fatalf("server Conn SyscallConn error: %v", err)
 	}
-	if err = rc.Control(func { fd |
+	if err = rc.Control(func { fd ->
 		if hook.called && hook.srcfd != int(fd) {
 			t.Fatalf("wrong source file descriptor: got %d, want %d", hook.srcfd, int(fd))
 		}
@@ -633,7 +633,7 @@ type copyFileRangeHook struct {
 
 func (h *copyFileRangeHook) install() {
 	h.original = *PollCopyFileRangeP
-	*PollCopyFileRangeP = func { dst, src, remain |
+	*PollCopyFileRangeP = func { dst, src, remain ->
 		h.called = true
 		h.dstfd = dst.Sysfd
 		h.srcfd = src.Sysfd
@@ -669,7 +669,7 @@ type spliceFileHook struct {
 
 func (h *spliceFileHook) install() {
 	h.original = *PollSpliceFile
-	*PollSpliceFile = func { dst, src, remain |
+	*PollSpliceFile = func { dst, src, remain ->
 		h.called = true
 		h.dstfd = dst.Sysfd
 		h.srcfd = src.Sysfd
@@ -718,8 +718,8 @@ func TestProcCopy(t *testing.T) {
 }
 
 func TestGetPollFDAndNetwork(t *testing.T) {
-	t.Run("tcp4", func { t | testGetPollFDAndNetwork(t, "tcp4") })
-	t.Run("unix", func { t | testGetPollFDAndNetwork(t, "unix") })
+	t.Run("tcp4", func { t -> testGetPollFDAndNetwork(t, "tcp4") })
+	t.Run("unix", func { t -> testGetPollFDAndNetwork(t, "unix") })
 }
 
 func testGetPollFDAndNetwork(t *testing.T, proto string) {
@@ -732,7 +732,7 @@ func testGetPollFDAndNetwork(t *testing.T, proto string) {
 	if err != nil {
 		t.Fatalf("server SyscallConn error: %v", err)
 	}
-	if err = rc.Control(func { fd |
+	if err = rc.Control(func { fd ->
 		pfd, network := GetPollFDAndNetwork(server)
 		if pfd == nil {
 			t.Fatalf("GetPollFDAndNetwork didn't return poll.FD")

@@ -56,7 +56,7 @@ func (i fileInfo) String() string {
 // The archive can be amended afterward using methods like Add and Filter.
 func NewArchive(dir string) (*Archive, error) {
 	a := new(Archive)
-	err := fs.WalkDir(os.DirFS(dir), ".", func { name, d, err |
+	err := fs.WalkDir(os.DirFS(dir), ".", func { name, d, err ->
 		if err != nil {
 			return err
 		}
@@ -112,7 +112,7 @@ func nameLess(x, y string) bool {
 // NewArchive returns a sorted archive, and the other methods
 // preserve the sorting of the archive.
 func (a *Archive) Sort() {
-	sort.Slice(a.Files, func { i, j | return nameLess(a.Files[i].Name, a.Files[j].Name) })
+	sort.Slice(a.Files, func { i, j -> return nameLess(a.Files[i].Name, a.Files[j].Name) })
 }
 
 // Clone returns a copy of the Archive.
@@ -157,7 +157,7 @@ func (a *Archive) SetMode(mode func(name string, m fs.FileMode) fs.FileMode) {
 // a leading **/ or trailing /**, which match any number of path elements
 // (including no path elements) before or after the main match.
 func (a *Archive) Remove(patterns ...string) {
-	a.Filter(func { name |
+	a.Filter(func { name ->
 		for _, pattern := range patterns {
 			match, err := amatch(pattern, name)
 			if err != nil {

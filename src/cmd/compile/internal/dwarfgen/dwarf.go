@@ -541,7 +541,7 @@ func createComplexVar(fnsym *obj.LSym, fn *ir.Func, varID ssa.VarID, closureVars
 	}
 	list := debug.LocationLists[varID]
 	if len(list) != 0 {
-		dvar.PutLocationList = func { listSym, startPC | debug.PutLocationList(list, base.Ctxt, listSym.(*obj.LSym), startPC.(*obj.LSym)) }
+		dvar.PutLocationList = func { listSym, startPC -> debug.PutLocationList(list, base.Ctxt, listSym.(*obj.LSym), startPC.(*obj.LSym)) }
 	}
 	return dvar
 }

@@ -56,7 +56,7 @@ var joinPathTests = [...]struct {
 
 func TestJoinPath(t *testing.T) {
 	for _, test := range joinPathTests {
-		t.Run("", func { t |
+		t.Run("", func { t ->
 			path := syscall.JoinPath(test.dir, test.file)
 			if path != test.path {
 				t.Errorf("join(%q,%q): want=%q got=%q", test.dir, test.file, test.path, path)
@@ -67,7 +67,7 @@ func TestJoinPath(t *testing.T) {
 
 func BenchmarkJoinPath(b *testing.B) {
 	for _, test := range joinPathTests {
-		b.Run("", func { b | for i := 0; i < b.N; i++ {
+		b.Run("", func { b -> for i := 0; i < b.N; i++ {
 			syscall.JoinPath(test.dir, test.file)
 		} })
 	}

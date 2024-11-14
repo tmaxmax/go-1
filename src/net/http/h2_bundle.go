@@ -1845,7 +1845,7 @@ func http2NewFramer(w io.Writer, r io.Reader) *http2Framer {
 		debugReadLoggerf:  log.Printf,
 		debugWriteLoggerf: log.Printf,
 	}
-	fr.getReadBuf = func { size |
+	fr.getReadBuf = func { size ->
 		if cap(fr.readBuf) >= int(size) {
 			return fr.readBuf[:size]
 		}
@@ -2946,7 +2946,7 @@ func (fr *http2Framer) readMetaFrame(hf *http2HeadersFrame) (http2Frame, error) 
 	hdec := fr.ReadMetaHeaders
 	hdec.SetEmitEnabled(true)
 	hdec.SetMaxStringLength(fr.maxHeaderStringLen())
-	hdec.SetEmitFunc(func { hf |
+	hdec.SetEmitFunc(func { hf ->
 		if http2VerboseLogs && fr.logReads {
 			fr.debugReadLoggerf("http2: decoded hpack field %+v", hf)
 		}
@@ -2983,7 +2983,7 @@ func (fr *http2Framer) readMetaFrame(hf *http2HeadersFrame) (http2Frame, error) 
 		mh.Fields = append(mh.Fields, hf)
 	})
 	// Lose reference to MetaHeadersFrame:
-	defer hdec.SetEmitFunc(func { hf | })
+	defer hdec.SetEmitFunc(func { hf -> })
 
 	var hc http2headersOrContinuation = hf
 	for {
@@ -3061,7 +3061,7 @@ func http2summarizeFrame(f http2Frame) string {
 	switch f := f.(type) {
 	case *http2SettingsFrame:
 		n := 0
-		f.ForeachSetting(func { s |
+		f.ForeachSetting(func { s ->
 			n++
 			if n == 1 {
 				buf.WriteString(", settings:")
@@ -6646,7 +6646,7 @@ func (w *http2responseWriter) SetReadDeadline(deadline time.Time) error {
 		st.onReadTimeout()
 		return nil
 	}
-	w.rws.conn.sendServeMsg(func { sc |
+	w.rws.conn.sendServeMsg(func { sc ->
 		if st.readDeadline != nil {
 			if !st.readDeadline.Stop() {
 				// Deadline already exceeded, or stream has been closed.
@@ -6672,7 +6672,7 @@ func (w *http2responseWriter) SetWriteDeadline(deadline time.Time) error {
 		st.onWriteTimeout()
 		return nil
 	}
-	w.rws.conn.sendServeMsg(func { sc |
+	w.rws.conn.sendServeMsg(func { sc ->
 		if st.writeDeadline != nil {
 			if !st.writeDeadline.Stop() {
 				// Deadline already exceeded, or stream has been closed.
@@ -9242,7 +9242,7 @@ func (cc *http2ClientConn) encodeHeaders(req *Request, addGzipHeader bool, trail
 	// separate pass before encoding the headers to prevent
 	// modifying the hpack state.
 	hlSize := uint64(0)
-	enumerateHeaders(func { name, value |
+	enumerateHeaders(func { name, value ->
 		hf := hpack.HeaderField{Name: name, Value: value}
 		hlSize += uint64(hf.Size())
 	})
@@ -9255,7 +9255,7 @@ func (cc *http2ClientConn) encodeHeaders(req *Request, addGzipHeader bool, trail
 	traceHeaders := http2traceHasWroteHeaderField(trace)
 
 	// Header list size is ok. Write the headers.
-	enumerateHeaders(func { name, value |
+	enumerateHeaders(func { name, value ->
 		name, ascii := http2lowerHeader(name)
 		if !ascii {
 			// Skip writing invalid headers. Per RFC 7540, Section 8.1.2, header
@@ -9648,7 +9648,7 @@ func (rl *http2clientConnReadLoop) handleResponse(cs *http2clientStream, f *http
 				t = make(Header)
 				res.Trailer = t
 			}
-			http2foreachHeaderElement(hf.Value, func { v | t[http2canonicalHeader(v)] = nil })
+			http2foreachHeaderElement(hf.Value, func { v -> t[http2canonicalHeader(v)] = nil })
 		} else {
 			vv := header[key]
 			if vv == nil && len(strs) > 0 {
@@ -10061,7 +10061,7 @@ func (rl *http2clientConnReadLoop) processSettingsNoWrite(f *http2SettingsFrame)
 	}
 
 	var seenMaxConcurrentStreams bool
-	err := f.ForeachSetting(func { s |
+	err := f.ForeachSetting(func { s ->
 		switch s.ID {
 		case http2SettingMaxFrameSize:
 			cc.maxFrameSize = s.Val
@@ -11470,7 +11470,7 @@ func (ws *http2priorityWriteScheduler) Push(wr http2FrameWriteRequest) {
 }
 
 func (ws *http2priorityWriteScheduler) Pop() (wr http2FrameWriteRequest, ok bool) {
-	ws.root.walkReadyInOrder(false, &ws.tmp, func { n, openParent |
+	ws.root.walkReadyInOrder(false, &ws.tmp, func { n, openParent ->
 		limit := int32(math.MaxInt32)
 		if openParent {
 			limit = ws.writeThrottleLimit

@@ -51,7 +51,7 @@ func embedFileList(v *ir.Name, kind int) []string {
 			}
 		}
 	}
-	sort.Slice(list, func { i, j | return embedFileLess(list[i], list[j]) })
+	sort.Slice(list, func { i, j -> return embedFileLess(list[i], list[j]) })
 
 	if kind == embedString || kind == embedBytes {
 		if len(list) > 1 {

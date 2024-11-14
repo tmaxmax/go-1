@@ -274,9 +274,9 @@ var sink string
 func BenchmarkIPString(b *testing.B) {
 	testHookUninstaller.Do(uninstallTestHooks)
 
-	b.Run("IPv4", func { b | benchmarkIPString(b, IPv4len) })
+	b.Run("IPv4", func { b -> benchmarkIPString(b, IPv4len) })
 
-	b.Run("IPv6", func { b | benchmarkIPString(b, IPv6len) })
+	b.Run("IPv6", func { b -> benchmarkIPString(b, IPv6len) })
 }
 
 func benchmarkIPString(b *testing.B, size int) {
@@ -752,8 +752,8 @@ func TestIPAddrScope(t *testing.T) {
 }
 
 func BenchmarkIPEqual(b *testing.B) {
-	b.Run("IPv4", func { b | benchmarkIPEqual(b, IPv4len) })
-	b.Run("IPv6", func { b | benchmarkIPEqual(b, IPv6len) })
+	b.Run("IPv4", func { b -> benchmarkIPEqual(b, IPv4len) })
+	b.Run("IPv6", func { b -> benchmarkIPEqual(b, IPv6len) })
 }
 
 func benchmarkIPEqual(b *testing.B, size int) {

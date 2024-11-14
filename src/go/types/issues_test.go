@@ -300,7 +300,7 @@ func TestIssue25627(t *testing.T) {
 			}
 		}
 
-		ast.Inspect(f, func { n |
+		ast.Inspect(f, func { n ->
 			if spec, _ := n.(*ast.TypeSpec); spec != nil {
 				if tv, ok := info.Types[spec.Type]; ok && spec.Name.Name == "T" {
 					want := strings.Count(src, ";") + 1
@@ -904,7 +904,7 @@ func _cgoCheckPointer(interface{}, interface{})
 //go:linkname _cgoCheckResult runtime.cgoCheckResult
 func _cgoCheckResult(interface{})
 `
-	testFiles(t, []string{"p.go", "_cgo_gotypes.go"}, [][]byte{[]byte(src), []byte(cgoTypes)}, false, func { cfg | *boolFieldAddr(cfg, "go115UsesCgo") = true })
+	testFiles(t, []string{"p.go", "_cgo_gotypes.go"}, [][]byte{[]byte(src), []byte(cgoTypes)}, false, func { cfg -> *boolFieldAddr(cfg, "go115UsesCgo") = true })
 }
 
 func TestIssue61931(t *testing.T) {

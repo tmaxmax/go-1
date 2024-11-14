@@ -24,20 +24,20 @@ func TestHashTrieMapBadHash(t *testing.T) {
 		// Stub out the good hash function with a terrible one.
 		// Everything should still work as expected.
 		m := NewHashTrieMap[string, int]()
-		m.keyHash = func { _, _ | return 0 }
+		m.keyHash = func { _, _ -> return 0 }
 		return m
 	})
 }
 
 func testHashTrieMap(t *testing.T, newMap func() *HashTrieMap[string, int]) {
-	t.Run("LoadEmpty", func { t |
+	t.Run("LoadEmpty", func { t ->
 		m := newMap()
 
 		for _, s := range testData {
 			expectMissing(t, s, 0)(m.Load(s))
 		}
 	})
-	t.Run("LoadOrStore", func { t |
+	t.Run("LoadOrStore", func { t ->
 		m := newMap()
 
 		for i, s := range testData {
@@ -51,7 +51,7 @@ func testHashTrieMap(t *testing.T, newMap func() *HashTrieMap[string, int]) {
 			expectLoaded(t, s, i)(m.LoadOrStore(s, 0))
 		}
 	})
-	t.Run("CompareAndDeleteAll", func { t |
+	t.Run("CompareAndDeleteAll", func { t ->
 		m := newMap()
 
 		for range 3 {
@@ -73,7 +73,7 @@ func testHashTrieMap(t *testing.T, newMap func() *HashTrieMap[string, int]) {
 			}
 		}
 	})
-	t.Run("CompareAndDeleteOne", func { t |
+	t.Run("CompareAndDeleteOne", func { t ->
 		m := newMap()
 
 		for i, s := range testData {
@@ -93,7 +93,7 @@ func testHashTrieMap(t *testing.T, newMap func() *HashTrieMap[string, int]) {
 			}
 		}
 	})
-	t.Run("DeleteMultiple", func { t |
+	t.Run("DeleteMultiple", func { t ->
 		m := newMap()
 
 		for i, s := range testData {
@@ -115,15 +115,15 @@ func testHashTrieMap(t *testing.T, newMap func() *HashTrieMap[string, int]) {
 			}
 		}
 	})
-	t.Run("All", func { t |
+	t.Run("All", func { t ->
 		m := newMap()
 
-		testAll(t, m, testDataMap(testData[:]), func { _, _ | return true })
+		testAll(t, m, testDataMap(testData[:]), func { _, _ -> return true })
 	})
-	t.Run("AllDelete", func { t |
+	t.Run("AllDelete", func { t ->
 		m := newMap()
 
-		testAll(t, m, testDataMap(testData[:]), func { s, i |
+		testAll(t, m, testDataMap(testData[:]), func { s, i ->
 			expectDeleted(t, s, i)(m.CompareAndDelete(s, i))
 			return true
 		})
@@ -131,7 +131,7 @@ func testHashTrieMap(t *testing.T, newMap func() *HashTrieMap[string, int]) {
 			expectMissing(t, s, 0)(m.Load(s))
 		}
 	})
-	t.Run("ConcurrentLifecycleUnsharedKeys", func { t |
+	t.Run("ConcurrentLifecycleUnsharedKeys", func { t ->
 		m := newMap()
 
 		gmp := runtime.GOMAXPROCS(-1)
@@ -165,7 +165,7 @@ func testHashTrieMap(t *testing.T, newMap func() *HashTrieMap[string, int]) {
 		}
 		wg.Wait()
 	})
-	t.Run("ConcurrentDeleteSharedKeys", func { t |
+	t.Run("ConcurrentDeleteSharedKeys", func { t ->
 		m := newMap()
 
 		// Load up the map.
@@ -199,7 +199,7 @@ func testAll[K, V comparable](t *testing.T, m *HashTrieMap[K, V], testData map[K
 		expectStored(t, k, v)(m.LoadOrStore(k, v))
 	}
 	visited := make(map[K]int)
-	m.All()(func { key, got |
+	m.All()(func { key, got ->
 		want, ok := testData[key]
 		if !ok {
 			t.Errorf("unexpected key %v in map", key)

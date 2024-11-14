@@ -65,7 +65,7 @@ func TestShared(t *testing.T) {
 			continue
 		}
 
-		t.Run(name, func { t |
+		t.Run(name, func { t ->
 			t.Parallel()
 			config := configure(tc.sanitizer)
 			config.skipIfCSanitizerBroken(t)

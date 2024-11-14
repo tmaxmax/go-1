@@ -272,7 +272,7 @@ func downloadZip(ctx context.Context, mod module.Version, zipfile string) (err e
 	}()
 
 	var unrecoverableErr error
-	err = TryProxies(func { proxy |
+	err = TryProxies(func { proxy ->
 		if unrecoverableErr != nil {
 			return unrecoverableErr
 		}
@@ -372,7 +372,7 @@ func makeDirsReadOnly(dir string) {
 		mode fs.FileMode
 	}
 	var dirs []pathMode // in lexical order
-	filepath.WalkDir(dir, func { path, d, err |
+	filepath.WalkDir(dir, func { path, d, err ->
 		if err == nil && d.IsDir() {
 			info, err := d.Info()
 			if err == nil && info.Mode()&0222 != 0 {
@@ -392,7 +392,7 @@ func makeDirsReadOnly(dir string) {
 // any permission changes needed to do so.
 func RemoveAll(dir string) error {
 	// Module cache has 0555 directories; make them writable in order to remove content.
-	filepath.WalkDir(dir, func { path, info, err |
+	filepath.WalkDir(dir, func { path, info, err ->
 		if err != nil {
 			return nil // ignore errors walking in file system
 		}
@@ -869,7 +869,7 @@ Outer:
 		defer unlock()
 	}
 
-	err := lockedfile.Transform(GoSumFile, func { data |
+	err := lockedfile.Transform(GoSumFile, func { data ->
 		tidyGoSum := tidyGoSum(data, keep)
 		return tidyGoSum, nil
 	})

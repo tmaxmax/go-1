@@ -57,7 +57,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 }
 
 func checkCgo(fset *token.FileSet, f *ast.File, info *types.Info, reportf func(token.Pos, string, ...interface{})) {
-	ast.Inspect(f, func { n |
+	ast.Inspect(f, func { n ->
 		call, ok := n.(*ast.CallExpr)
 		if !ok {
 			return true
@@ -266,7 +266,7 @@ func typeCheckCgoSourceFiles(fset *token.FileSet, pkg *types.Package, files []*a
 	// Type-check the synthetic files.
 	tc := &types.Config{
 		FakeImportC: true,
-		Importer:    importerFunc(func { path | return importMap[path], nil }),
+		Importer:    importerFunc(func { path -> return importMap[path], nil }),
 		Sizes:       sizes,
 		Error:       func(error) {}, // ignore errors (e.g. unused import)
 	}

@@ -68,7 +68,7 @@ func TestOnceValues(t *testing.T) {
 }
 
 func testOncePanicX(t *testing.T, calls *int, f func()) {
-	testOncePanicWith(t, calls, f, func { label, p | if p != "x" {
+	testOncePanicWith(t, calls, f, func { label, p -> if p != "x" {
 		t.Fatalf("%s: want panic %v, got %v", label, "x", p)
 	} })
 }
@@ -129,7 +129,7 @@ func TestOnceFuncPanicNil(t *testing.T) {
 		calls++
 		panic(nil)
 	})
-	testOncePanicWith(t, &calls, f, func { label, p |
+	testOncePanicWith(t, &calls, f, func { label, p ->
 		switch p.(type) {
 		case nil, *runtime.PanicNilError:
 			return
@@ -204,10 +204,10 @@ func TestOnceXGC(t *testing.T) {
 		},
 	}
 	for n, fn := range fns {
-		t.Run(n, func { t |
+		t.Run(n, func { t ->
 			buf := make([]byte, 1024)
 			var gc atomic.Bool
-			runtime.SetFinalizer(&buf[0], func { _ | gc.Store(true) })
+			runtime.SetFinalizer(&buf[0], func { _ -> gc.Store(true) })
 			f := fn(buf)
 			gcwaitfin()
 			if gc.Load() != false {
@@ -245,14 +245,14 @@ func doOnceFunc() {
 }
 
 func BenchmarkOnceFunc(b *testing.B) {
-	b.Run("v=Once", func { b |
+	b.Run("v=Once", func { b ->
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			// The baseline is direct use of sync.Once.
 			doOnceFunc()
 		}
 	})
-	b.Run("v=Global", func { b |
+	b.Run("v=Global", func { b ->
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			// As of 3/2023, the compiler doesn't recognize that onceFunc is
@@ -261,7 +261,7 @@ func BenchmarkOnceFunc(b *testing.B) {
 			onceFunc()
 		}
 	})
-	b.Run("v=Local", func { b |
+	b.Run("v=Local", func { b ->
 		b.ReportAllocs()
 		// As of 3/2023, the compiler *does* recognize this local binding as an
 		// inlinable closure. This is the best case for OnceFunc, but probably
@@ -289,7 +289,7 @@ func doOnceValue() int {
 
 func BenchmarkOnceValue(b *testing.B) {
 	// See BenchmarkOnceFunc
-	b.Run("v=Once", func { b |
+	b.Run("v=Once", func { b ->
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			if want, got := 42, doOnceValue(); want != got {
@@ -297,7 +297,7 @@ func BenchmarkOnceValue(b *testing.B) {
 			}
 		}
 	})
-	b.Run("v=Global", func { b |
+	b.Run("v=Global", func { b ->
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			if want, got := 42, onceValue(); want != got {
@@ -305,7 +305,7 @@ func BenchmarkOnceValue(b *testing.B) {
 			}
 		}
 	})
-	b.Run("v=Local", func { b |
+	b.Run("v=Local", func { b ->
 		b.ReportAllocs()
 		onceValue := sync.OnceValue(func { return 42 })
 		for i := 0; i < b.N; i++ {

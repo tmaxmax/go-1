@@ -236,7 +236,7 @@ func normalizeGoDeferCall(pos src.XPos, op ir.Op, call ir.Node, init *ir.Nodes) 
 	var argps []*ir.Node
 
 	var visit func(argp *ir.Node)
-	visit = func { argp |
+	visit = func { argp ->
 		arg := *argp
 		if arg == nil {
 			return

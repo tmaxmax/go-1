@@ -1021,7 +1021,7 @@ func (ffd *fakeNetFD) readFrom(p []byte) (n int, sa syscall.Sockaddr, err error)
 }
 
 func (ffd *fakeNetFD) readFromInet4(p []byte, sa *syscall.SockaddrInet4) (n int, err error) {
-	n, _, err = ffd.queue.recvfrom(ffd.readDeadline.Load(), p, true, func { from |
+	n, _, err = ffd.queue.recvfrom(ffd.readDeadline.Load(), p, true, func { from ->
 		fromSA, err := from.sockaddr(syscall.AF_INET)
 		if err != nil {
 			return err
@@ -1036,7 +1036,7 @@ func (ffd *fakeNetFD) readFromInet4(p []byte, sa *syscall.SockaddrInet4) (n int,
 }
 
 func (ffd *fakeNetFD) readFromInet6(p []byte, sa *syscall.SockaddrInet6) (n int, err error) {
-	n, _, err = ffd.queue.recvfrom(ffd.readDeadline.Load(), p, true, func { from |
+	n, _, err = ffd.queue.recvfrom(ffd.readDeadline.Load(), p, true, func { from ->
 		fromSA, err := from.sockaddr(syscall.AF_INET6)
 		if err != nil {
 			return err

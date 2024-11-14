@@ -36,7 +36,7 @@ func TestForCompiler(t *testing.T) {
 
 	fset := token.NewFileSet()
 
-	t.Run("LookupDefault", func { t |
+	t.Run("LookupDefault", func { t ->
 		imp := ForCompiler(fset, compiler, nil)
 		pkg, err := imp.Import(thePackage)
 		if err != nil {
@@ -62,7 +62,7 @@ func TestForCompiler(t *testing.T) {
 		}
 	})
 
-	t.Run("LookupCustom", func { t |
+	t.Run("LookupCustom", func { t ->
 		// TODO(mdempsky): Decide whether to remove this test, or to fix
 		// support for it in unified IR. It's not clear that we actually
 		// need to support importing "math/big" as "math/bigger", for

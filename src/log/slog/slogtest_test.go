@@ -24,7 +24,7 @@ func TestSlogtest(t *testing.T) {
 		{"JSON", func(w io.Writer) slog.Handler { return slog.NewJSONHandler(w, nil) }, parseJSON},
 		{"Text", func(w io.Writer) slog.Handler { return slog.NewTextHandler(w, nil) }, parseText},
 	} {
-		t.Run(test.name, func { t |
+		t.Run(test.name, func { t ->
 			var buf bytes.Buffer
 			h := test.new(&buf)
 			results := func {

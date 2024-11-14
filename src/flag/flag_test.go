@@ -100,7 +100,7 @@ func TestEverything(t *testing.T) {
 	}
 	// Now test they're visited in sort order.
 	var flagNames []string
-	Visit(func { f | flagNames = append(flagNames, f.Name) })
+	Visit(func { f -> flagNames = append(flagNames, f.Name) })
 	if !slices.IsSorted(flagNames) {
 		t.Errorf("flag names not sorted: %v", flagNames)
 	}
@@ -270,7 +270,7 @@ func TestUserDefinedFunc(t *testing.T) {
 	flags := NewFlagSet("test", ContinueOnError)
 	flags.SetOutput(io.Discard)
 	var ss []string
-	flags.Func("v", "usage", func { s |
+	flags.Func("v", "usage", func { s ->
 		ss = append(ss, s)
 		return nil
 	})
@@ -294,7 +294,7 @@ func TestUserDefinedFunc(t *testing.T) {
 	// test Func error
 	flags = NewFlagSet("test", ContinueOnError)
 	flags.SetOutput(io.Discard)
-	flags.Func("v", "usage", func { s | return fmt.Errorf("test error") })
+	flags.Func("v", "usage", func { s -> return fmt.Errorf("test error") })
 	// flag not set, so no error
 	if err := flags.Parse(nil); err != nil {
 		t.Error(err)
@@ -805,7 +805,7 @@ func TestUserDefinedBoolFunc(t *testing.T) {
 	flags := NewFlagSet("test", ContinueOnError)
 	flags.SetOutput(io.Discard)
 	var ss []string
-	flags.BoolFunc("v", "usage", func { s |
+	flags.BoolFunc("v", "usage", func { s ->
 		ss = append(ss, s)
 		return nil
 	})
@@ -829,7 +829,7 @@ func TestUserDefinedBoolFunc(t *testing.T) {
 	// test BoolFunc error
 	flags = NewFlagSet("test", ContinueOnError)
 	flags.SetOutput(io.Discard)
-	flags.BoolFunc("v", "usage", func { s | return fmt.Errorf("test error") })
+	flags.BoolFunc("v", "usage", func { s -> return fmt.Errorf("test error") })
 	// flag not set, so no error
 	if err := flags.Parse(nil); err != nil {
 		t.Error(err)

@@ -282,7 +282,7 @@ func TestElfBindNow(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Run(test.name, func { t |
+		t.Run(test.name, func { t ->
 			if test.mustInternalLink {
 				testenv.MustInternalLink(t, test.mustHaveCGO)
 			}
@@ -519,7 +519,7 @@ func TestRelroSectionOverlapIssue67261(t *testing.T) {
 	}
 
 	// Sort by address
-	sort.SliceStable(secs, func { i, j | return secs[i].Addr < secs[j].Addr })
+	sort.SliceStable(secs, func { i, j -> return secs[i].Addr < secs[j].Addr })
 
 	// Check to make sure we don't have any overlaps.
 	foundOverlap := false

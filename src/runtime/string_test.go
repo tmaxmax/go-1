@@ -96,7 +96,7 @@ var escapeString string
 func BenchmarkSliceByteToString(b *testing.B) {
 	buf := []byte{'!'}
 	for n := 0; n < 8; n++ {
-		b.Run(strconv.Itoa(len(buf)), func { b | for i := 0; i < b.N; i++ {
+		b.Run(strconv.Itoa(len(buf)), func { b -> for i := 0; i < b.N; i++ {
 			escapeString = string(buf)
 		} })
 		buf = append(buf, buf...)
@@ -113,16 +113,16 @@ var sinkInt int
 
 func BenchmarkRuneCount(b *testing.B) {
 	// Each sub-benchmark counts the runes in a string in a different way.
-	b.Run("lenruneslice", func { b |
+	b.Run("lenruneslice", func { b ->
 		for _, sd := range stringdata {
-			b.Run(sd.name, func { b | for i := 0; i < b.N; i++ {
+			b.Run(sd.name, func { b -> for i := 0; i < b.N; i++ {
 				sinkInt += len([]rune(sd.data))
 			} })
 		}
 	})
-	b.Run("rangeloop", func { b |
+	b.Run("rangeloop", func { b ->
 		for _, sd := range stringdata {
-			b.Run(sd.name, func { b |
+			b.Run(sd.name, func { b ->
 				for i := 0; i < b.N; i++ {
 					n := 0
 					for range sd.data {
@@ -133,9 +133,9 @@ func BenchmarkRuneCount(b *testing.B) {
 			})
 		}
 	})
-	b.Run("utf8.RuneCountInString", func { b |
+	b.Run("utf8.RuneCountInString", func { b ->
 		for _, sd := range stringdata {
-			b.Run(sd.name, func { b | for i := 0; i < b.N; i++ {
+			b.Run(sd.name, func { b -> for i := 0; i < b.N; i++ {
 				sinkInt += utf8.RuneCountInString(sd.data)
 			} })
 		}
@@ -143,25 +143,25 @@ func BenchmarkRuneCount(b *testing.B) {
 }
 
 func BenchmarkRuneIterate(b *testing.B) {
-	b.Run("range", func { b |
+	b.Run("range", func { b ->
 		for _, sd := range stringdata {
-			b.Run(sd.name, func { b | for i := 0; i < b.N; i++ {
+			b.Run(sd.name, func { b -> for i := 0; i < b.N; i++ {
 				for range sd.data {
 				}
 			} })
 		}
 	})
-	b.Run("range1", func { b |
+	b.Run("range1", func { b ->
 		for _, sd := range stringdata {
-			b.Run(sd.name, func { b | for i := 0; i < b.N; i++ {
+			b.Run(sd.name, func { b -> for i := 0; i < b.N; i++ {
 				for range sd.data {
 				}
 			} })
 		}
 	})
-	b.Run("range2", func { b |
+	b.Run("range2", func { b ->
 		for _, sd := range stringdata {
-			b.Run(sd.name, func { b | for i := 0; i < b.N; i++ {
+			b.Run(sd.name, func { b -> for i := 0; i < b.N; i++ {
 				for range sd.data {
 				}
 			} })

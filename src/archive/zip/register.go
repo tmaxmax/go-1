@@ -107,8 +107,8 @@ var (
 )
 
 func init() {
-	compressors.Store(Store, Compressor(func { w | return &nopCloser{w}, nil }))
-	compressors.Store(Deflate, Compressor(func { w | return newFlateWriter(w), nil }))
+	compressors.Store(Store, Compressor(func { w -> return &nopCloser{w}, nil }))
+	compressors.Store(Deflate, Compressor(func { w -> return newFlateWriter(w), nil }))
 
 	decompressors.Store(Store, Decompressor(io.NopCloser))
 	decompressors.Store(Deflate, Decompressor(newFlateReader))

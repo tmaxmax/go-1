@@ -392,7 +392,7 @@ func readModGraph(ctx context.Context, pruning modPruning, roots []module.Versio
 	}
 
 	var enqueue func(m module.Version, pruning modPruning)
-	enqueue = func { m, pruning |
+	enqueue = func { m, pruning ->
 		if m.Version == "none" {
 			return
 		}
@@ -524,7 +524,7 @@ func (mg *ModuleGraph) BuildList() []module.Version {
 }
 
 func (mg *ModuleGraph) findError() error {
-	errStack := mg.g.FindPath(func { m |
+	errStack := mg.g.FindPath(func { m ->
 		_, err := mg.loadCache.Get(m)
 		return err != nil && err != par.ErrCacheEntryNotFound
 	})
@@ -944,7 +944,7 @@ func tidyPrunedRoots(ctx context.Context, mainModule module.Version, old *Requir
 		}
 		<-q.Idle()
 
-		disambiguateRoot.Range(func { k, _ |
+		disambiguateRoot.Range(func { k, _ ->
 			m := k.(module.Version)
 			roots = append(roots, m)
 			pathIsRoot[m.Path] = true

@@ -313,7 +313,7 @@ func (r *gitRepo) Tags(ctx context.Context, prefix string) (*Tags, error) {
 		}
 		tags.List = append(tags.List, Tag{tag, hash})
 	}
-	sort.Slice(tags.List, func { i, j | return tags.List[i].Name < tags.List[j].Name })
+	sort.Slice(tags.List, func { i, j -> return tags.List[i].Name < tags.List[j].Name })
 
 	dir := prefix[:strings.LastIndex(prefix, "/")+1]
 	h := sha256.New()

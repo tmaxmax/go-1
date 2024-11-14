@@ -229,54 +229,54 @@ func TestCovTool(t *testing.T) {
 
 	// At this point we can fork off a bunch of child tests
 	// to check different tool modes.
-	t.Run("MergeSimple", func { t |
+	t.Run("MergeSimple", func { t ->
 		t.Parallel()
 		testMergeSimple(t, s, s.outdirs[0], s.outdirs[1], "set")
 		testMergeSimple(t, s, s.outdirs[2], s.outdirs[3], "atomic")
 	})
-	t.Run("MergeSelect", func { t |
+	t.Run("MergeSelect", func { t ->
 		t.Parallel()
 		testMergeSelect(t, s, s.outdirs[0], s.outdirs[1], "set")
 		testMergeSelect(t, s, s.outdirs[2], s.outdirs[3], "atomic")
 	})
-	t.Run("MergePcombine", func { t |
+	t.Run("MergePcombine", func { t ->
 		t.Parallel()
 		testMergeCombinePrograms(t, s)
 	})
-	t.Run("Dump", func { t |
+	t.Run("Dump", func { t ->
 		t.Parallel()
 		testDump(t, s)
 	})
-	t.Run("Percent", func { t |
+	t.Run("Percent", func { t ->
 		t.Parallel()
 		testPercent(t, s)
 	})
-	t.Run("PkgList", func { t |
+	t.Run("PkgList", func { t ->
 		t.Parallel()
 		testPkgList(t, s)
 	})
-	t.Run("Textfmt", func { t |
+	t.Run("Textfmt", func { t ->
 		t.Parallel()
 		testTextfmt(t, s)
 	})
-	t.Run("Subtract", func { t |
+	t.Run("Subtract", func { t ->
 		t.Parallel()
 		testSubtract(t, s)
 	})
-	t.Run("Intersect", func { t |
+	t.Run("Intersect", func { t ->
 		t.Parallel()
 		testIntersect(t, s, s.outdirs[0], s.outdirs[1], "set")
 		testIntersect(t, s, s.outdirs[2], s.outdirs[3], "atomic")
 	})
-	t.Run("CounterClash", func { t |
+	t.Run("CounterClash", func { t ->
 		t.Parallel()
 		testCounterClash(t, s)
 	})
-	t.Run("TestEmpty", func { t |
+	t.Run("TestEmpty", func { t ->
 		t.Parallel()
 		testEmpty(t, s)
 	})
-	t.Run("TestCommandLineErrors", func { t |
+	t.Run("TestCommandLineErrors", func { t ->
 		t.Parallel()
 		testCommandLineErrors(t, s, s.outdirs[0])
 	})

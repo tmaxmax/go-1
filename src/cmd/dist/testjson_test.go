@@ -45,14 +45,14 @@ func TestJSONFilterBoundaries(t *testing.T) {
 	want := strings.ReplaceAll(in, `"}`, `:variant"}`)
 
 	// Write one bytes at a time.
-	t.Run("bytes", func { t |
-		checkJSONFilterWith(t, want, func { f | for i := 0; i < len(in); i++ {
+	t.Run("bytes", func { t ->
+		checkJSONFilterWith(t, want, func { f -> for i := 0; i < len(in); i++ {
 			f.Write([]byte{in[i]})
 		} })
 	})
 	// Write a block containing a whole line bordered by two partial lines.
-	t.Run("bytes", func { t |
-		checkJSONFilterWith(t, want, func { f |
+	t.Run("bytes", func { t ->
+		checkJSONFilterWith(t, want, func { f ->
 			const b1 = 5
 			const b2 = len(in) - 5
 			f.Write([]byte(in[:b1]))
@@ -64,7 +64,7 @@ func TestJSONFilterBoundaries(t *testing.T) {
 
 func checkJSONFilter(t *testing.T, in, want string) {
 	t.Helper()
-	checkJSONFilterWith(t, want, func { f | f.Write([]byte(in)) })
+	checkJSONFilterWith(t, want, func { f -> f.Write([]byte(in)) })
 }
 
 func checkJSONFilterWith(t *testing.T, want string, write func(*testJSONFilter)) {

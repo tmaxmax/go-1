@@ -152,7 +152,7 @@ func dirList(w ResponseWriter, r *Request, f File) {
 		Error(w, "Error reading directory", StatusInternalServerError)
 		return
 	}
-	sort.Slice(dirs, func { i, j | return dirs.name(i) < dirs.name(j) })
+	sort.Slice(dirs, func { i, j -> return dirs.name(i) < dirs.name(j) })
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	fmt.Fprintf(w, "<!doctype html>\n")
@@ -884,7 +884,7 @@ func (f ioFS) Open(name string) (File, error) {
 	}
 	file, err := f.fsys.Open(name)
 	if err != nil {
-		return nil, mapOpenError(err, name, '/', func { path | return fs.Stat(f.fsys, path) })
+		return nil, mapOpenError(err, name, '/', func { path -> return fs.Stat(f.fsys, path) })
 	}
 	return ioFile{file}, nil
 }

@@ -556,7 +556,7 @@ func TestCanSetField(t *testing.T) {
 	}}
 
 	for _, tt := range tests {
-		t.Run(tt.val.Type().Name(), func { t |
+		t.Run(tt.val.Type().Name(), func { t ->
 			for _, tc := range tt.cases {
 				f := tt.val
 				for _, i := range tc.index {
@@ -761,7 +761,7 @@ func TestGrow(t *testing.T) {
 		t.Errorf("noop v.Grow should not change pointers")
 	}
 
-	t.Run("Append", func { t |
+	t.Run("Append", func { t ->
 		var got, want []T
 		v := ValueOf(&got).Elem()
 		appendValue := func(vt T) {
@@ -779,7 +779,7 @@ func TestGrow(t *testing.T) {
 		}
 	})
 
-	t.Run("Rate", func { t |
+	t.Run("Rate", func { t ->
 		var b []byte
 		v := ValueOf(new([]byte)).Elem()
 		for i := 0; i < 10; i++ {
@@ -792,7 +792,7 @@ func TestGrow(t *testing.T) {
 		}
 	})
 
-	t.Run("ZeroCapacity", func { t |
+	t.Run("ZeroCapacity", func { t ->
 		for i := 0; i < 10; i++ {
 			v := ValueOf(new([]byte)).Elem()
 			v.Grow(61)
@@ -923,7 +923,7 @@ func TestCopy(t *testing.T) {
 }
 
 func TestCopyString(t *testing.T) {
-	t.Run("Slice", func { t |
+	t.Run("Slice", func { t ->
 		s := bytes.Repeat([]byte{'_'}, 8)
 		val := ValueOf(s)
 
@@ -942,7 +942,7 @@ func TestCopyString(t *testing.T) {
 			t.Errorf("got n = %d, s = %s, expecting n = 8, s = %s", n, s, expecting)
 		}
 	})
-	t.Run("Array", func { t |
+	t.Run("Array", func { t ->
 		s := [...]byte{'_', '_', '_', '_', '_', '_', '_', '_'}
 		val := ValueOf(&s).Elem()
 
@@ -1274,7 +1274,7 @@ var deepEqualPerfTests = []struct {
 
 func TestDeepEqualAllocs(t *testing.T) {
 	for _, tt := range deepEqualPerfTests {
-		t.Run(ValueOf(tt.x).Type().String(), func { t |
+		t.Run(ValueOf(tt.x).Type().String(), func { t ->
 			got := testing.AllocsPerRun(100, func() {
 				if !DeepEqual(tt.x, tt.y) {
 					t.Errorf("DeepEqual(%v, %v)=false", tt.x, tt.y)
@@ -2179,7 +2179,7 @@ func TestFunc(t *testing.T) {
 
 func TestCallConvert(t *testing.T) {
 	v := ValueOf(new(io.ReadWriter)).Elem()
-	f := ValueOf(func { r | return r })
+	f := ValueOf(func { r -> return r })
 	out := f.Call([]Value{v})
 	if len(out) != 1 || out[0].Type() != TypeOf(new(io.Reader)).Elem() || !out[0].IsNil() {
 		t.Errorf("expected [nil], got %v", out)
@@ -2252,7 +2252,7 @@ func TestCallReturnsEmpty(t *testing.T) {
 
 func TestMakeFunc(t *testing.T) {
 	f := dummy
-	fv := MakeFunc(TypeOf(f), func { in | return in })
+	fv := MakeFunc(TypeOf(f), func { in -> return in })
 	ValueOf(&f).Elem().Set(fv)
 
 	// Call g with small arguments so that there is
@@ -2289,7 +2289,7 @@ func TestMakeFuncInterface(t *testing.T) {
 func TestMakeFuncVariadic(t *testing.T) {
 	// Test that variadic arguments are packed into a slice and passed as last arg
 	fn := func(_ int, is ...int) []int { return nil }
-	fv := MakeFunc(TypeOf(fn), func { in | return in[1:2] })
+	fv := MakeFunc(TypeOf(fn), func { in -> return in[1:2] })
 	ValueOf(&fn).Elem().Set(fv)
 
 	r := fn(1, 2, 3)
@@ -3495,7 +3495,7 @@ func noAlloc(t *testing.T, n int, f func(int)) {
 }
 
 func TestAllocations(t *testing.T) {
-	noAlloc(t, 100, func { j |
+	noAlloc(t, 100, func { j ->
 		var i any
 		var v Value
 
@@ -3505,7 +3505,7 @@ func TestAllocations(t *testing.T) {
 			panic("wrong int")
 		}
 	})
-	noAlloc(t, 100, func { j |
+	noAlloc(t, 100, func { j ->
 		var i any
 		var v Value
 		i = [3]int{j, j, j}
@@ -3514,10 +3514,10 @@ func TestAllocations(t *testing.T) {
 			panic("wrong length")
 		}
 	})
-	noAlloc(t, 100, func { j |
+	noAlloc(t, 100, func { j ->
 		var i any
 		var v Value
-		i = func { j | return j }
+		i = func { j -> return j }
 		v = ValueOf(i)
 		if v.Interface().(func(int) int)(j) != j {
 			panic("wrong result")
@@ -6744,7 +6744,7 @@ func TestCallArgLive(t *testing.T) {
 	*CallGC = true
 
 	x := new(string)
-	runtime.SetFinalizer(x, func { p | if *p != "ok" {
+	runtime.SetFinalizer(x, func { p -> if *p != "ok" {
 		t.Errorf("x dead prematurely")
 	} })
 	v := T{x, nil}
@@ -6868,9 +6868,9 @@ func TestCallGC(t *testing.T) {
 func TestKeepFuncLive(t *testing.T) {
 	// Test that we keep makeFuncImpl live as long as it is
 	// referenced on the stack.
-	typ := TypeOf(func { i | })
+	typ := TypeOf(func { i -> })
 	var f, g func(in []Value) []Value
-	f = func { in |
+	f = func { in ->
 		clobber()
 		i := int(in[0].Int())
 		if i > 0 {
@@ -6888,7 +6888,7 @@ func TestKeepFuncLive(t *testing.T) {
 		}
 		return nil
 	}
-	g = func { in |
+	g = func { in ->
 		clobber()
 		i := int(in[0].Int())
 		MakeFunc(typ, f).Interface().(func(i int))(i)
@@ -6974,7 +6974,7 @@ func TestFuncLayout(t *testing.T) {
 	}
 	tests := []test{
 		{
-			typ:       ValueOf(func { a, b | return "" }).Type(),
+			typ:       ValueOf(func { a, b -> return "" }).Type(),
 			size:      6 * goarch.PtrSize,
 			argsize:   4 * goarch.PtrSize,
 			retOffset: 4 * goarch.PtrSize,
@@ -6982,7 +6982,7 @@ func TestFuncLayout(t *testing.T) {
 			gc:        []byte{1, 0, 1, 0, 1},
 		},
 		{
-			typ:       ValueOf(func { a, b, c, p, d | }).Type(),
+			typ:       ValueOf(func { a, b, c, p, d -> }).Type(),
 			size:      align(align(3*4) + goarch.PtrSize + 2),
 			argsize:   align(3*4) + goarch.PtrSize + 2,
 			retOffset: align(align(3*4) + goarch.PtrSize + 2),
@@ -6990,7 +6990,7 @@ func TestFuncLayout(t *testing.T) {
 			gc:        r,
 		},
 		{
-			typ:       ValueOf(func { a, b, c | }).Type(),
+			typ:       ValueOf(func { a, b, c -> }).Type(),
 			size:      4 * goarch.PtrSize,
 			argsize:   4 * goarch.PtrSize,
 			retOffset: 4 * goarch.PtrSize,
@@ -6998,7 +6998,7 @@ func TestFuncLayout(t *testing.T) {
 			gc:        []byte{1, 0, 1, 1},
 		},
 		{
-			typ:       ValueOf(func { a | }).Type(),
+			typ:       ValueOf(func { a -> }).Type(),
 			size:      4 * goarch.PtrSize,
 			argsize:   4 * goarch.PtrSize,
 			retOffset: 4 * goarch.PtrSize,
@@ -7007,7 +7007,7 @@ func TestFuncLayout(t *testing.T) {
 		},
 		{
 			rcvr:      ValueOf((*byte)(nil)).Type(),
-			typ:       ValueOf(func { a, b | }).Type(),
+			typ:       ValueOf(func { a, b -> }).Type(),
 			size:      3 * goarch.PtrSize,
 			argsize:   3 * goarch.PtrSize,
 			retOffset: 3 * goarch.PtrSize,
@@ -7015,7 +7015,7 @@ func TestFuncLayout(t *testing.T) {
 			gc:        []byte{1, 0, 1},
 		},
 		{
-			typ:       ValueOf(func { a | }).Type(),
+			typ:       ValueOf(func { a -> }).Type(),
 			size:      goarch.PtrSize,
 			argsize:   goarch.PtrSize,
 			retOffset: goarch.PtrSize,
@@ -7032,7 +7032,7 @@ func TestFuncLayout(t *testing.T) {
 		},
 		{
 			rcvr:      ValueOf(uintptr(0)).Type(),
-			typ:       ValueOf(func { a | }).Type(),
+			typ:       ValueOf(func { a -> }).Type(),
 			size:      2 * goarch.PtrSize,
 			argsize:   2 * goarch.PtrSize,
 			retOffset: 2 * goarch.PtrSize,
@@ -7049,7 +7049,7 @@ func TestFuncLayout(t *testing.T) {
 		if lt.rcvr != nil {
 			name = lt.rcvr.String() + "." + name
 		}
-		t.Run(name, func { t |
+		t.Run(name, func { t ->
 			defer SetArgRegs(SetArgRegs(lt.intRegs, lt.floatRegs, lt.floatRegSize))
 
 			typ, argsize, retOffset, stack, gc, inRegs, outRegs, ptrs := FuncLayout(lt.typ, lt.rcvr)
@@ -8506,7 +8506,7 @@ func TestClear(t *testing.T) {
 
 	for _, tc := range tests {
 		tc := tc
-		t.Run(tc.name, func { t |
+		t.Run(tc.name, func { t ->
 			t.Parallel()
 			if !tc.testFunc(tc.value) {
 				t.Errorf("unexpected result for value.Clear(): %v", tc.value)
@@ -8540,7 +8540,7 @@ func TestValuePointerAndUnsafePointer(t *testing.T) {
 
 	for _, tc := range tests {
 		tc := tc
-		t.Run(tc.name, func { t |
+		t.Run(tc.name, func { t ->
 			if got := tc.val.Pointer(); got != uintptr(tc.wantUnsafePointer) {
 				t.Errorf("unexpected uintptr result, got %#x, want %#x", got, uintptr(tc.wantUnsafePointer))
 			}

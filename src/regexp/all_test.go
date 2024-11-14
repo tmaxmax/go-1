@@ -341,7 +341,7 @@ func TestReplaceAllFunc(t *testing.T) {
 				tc.pattern, tc.input, actual, tc.output)
 		}
 		// now try bytes
-		actual = string(re.ReplaceAllFunc([]byte(tc.input), func { s | return []byte(tc.replacement(string(s))) }))
+		actual = string(re.ReplaceAllFunc([]byte(tc.input), func { s -> return []byte(tc.replacement(string(s))) }))
 		if actual != tc.output {
 			t.Errorf("%q.ReplaceFunc(%q,fn) = %q; want %q",
 				tc.pattern, tc.input, actual, tc.output)
@@ -834,7 +834,7 @@ func BenchmarkMatchParallelShared(b *testing.B) {
 	x := []byte("this is a long line that contains foo bar baz")
 	re := MustCompile("foo (ba+r)? baz")
 	b.ResetTimer()
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		re.Match(x)
 	} })
 }
@@ -843,7 +843,7 @@ func BenchmarkMatchParallelCopied(b *testing.B) {
 	x := []byte("this is a long line that contains foo bar baz")
 	re := MustCompile("foo (ba+r)? baz")
 	b.ResetTimer()
-	b.RunParallel(func { pb |
+	b.RunParallel(func { pb ->
 		re := re.Copy()
 		for pb.Next() {
 			re.Match(x)
@@ -885,7 +885,7 @@ var compileBenchData = []struct{ name, re string }{
 
 func BenchmarkCompile(b *testing.B) {
 	for _, data := range compileBenchData {
-		b.Run(data.name, func { b |
+		b.Run(data.name, func { b ->
 			b.ReportAllocs()
 			for i := 0; i < b.N; i++ {
 				if _, err := Compile(data.re); err != nil {
@@ -964,7 +964,7 @@ func TestUnmarshalText(t *testing.T) {
 			t.Errorf("UnmarshalText returned unexpected value: %s", unmarshaled.String())
 		}
 	}
-	t.Run("invalid pattern", func { t |
+	t.Run("invalid pattern", func { t ->
 		re := new(Regexp)
 		err := re.UnmarshalText([]byte(`\`))
 		if err == nil {

@@ -15,7 +15,7 @@ import (
 
 func ExampleNew() {
 	// Start a server to give us cookies.
-	ts := httptest.NewServer(http.HandlerFunc(func { w, r |
+	ts := httptest.NewServer(http.HandlerFunc(func { w, r ->
 		if cookie, err := r.Cookie("Flavor"); err != nil {
 			http.SetCookie(w, &http.Cookie{Name: "Flavor", Value: "Chocolate Chip"})
 		} else {

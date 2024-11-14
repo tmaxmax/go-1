@@ -179,7 +179,7 @@ func TestFiles(t *testing.T) {
 		}
 		fset.AddFile(test.filename, base, test.size)
 		j := 0
-		fset.Iterate(func { f |
+		fset.Iterate(func { f ->
 			if f.Name() != tests[j].filename {
 				t.Errorf("got filename = %s; want %s", f.Name(), tests[j].filename)
 			}
@@ -469,7 +469,7 @@ func TestFileAddLineColumnInfo(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Run(test.name, func { t |
+		t.Run(test.name, func { t ->
 			fs := NewFileSet()
 			f := fs.AddFile(filename, -1, filesize)
 			for _, info := range test.infos {

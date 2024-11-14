@@ -365,7 +365,7 @@ func (d *HashDebug) hashPos(ctxt *obj.Link, pos src.XPos) uint64 {
 		return bisect.Hash(d.short(p.Filename()), p.Line(), p.Col())
 	}
 	h := bisect.Hash()
-	ctxt.AllPos(pos, func { p | h = bisect.Hash(h, d.short(p.Filename()), p.Line(), p.Col()) })
+	ctxt.AllPos(pos, func { p -> h = bisect.Hash(h, d.short(p.Filename()), p.Line(), p.Col()) })
 	return h
 }
 
@@ -379,7 +379,7 @@ func (d *HashDebug) fmtPos(ctxt *obj.Link, pos src.XPos) string {
 		return format(ctxt.InnermostPos(pos))
 	}
 	var stk []string
-	ctxt.AllPos(pos, func { p | stk = append(stk, format(p)) })
+	ctxt.AllPos(pos, func { p -> stk = append(stk, format(p)) })
 	return strings.Join(stk, "; ")
 }
 

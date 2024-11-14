@@ -87,7 +87,7 @@ func ccIs(s *script.State, want string) (bool, error) {
 func sysCondition(flag string, f func(goos, goarch string) bool, needsCgo bool) script.Cond {
 	return script.Condition(
 		"GOOS/GOARCH supports "+flag,
-		func { s |
+		func { s ->
 			GOOS, _ := s.LookupEnv("GOOS")
 			GOARCH, _ := s.LookupEnv("GOARCH")
 			cross := goHostOS != GOOS || goHostArch != GOARCH

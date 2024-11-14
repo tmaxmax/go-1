@@ -341,13 +341,13 @@ func callerLine(t *testing.T, skip int) int {
 }
 
 func BenchmarkCallers(b *testing.B) {
-	b.Run("cached", func { b |
+	b.Run("cached", func { b ->
 	// Very pcvalueCache-friendly, no inlining.
 	callersCached(b, 100) })
-	b.Run("inlined", func { b |
+	b.Run("inlined", func { b ->
 	// Some inlining, still pretty cache-friendly.
 	callersInlined(b, 100) })
-	b.Run("no-cache", func { b |
+	b.Run("no-cache", func { b ->
 	// Cache-hostile
 	callersNoCache(b, 100) })
 }
@@ -429,7 +429,7 @@ func callersNoCache(b *testing.B, n int) int {
 }
 
 func BenchmarkFPCallers(b *testing.B) {
-	b.Run("cached", func { b |
+	b.Run("cached", func { b ->
 	// Very pcvalueCache-friendly, no inlining.
 	fpCallersCached(b, 100) })
 }

@@ -183,7 +183,7 @@ func constructFuzzProfile(t *testing.T, b []byte) *Profile {
 func FuzzRoundTrip(f *testing.F) {
 	f.Add([]byte("")) // empty profile
 
-	f.Fuzz(func { t, b |
+	f.Fuzz(func { t, b ->
 		d := constructFuzzProfile(t, b)
 		testRoundTrip(t, d)
 	})

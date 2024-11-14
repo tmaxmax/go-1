@@ -25,7 +25,7 @@ func TestOldtrace(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to relativize testdata path: %s", err)
 		}
-		t.Run(testName, func { t |
+		t.Run(testName, func { t ->
 			f, err := os.Open(p)
 			if err != nil {
 				t.Fatalf("failed to open test %q: %s", p, err)

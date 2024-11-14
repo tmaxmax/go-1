@@ -54,7 +54,7 @@ func actionList(root *Action) []*Action {
 	seen := map[*Action]bool{}
 	all := []*Action{}
 	var walk func(*Action)
-	walk = func { a |
+	walk = func { a ->
 		if seen[a] {
 			return
 		}
@@ -3077,7 +3077,7 @@ func (b *Builder) dynimport(a *Action, objdir, importGo, cgoExe string, cflags, 
 	var syso []string
 	seen := make(map[*Action]bool)
 	var gatherSyso func(*Action)
-	gatherSyso = func { a1 |
+	gatherSyso = func { a1 ->
 		if seen[a1] {
 			return
 		}

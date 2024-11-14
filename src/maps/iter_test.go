@@ -74,7 +74,7 @@ func TestInsert(t *testing.T) {
 		1: 1,
 		2: 1,
 	}
-	Insert(got, func { yield | for i := 0; i < 10; i += 2 {
+	Insert(got, func { yield -> for i := 0; i < 10; i += 2 {
 		if !yield(i, i+1) {
 			return
 		}

@@ -604,7 +604,7 @@ func TestGcPacer(t *testing.T) {
 		// happens between calls to revise; the framework just doesn't support this yet.
 	} {
 		e := e
-		t.Run(e.name, func { t |
+		t.Run(e.name, func { t ->
 			t.Parallel()
 
 			c := NewGCController(e.gcPercent, e.memoryLimit)

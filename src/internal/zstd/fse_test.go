@@ -69,7 +69,7 @@ func TestPredefinedTables(t *testing.T) {
 	}
 	for _, test := range tests {
 		test := test
-		t.Run(test.name, func { t |
+		t.Run(test.name, func { t ->
 			var r Reader
 			table := make([]fseEntry, 1<<test.tableBits)
 			if err := r.buildFSE(0, test.distribution, table, test.tableBits); err != nil {

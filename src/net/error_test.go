@@ -145,14 +145,14 @@ func TestDialError(t *testing.T) {
 
 	origTestHookLookupIP := testHookLookupIP
 	defer func() { testHookLookupIP = origTestHookLookupIP }()
-	testHookLookupIP = func { ctx, fn, network, host | return nil, &DNSError{Err: "dial error test", Name: "name", Server: "server", IsTimeout: true} }
-	sw.Set(socktest.FilterConnect, func { so | return nil, errOpNotSupported })
+	testHookLookupIP = func { ctx, fn, network, host -> return nil, &DNSError{Err: "dial error test", Name: "name", Server: "server", IsTimeout: true} }
+	sw.Set(socktest.FilterConnect, func { so -> return nil, errOpNotSupported })
 	defer sw.Set(socktest.FilterConnect, nil)
 
 	d := Dialer{Timeout: someTimeout}
 	for i, tt := range dialErrorTests {
 		i, tt := i, tt
-		t.Run(fmt.Sprint(i), func { t |
+		t.Run(fmt.Sprint(i), func { t ->
 			c, err := d.Dial(tt.network, tt.address)
 			if err == nil {
 				t.Errorf("should fail; %s:%s->%s", c.LocalAddr().Network(), c.LocalAddr(), c.RemoteAddr())
@@ -237,7 +237,7 @@ func TestDialAddrError(t *testing.T) {
 		if desc == "" {
 			desc = tt.addr.String()
 		}
-		t.Run(fmt.Sprintf("%s/%s", tt.network, desc), func { t |
+		t.Run(fmt.Sprintf("%s/%s", tt.network, desc), func { t ->
 			var err error
 			var c Conn
 			var op string
@@ -297,12 +297,12 @@ func TestListenError(t *testing.T) {
 
 	origTestHookLookupIP := testHookLookupIP
 	defer func() { testHookLookupIP = origTestHookLookupIP }()
-	testHookLookupIP = func { _, fn, network, host | return nil, &DNSError{Err: "listen error test", Name: "name", Server: "server", IsTimeout: true} }
-	sw.Set(socktest.FilterListen, func { so | return nil, errOpNotSupported })
+	testHookLookupIP = func { _, fn, network, host -> return nil, &DNSError{Err: "listen error test", Name: "name", Server: "server", IsTimeout: true} }
+	sw.Set(socktest.FilterListen, func { so -> return nil, errOpNotSupported })
 	defer sw.Set(socktest.FilterListen, nil)
 
 	for i, tt := range listenErrorTests {
-		t.Run(fmt.Sprintf("%s_%s", tt.network, tt.address), func { t |
+		t.Run(fmt.Sprintf("%s_%s", tt.network, tt.address), func { t ->
 			ln, err := Listen(tt.network, tt.address)
 			if err == nil {
 				t.Errorf("#%d: should fail; %s:%s->", i, ln.Addr().Network(), ln.Addr())
@@ -353,10 +353,10 @@ func TestListenPacketError(t *testing.T) {
 
 	origTestHookLookupIP := testHookLookupIP
 	defer func() { testHookLookupIP = origTestHookLookupIP }()
-	testHookLookupIP = func { _, fn, network, host | return nil, &DNSError{Err: "listen error test", Name: "name", Server: "server", IsTimeout: true} }
+	testHookLookupIP = func { _, fn, network, host -> return nil, &DNSError{Err: "listen error test", Name: "name", Server: "server", IsTimeout: true} }
 
 	for i, tt := range listenPacketErrorTests {
-		t.Run(fmt.Sprintf("%s_%s", tt.network, tt.address), func { t |
+		t.Run(fmt.Sprintf("%s_%s", tt.network, tt.address), func { t ->
 			c, err := ListenPacket(tt.network, tt.address)
 			if err == nil {
 				t.Errorf("#%d: should fail; %s:%s->", i, c.LocalAddr().Network(), c.LocalAddr())
@@ -553,7 +553,7 @@ third:
 }
 
 func TestCloseError(t *testing.T) {
-	t.Run("tcp", func { t |
+	t.Run("tcp", func { t ->
 		ln := newLocalListener(t, "tcp")
 		defer ln.Close()
 		c, err := Dial(ln.Addr().Network(), ln.Addr().String())
@@ -586,7 +586,7 @@ func TestCloseError(t *testing.T) {
 		}
 	})
 
-	t.Run("udp", func { t |
+	t.Run("udp", func { t ->
 		if !testableNetwork("udp") {
 			t.Skipf("skipping: udp not available")
 		}

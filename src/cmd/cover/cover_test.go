@@ -117,10 +117,10 @@ func TestCoverWithToolExec(t *testing.T) {
 
 	toolexecArg := "-toolexec=" + testcover(t)
 
-	t.Run("CoverHTML", func { t | testCoverHTML(t, toolexecArg) })
-	t.Run("HtmlUnformatted", func { t | testHtmlUnformatted(t, toolexecArg) })
-	t.Run("FuncWithDuplicateLines", func { t | testFuncWithDuplicateLines(t, toolexecArg) })
-	t.Run("MissingTrailingNewlineIssue58370", func { t | testMissingTrailingNewlineIssue58370(t, toolexecArg) })
+	t.Run("CoverHTML", func { t -> testCoverHTML(t, toolexecArg) })
+	t.Run("HtmlUnformatted", func { t -> testHtmlUnformatted(t, toolexecArg) })
+	t.Run("FuncWithDuplicateLines", func { t -> testFuncWithDuplicateLines(t, toolexecArg) })
+	t.Run("MissingTrailingNewlineIssue58370", func { t -> testMissingTrailingNewlineIssue58370(t, toolexecArg) })
 }
 
 // Execute this command sequence:

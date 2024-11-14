@@ -15,7 +15,7 @@ func BenchmarkStartRegion(b *testing.B) {
 	ctx, task := NewTask(context.Background(), "benchmark")
 	defer task.End()
 
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		StartRegion(ctx, "region").End()
 	} })
 }
@@ -25,7 +25,7 @@ func BenchmarkNewTask(b *testing.B) {
 	pctx, task := NewTask(context.Background(), "benchmark")
 	defer task.End()
 
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		_, task := NewTask(pctx, "task")
 		task.End()
 	} })

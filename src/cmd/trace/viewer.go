@@ -15,7 +15,7 @@ import (
 // used to store the frames to reduce allocations.
 func viewerFrames(stk trace.Stack) []*trace.Frame {
 	var frames []*trace.Frame
-	stk.Frames(func { f |
+	stk.Frames(func { f ->
 		frames = append(frames, &trace.Frame{
 			PC:   f.PC,
 			Fn:   f.Func,

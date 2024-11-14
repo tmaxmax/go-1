@@ -66,7 +66,7 @@ func TestDedupLibrariesOpenBSD(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Run("dedup", func { t |
+		t.Run("dedup", func { t ->
 			got := dedupLibraries(ctxt, test.libs)
 			if !reflect.DeepEqual(got, test.want) {
 				t.Errorf("dedupLibraries(%v) = %v, want %v", test.libs, got, test.want)

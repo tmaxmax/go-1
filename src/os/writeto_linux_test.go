@@ -25,14 +25,14 @@ func TestSendFile(t *testing.T) {
 		syscall.Getpagesize() + 1,
 		32769,
 	}
-	t.Run("sendfile-to-unix", func { t |
+	t.Run("sendfile-to-unix", func { t ->
 		for _, size := range sizes {
-			t.Run(strconv.Itoa(size), func { t | testSendFile(t, "unix", int64(size)) })
+			t.Run(strconv.Itoa(size), func { t -> testSendFile(t, "unix", int64(size)) })
 		}
 	})
-	t.Run("sendfile-to-tcp", func { t |
+	t.Run("sendfile-to-tcp", func { t ->
 		for _, size := range sizes {
-			t.Run(strconv.Itoa(size), func { t | testSendFile(t, "tcp", int64(size)) })
+			t.Run(strconv.Itoa(size), func { t -> testSendFile(t, "tcp", int64(size)) })
 		}
 	})
 }
@@ -61,7 +61,7 @@ func testSendFile(t *testing.T, proto string, size int64) {
 	if err != nil {
 		t.Fatalf("destination SyscallConn error: %v", err)
 	}
-	if err = rc.Control(func { fd |
+	if err = rc.Control(func { fd ->
 		if hook.called && hook.dstfd != int(fd) {
 			t.Fatalf("wrong destination file descriptor: got %d, want %d", hook.dstfd, int(fd))
 		}
@@ -109,7 +109,7 @@ func hookSendFile(t *testing.T) *sendFileHook {
 	t.Cleanup(func() {
 		poll.TestHookDidSendFile = orig
 	})
-	poll.TestHookDidSendFile = func { dstFD, src, written, err, handled |
+	poll.TestHookDidSendFile = func { dstFD, src, written, err, handled ->
 		h.called = true
 		h.dstfd = dstFD.Sysfd
 		h.srcfd = src

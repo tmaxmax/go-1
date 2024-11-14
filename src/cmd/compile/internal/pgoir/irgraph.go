@@ -165,7 +165,7 @@ func createIRGraph(namedEdgeMap pgo.NamedEdgeMap) *IRGraph {
 	}
 
 	// Bottomup walk over the function to create IRGraph.
-	ir.VisitFuncsBottomUp(typecheck.Target.Funcs, func { list, recursive | for _, fn := range list {
+	ir.VisitFuncsBottomUp(typecheck.Target.Funcs, func { list, recursive -> for _, fn := range list {
 		visitIR(fn, namedEdgeMap, g)
 	} })
 
@@ -204,7 +204,7 @@ func visitIR(fn *ir.Func, namedEdgeMap pgo.NamedEdgeMap, g *IRGraph) {
 // between the callernode which points to the ir.Func and the nodes in the
 // body.
 func createIRGraphEdge(fn *ir.Func, callernode *IRNode, name string, namedEdgeMap pgo.NamedEdgeMap, g *IRGraph) {
-	ir.VisitList(fn.Body, func { n |
+	ir.VisitList(fn.Body, func { n ->
 		switch n.Op() {
 		case ir.OCALLFUNC:
 			call := n.(*ir.CallExpr)
@@ -404,7 +404,7 @@ func (p *Profile) PrintWeightedCallGraphDOT(edgeThreshold float64) {
 
 	// List of functions in this package.
 	funcs := make(map[string]struct{})
-	ir.VisitFuncsBottomUp(typecheck.Target.Funcs, func { list, recursive | for _, f := range list {
+	ir.VisitFuncsBottomUp(typecheck.Target.Funcs, func { list, recursive -> for _, f := range list {
 		name := ir.LinkFuncName(f)
 		funcs[name] = struct{}{}
 	} })
@@ -446,7 +446,7 @@ func (p *Profile) PrintWeightedCallGraphDOT(edgeThreshold float64) {
 		}
 	}
 	// Print edges.
-	ir.VisitFuncsBottomUp(typecheck.Target.Funcs, func { list, recursive |
+	ir.VisitFuncsBottomUp(typecheck.Target.Funcs, func { list, recursive ->
 		for _, f := range list {
 			name := ir.LinkFuncName(f)
 			if n, ok := p.WeightedCG.IRNodes[name]; ok {

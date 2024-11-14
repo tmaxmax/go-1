@@ -552,7 +552,7 @@ func walkTree(n *Node, path string, f func(path string, n *Node)) {
 }
 
 func makeTree(t *testing.T) {
-	walkTree(tree, tree.name, func { path, n |
+	walkTree(tree, tree.name, func { path, n ->
 		if n.entries == nil {
 			fd, err := os.Create(path)
 			if err != nil {
@@ -566,10 +566,10 @@ func makeTree(t *testing.T) {
 	})
 }
 
-func markTree(n *Node) { walkTree(n, "", func { path, n | n.mark++ }) }
+func markTree(n *Node) { walkTree(n, "", func { path, n -> n.mark++ }) }
 
 func checkMarks(t *testing.T, report bool) {
-	walkTree(tree, tree.name, func { path, n |
+	walkTree(tree, tree.name, func { path, n ->
 		if n.mark != 1 && report {
 			t.Errorf("node %s mark = %d; expected 1", path, n.mark)
 		}
@@ -582,7 +582,7 @@ func checkMarks(t *testing.T, report bool) {
 // are always accumulated, though.
 func mark(d fs.DirEntry, err error, errors *[]error, clear bool) error {
 	name := d.Name()
-	walkTree(tree, tree.name, func { path, n | if n.name == name {
+	walkTree(tree, tree.name, func { path, n -> if n.name == name {
 		n.mark++
 	} })
 	if err != nil {
@@ -649,7 +649,7 @@ func tempDirCanonical(t *testing.T) string {
 
 func TestWalk(t *testing.T) {
 	walk := func(root string, fn fs.WalkDirFunc) error {
-		return filepath.Walk(root, func { path, info, err | return fn(path, fs.FileInfoToDirEntry(info), err) })
+		return filepath.Walk(root, func { path, info, err -> return fn(path, fs.FileInfoToDirEntry(info), err) })
 	}
 	testWalk(t, walk, 1)
 }
@@ -692,7 +692,7 @@ func testWalk(t *testing.T, walk func(string, fs.WalkDirFunc) error, errVisit in
 	checkMarks(t, true)
 	errors = errors[0:0]
 
-	t.Run("PermErr", func { t |
+	t.Run("PermErr", func { t ->
 		// Test permission errors. Only possible if we're not root
 		// and only on some file systems (AFS, FAT).  To avoid errors during
 		// all.bash on those file systems, skip during go test -short.
@@ -798,12 +798,12 @@ func TestWalkSkipDirOnFile(t *testing.T) {
 		}
 	}
 
-	t.Run("Walk", func { t |
+	t.Run("Walk", func { t ->
 		Walk := func(root string) error { return filepath.Walk(td, walkFn) }
 		check(t, Walk, td)
 		check(t, Walk, filepath.Join(td, "dir"))
 	})
-	t.Run("WalkDir", func { t |
+	t.Run("WalkDir", func { t ->
 		WalkDir := func(root string) error { return filepath.WalkDir(td, walkDirFn) }
 		check(t, WalkDir, td)
 		check(t, WalkDir, filepath.Join(td, "dir"))
@@ -856,12 +856,12 @@ func TestWalkSkipAllOnFile(t *testing.T) {
 		}
 	}
 
-	t.Run("Walk", func { t |
+	t.Run("Walk", func { t ->
 		Walk := func(_ string) error { return filepath.Walk(td, walkFn) }
 		check(t, Walk, td)
 		check(t, Walk, filepath.Join(td, "dir"))
 	})
-	t.Run("WalkDir", func { t |
+	t.Run("WalkDir", func { t ->
 		WalkDir := func(_ string) error { return filepath.WalkDir(td, walkDirFn) }
 		check(t, WalkDir, td)
 		check(t, WalkDir, filepath.Join(td, "dir"))
@@ -883,14 +883,14 @@ func TestWalkFileError(t *testing.T) {
 		*filepath.LstatP = os.Lstat
 	}()
 	statErr := errors.New("some stat error")
-	*filepath.LstatP = func { path |
+	*filepath.LstatP = func { path ->
 		if strings.HasSuffix(path, "stat-error") {
 			return nil, statErr
 		}
 		return os.Lstat(path)
 	}
 	got := map[string]error{}
-	err := filepath.Walk(td, func { path, fi, err |
+	err := filepath.Walk(td, func { path, fi, err ->
 		rel, _ := filepath.Rel(td, path)
 		got[filepath.ToSlash(rel)] = err
 		return nil
@@ -986,9 +986,9 @@ func TestWalkSymlinkRoot(t *testing.T) {
 		},
 	} {
 		tt := tt
-		t.Run(tt.desc, func { t |
+		t.Run(tt.desc, func { t ->
 			var walked []string
-			err := filepath.Walk(tt.root, func { path, info, err |
+			err := filepath.Walk(tt.root, func { path, info, err ->
 				if err != nil {
 					return err
 				}
@@ -1726,7 +1726,7 @@ func TestBug3486(t *testing.T) { // https://golang.org/issue/3486
 	utf8 := filepath.Join(root, "utf8")
 	seenUTF16 := false
 	seenUTF8 := false
-	err := filepath.Walk(root, func { pth, info, err |
+	err := filepath.Walk(root, func { pth, info, err ->
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1771,7 +1771,7 @@ func testWalkSymlink(t *testing.T, mklink func(target, link string) error) {
 	}
 
 	var visited []string
-	err = filepath.Walk(tmpdir, func { path, info, err |
+	err = filepath.Walk(tmpdir, func { path, info, err ->
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1929,7 +1929,7 @@ func TestIssue51617(t *testing.T) {
 	}
 	defer os.Chmod(bad, 0700) // avoid errors on cleanup
 	var saw []string
-	err := filepath.WalkDir(dir, func { path, d, err |
+	err := filepath.WalkDir(dir, func { path, d, err ->
 		if err != nil {
 			return filepath.SkipDir
 		}

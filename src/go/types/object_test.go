@@ -112,7 +112,7 @@ func TestObjectString(t *testing.T) {
 	testenv.MustHaveGoBuild(t)
 
 	for i, test := range testObjects {
-		t.Run(fmt.Sprint(i), func { t |
+		t.Run(fmt.Sprint(i), func { t ->
 			if test.alias {
 				t.Setenv("GODEBUG", "gotypesalias=1")
 			}

@@ -400,7 +400,7 @@ func TestZeroValue(t *testing.T) {
 
 func TestFuncOf(t *testing.T) {
 	c := make(chan struct{})
-	cb := js.FuncOf(func { this, args |
+	cb := js.FuncOf(func { this, args ->
 		if got := args[0].Int(); got != 42 {
 			t.Errorf("got %#v, want %#v", got, 42)
 		}
@@ -414,8 +414,8 @@ func TestFuncOf(t *testing.T) {
 
 func TestInvokeFunction(t *testing.T) {
 	called := false
-	cb := js.FuncOf(func { this, args |
-		cb2 := js.FuncOf(func { this, args |
+	cb := js.FuncOf(func { this, args ->
+		cb2 := js.FuncOf(func { this, args ->
 			called = true
 			return 42
 		})
@@ -435,7 +435,7 @@ func TestInterleavedFunctions(t *testing.T) {
 	c1 := make(chan struct{})
 	c2 := make(chan struct{})
 
-	js.Global().Get("setTimeout").Invoke(js.FuncOf(func { this, args |
+	js.Global().Get("setTimeout").Invoke(js.FuncOf(func { this, args ->
 		c1 <- struct{}{}
 		<-c2
 		return nil
@@ -444,13 +444,13 @@ func TestInterleavedFunctions(t *testing.T) {
 	<-c1
 	c2 <- struct{}{}
 	// this goroutine is running, but the callback of setTimeout did not return yet, invoke another function now
-	f := js.FuncOf(func { this, args | return nil })
+	f := js.FuncOf(func { this, args -> return nil })
 	f.Invoke()
 }
 
 func ExampleFuncOf() {
 	var cb js.Func
-	cb = js.FuncOf(func { this, args |
+	cb = js.FuncOf(func { this, args ->
 		fmt.Println("button clicked")
 		cb.Release() // release the function if the button will not be clicked again
 		return nil
@@ -527,7 +527,7 @@ var copyTests = []struct {
 
 func TestCopyBytesToGo(t *testing.T) {
 	for _, tt := range copyTests {
-		t.Run(fmt.Sprintf("%d-to-%d", tt.srcLen, tt.dstLen), func { t |
+		t.Run(fmt.Sprintf("%d-to-%d", tt.srcLen, tt.dstLen), func { t ->
 			src := js.Global().Get("Uint8Array").New(tt.srcLen)
 			if tt.srcLen >= 2 {
 				src.SetIndex(1, 42)
@@ -548,7 +548,7 @@ func TestCopyBytesToGo(t *testing.T) {
 
 func TestCopyBytesToJS(t *testing.T) {
 	for _, tt := range copyTests {
-		t.Run(fmt.Sprintf("%d-to-%d", tt.srcLen, tt.dstLen), func { t |
+		t.Run(fmt.Sprintf("%d-to-%d", tt.srcLen, tt.dstLen), func { t ->
 			src := make([]byte, tt.srcLen)
 			if tt.srcLen >= 2 {
 				src[1] = 42
@@ -677,7 +677,7 @@ func BenchmarkDOM(b *testing.B) {
 }
 
 func TestGlobal(t *testing.T) {
-	ident := js.FuncOf(func { this, args | return args[0] })
+	ident := js.FuncOf(func { this, args -> return args[0] })
 	defer ident.Release()
 
 	if got := ident.Invoke(js.Global()); !got.Equal(js.Global()) {

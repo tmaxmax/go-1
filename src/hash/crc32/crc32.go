@@ -90,7 +90,7 @@ func castagnoliInit() {
 	} else {
 		// Initialize the slicing-by-8 table.
 		castagnoliTable8 = slicingMakeTable(Castagnoli)
-		updateCastagnoli = func { crc, p | return slicingUpdate(crc, castagnoliTable8, p) }
+		updateCastagnoli = func { crc, p -> return slicingUpdate(crc, castagnoliTable8, p) }
 	}
 
 	haveCastagnoli.Store(true)
@@ -111,7 +111,7 @@ func ieeeInit() {
 	} else {
 		// Initialize the slicing-by-8 table.
 		ieeeTable8 = slicingMakeTable(IEEE)
-		updateIEEE = func { crc, p | return slicingUpdate(crc, ieeeTable8, p) }
+		updateIEEE = func { crc, p -> return slicingUpdate(crc, ieeeTable8, p) }
 	}
 }
 

@@ -339,7 +339,7 @@ func (b *Builder) Close() error {
 
 func closeBuilders() {
 	leakedBuilders := 0
-	builderWorkDirs.Range(func { bi, _ |
+	builderWorkDirs.Range(func { bi, _ ->
 		leakedBuilders++
 		if err := bi.(*Builder).Close(); err != nil {
 			base.Error(err)

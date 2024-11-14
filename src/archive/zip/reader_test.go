@@ -582,7 +582,7 @@ var tests = []ZipTest{
 
 func TestReader(t *testing.T) {
 	for _, zt := range tests {
-		t.Run(zt.Name, func { t | readTestZip(t, zt) })
+		t.Run(zt.Name, func { t -> readTestZip(t, zt) })
 	}
 }
 
@@ -820,13 +820,13 @@ func messWith(fileName string, corrupter func(b []byte)) (r io.ReaderAt, size in
 }
 
 func returnCorruptCRC32Zip() (r io.ReaderAt, size int64) {
-	return messWith("go-with-datadesc-sig.zip", func { b |
+	return messWith("go-with-datadesc-sig.zip", func { b ->
 	// Corrupt one of the CRC32s in the data descriptor:
 	b[0x2d]++ })
 }
 
 func returnCorruptNotStreamedZip() (r io.ReaderAt, size int64) {
-	return messWith("crc32-not-streamed.zip", func { b |
+	return messWith("crc32-not-streamed.zip", func { b ->
 		// Corrupt foo.txt's final crc32 byte, in both
 		// the file header and TOC. (0x7e -> 0x7f)
 		b[0x11]++
@@ -1210,7 +1210,7 @@ func TestFS(t *testing.T) {
 		},
 	} {
 		test := test
-		t.Run(test.file, func { t |
+		t.Run(test.file, func { t ->
 			t.Parallel()
 			z, err := OpenReader(test.file)
 			if err != nil {
@@ -1244,7 +1244,7 @@ func TestFSWalk(t *testing.T) {
 		},
 	} {
 		test := test
-		t.Run(test.file, func { t |
+		t.Run(test.file, func { t ->
 			t.Parallel()
 			z, err := OpenReader(test.file)
 			if err != nil {
@@ -1252,7 +1252,7 @@ func TestFSWalk(t *testing.T) {
 			}
 			var files []string
 			sawErr := false
-			err = fs.WalkDir(z, ".", func { path, d, err |
+			err = fs.WalkDir(z, ".", func { path, d, err ->
 				if err != nil {
 					if !test.wantErr {
 						t.Errorf("%s: %v", path, err)
@@ -1619,7 +1619,7 @@ func TestUnderSize(t *testing.T) {
 	}
 
 	for _, f := range z.File {
-		t.Run(f.Name, func { t |
+		t.Run(f.Name, func { t ->
 			rd, err := f.Open()
 			if err != nil {
 				t.Fatal(err)
@@ -1646,7 +1646,7 @@ func TestIssue54801(t *testing.T) {
 			// Make file a directory
 			f.Name += "/"
 
-			t.Run(f.Name, func { t |
+			t.Run(f.Name, func { t ->
 				t.Logf("CompressedSize64: %d, Flags: %#x", f.CompressedSize64, f.Flags)
 
 				rd, err := f.Open()

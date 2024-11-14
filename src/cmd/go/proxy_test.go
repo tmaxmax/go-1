@@ -463,7 +463,7 @@ func proxyGoSum(path, vers string) ([]byte, error) {
 		names = append(names, name)
 		files[name] = f.Data
 	}
-	h1, err := dirhash.Hash1(names, func { name |
+	h1, err := dirhash.Hash1(names, func { name ->
 		data := files[name]
 		return io.NopCloser(bytes.NewReader(data)), nil
 	})

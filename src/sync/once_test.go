@@ -60,7 +60,7 @@ func TestOncePanic(t *testing.T) {
 func BenchmarkOnce(b *testing.B) {
 	var once Once
 	f := func() {}
-	b.RunParallel(func { pb | for pb.Next() {
+	b.RunParallel(func { pb -> for pb.Next() {
 		once.Do(f)
 	} })
 }

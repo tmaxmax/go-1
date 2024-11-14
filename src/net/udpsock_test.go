@@ -224,7 +224,7 @@ func TestUDPConnLocalName(t *testing.T) {
 	testenv.MustHaveExternalNetwork(t)
 
 	for _, tt := range udpConnLocalNameTests {
-		t.Run(fmt.Sprint(tt.laddr), func { t |
+		t.Run(fmt.Sprint(tt.laddr), func { t ->
 			if !testableNetwork(tt.net) {
 				t.Skipf("skipping: %s not available", tt.net)
 			}

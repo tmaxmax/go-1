@@ -323,7 +323,7 @@ func (r *vcsRepo) Tags(ctx context.Context, prefix string) (*Tags, error) {
 			tags.List = append(tags.List, Tag{tag, ""})
 		}
 	}
-	sort.Slice(tags.List, func { i, j | return tags.List[i].Name < tags.List[j].Name })
+	sort.Slice(tags.List, func { i, j -> return tags.List[i].Name < tags.List[j].Name })
 	return tags, nil
 }
 

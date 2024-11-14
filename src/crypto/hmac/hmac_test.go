@@ -626,7 +626,7 @@ func TestHMACHash(t *testing.T) {
 		baseHash := test.hash
 		key := test.key
 
-		t.Run(fmt.Sprintf("test-%d", i), func { t | cryptotest.TestHash(t, func { return New(baseHash, key) }) })
+		t.Run(fmt.Sprintf("test-%d", i), func { t -> cryptotest.TestHash(t, func { return New(baseHash, key) }) })
 	}
 }
 

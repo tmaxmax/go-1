@@ -58,7 +58,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 		(*ast.FuncLit)(nil),
 		(*ast.FuncDecl)(nil),
 	}
-	inspect.Preorder(nodeTypes, func { n | runFunc(pass, n) })
+	inspect.Preorder(nodeTypes, func { n -> runFunc(pass, n) })
 	return nil, nil
 }
 
@@ -81,7 +81,7 @@ func runFunc(pass *analysis.Pass, node ast.Node) {
 
 	// Find the set of cancel vars to analyze.
 	stack := make([]ast.Node, 0, 32)
-	ast.Inspect(node, func { n |
+	ast.Inspect(node, func { n ->
 		switch n.(type) {
 		case *ast.FuncLit:
 			if len(stack) > 0 {
@@ -222,7 +222,7 @@ func lostCancelPath(pass *analysis.Pass, g *cfg.CFG, v *types.Var, stmt ast.Node
 	uses := func(pass *analysis.Pass, v *types.Var, stmts []ast.Node) bool {
 		found := false
 		for _, stmt := range stmts {
-			ast.Inspect(stmt, func { n |
+			ast.Inspect(stmt, func { n ->
 				switch n := n.(type) {
 				case *ast.Ident:
 					if pass.TypesInfo.Uses[n] == v {
@@ -284,7 +284,7 @@ outer:
 	// return block, in which v is never "used".
 	seen := make(map[*cfg.Block]bool)
 	var search func(blocks []*cfg.Block) *ast.ReturnStmt
-	search = func { blocks |
+	search = func { blocks ->
 		for _, b := range blocks {
 			if seen[b] {
 				continue
