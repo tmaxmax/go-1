@@ -109,10 +109,10 @@ func testCrossCheck(t *testing.T, crcFunc1, crcFunc2 func(crc uint32, b []byte) 
 // TestSimple tests the simple generic algorithm.
 func TestSimple(t *testing.T) {
 	tab := simpleMakeTable(IEEE)
-	testGoldenIEEE(t, func { b -> simpleUpdate(0, tab, b) })
+	testGoldenIEEE(t, func { b -> return simpleUpdate(0, tab, b) })
 
 	tab = simpleMakeTable(Castagnoli)
-	testGoldenCastagnoli(t, func { b -> simpleUpdate(0, tab, b) })
+	testGoldenCastagnoli(t, func { b -> return simpleUpdate(0, tab, b) })
 }
 
 func TestGoldenMarshal(t *testing.T) {
@@ -198,10 +198,10 @@ func TestMarshalTableMismatch(t *testing.T) {
 // TestSlicing tests the slicing-by-8 algorithm.
 func TestSlicing(t *testing.T) {
 	tab := slicingMakeTable(IEEE)
-	testGoldenIEEE(t, func { b -> slicingUpdate(0, tab, b) })
+	testGoldenIEEE(t, func { b -> return slicingUpdate(0, tab, b) })
 
 	tab = slicingMakeTable(Castagnoli)
-	testGoldenCastagnoli(t, func { b -> slicingUpdate(0, tab, b) })
+	testGoldenCastagnoli(t, func { b -> return slicingUpdate(0, tab, b) })
 
 	// Cross-check various polys against the simple algorithm.
 	for _, poly := range []uint32{IEEE, Castagnoli, Koopman, 0xD5828281} {
@@ -223,7 +223,7 @@ func TestArchIEEE(t *testing.T) {
 	}
 	archInitIEEE()
 	slicingTable := slicingMakeTable(IEEE)
-	testCrossCheck(t, archUpdateIEEE, func { crc, b -> slicingUpdate(crc, slicingTable, b) })
+	testCrossCheck(t, archUpdateIEEE, func { crc, b -> return slicingUpdate(crc, slicingTable, b) })
 }
 
 func TestArchCastagnoli(t *testing.T) {
@@ -232,7 +232,7 @@ func TestArchCastagnoli(t *testing.T) {
 	}
 	archInitCastagnoli()
 	slicingTable := slicingMakeTable(Castagnoli)
-	testCrossCheck(t, archUpdateCastagnoli, func { crc, b -> slicingUpdate(crc, slicingTable, b) })
+	testCrossCheck(t, archUpdateCastagnoli, func { crc, b -> return slicingUpdate(crc, slicingTable, b) })
 }
 
 func TestGolden(t *testing.T) {

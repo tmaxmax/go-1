@@ -448,7 +448,7 @@ func skipHexDigits(idY, idN []uint64) int {
 			all = append(all, x)
 		}
 	}
-	sort.Slice(all, func { i, j -> bits.Reverse64(all[i]) < bits.Reverse64(all[j]) })
+	sort.Slice(all, func { i, j -> return bits.Reverse64(all[i]) < bits.Reverse64(all[j]) })
 	digits := sort.Search(64/4, func { digits ->
 		mask := uint64(1)<<(4*digits) - 1
 		for i := 0; i+1 < len(all); i++ {

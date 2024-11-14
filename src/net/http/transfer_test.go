@@ -138,7 +138,7 @@ func TestTransferWriterWriteBodyReaderTypes(t *testing.T) {
 		return f, done, nil
 	}
 
-	newBufferFunc := func { bytes.NewBuffer(make([]byte, nBytes)), func() {}, nil }
+	newBufferFunc := func { return bytes.NewBuffer(make([]byte, nBytes)), func() {}, nil }
 
 	cases := []struct {
 		name             string

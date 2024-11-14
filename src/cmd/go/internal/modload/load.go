@@ -1253,7 +1253,7 @@ func loadFromRoots(ctx context.Context, params loaderParams) *loader {
 					rs = tidy
 				} else {
 					conflict := Conflict{
-						Path:       mg.g.FindPath(func { m -> m.Path == "go" && m.Version == v })[1:],
+						Path:       mg.g.FindPath(func { m -> return m.Path == "go" && m.Version == v })[1:],
 						Constraint: module.Version{Path: "go", Version: ld.TidyGoVersion},
 					}
 					msg := conflict.Summary()

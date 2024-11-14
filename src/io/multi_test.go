@@ -201,7 +201,7 @@ func TestMultiWriterSingleChainFlatten(t *testing.T) {
 }
 
 func TestMultiWriterError(t *testing.T) {
-	f1 := writerFunc(func { p -> len(p) / 2, ErrShortWrite })
+	f1 := writerFunc(func { p -> return len(p) / 2, ErrShortWrite })
 	f2 := writerFunc(func { p ->
 		t.Errorf("MultiWriter called f2.Write")
 		return len(p), nil

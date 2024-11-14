@@ -73,7 +73,7 @@ func BenchmarkSortFuncStruct(b *testing.B) {
 			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
 				// Sort the slice twice because slices.SortFunc modifies the slice in place.
-				slices.SortFunc(structs, func { a, b -> cmpFunc(b, a) })
+				slices.SortFunc(structs, func { a, b -> return cmpFunc(b, a) })
 				slices.SortFunc(structs, cmpFunc)
 			}
 		})

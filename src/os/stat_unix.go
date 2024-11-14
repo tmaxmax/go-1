@@ -28,7 +28,7 @@ func (f *File) Stat() (FileInfo, error) {
 // statNolog stats a file with no test logging.
 func statNolog(name string) (FileInfo, error) {
 	var fs fileStat
-	err := ignoringEINTR(func { syscall.Stat(name, &fs.sys) })
+	err := ignoringEINTR(func { return syscall.Stat(name, &fs.sys) })
 	if err != nil {
 		return nil, &PathError{Op: "stat", Path: name, Err: err}
 	}
@@ -39,7 +39,7 @@ func statNolog(name string) (FileInfo, error) {
 // lstatNolog lstats a file with no test logging.
 func lstatNolog(name string) (FileInfo, error) {
 	var fs fileStat
-	err := ignoringEINTR(func { syscall.Lstat(name, &fs.sys) })
+	err := ignoringEINTR(func { return syscall.Lstat(name, &fs.sys) })
 	if err != nil {
 		return nil, &PathError{Op: "lstat", Path: name, Err: err}
 	}

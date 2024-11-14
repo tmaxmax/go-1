@@ -491,7 +491,7 @@ func TestScavenger(t *testing.T) {
 		}
 		return false
 	}
-	s.GoMaxProcs = func { 1 }
+	s.GoMaxProcs = func { return 1 }
 
 	// Define a helper for verifying that various properties hold.
 	verifyScavengerState := func(t *testing.T, expWork uint64) {
@@ -863,7 +863,7 @@ func FuzzPIController(f *testing.F) {
 		}
 		// Use a random source, but make it deterministic.
 		rs := rand.New(rand.NewSource(800))
-		randFloat64 := func { math.Float64frombits(rs.Uint64()) }
+		randFloat64 := func { return math.Float64frombits(rs.Uint64()) }
 		p := NewPIController(kp, ti, tt, min, max)
 		state := float64(0)
 		for i := 0; i < 100; i++ {

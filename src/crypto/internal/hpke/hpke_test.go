@@ -98,7 +98,7 @@ func TestRFC9180Vectors(t *testing.T) {
 
 			ephemeralPrivKey := mustDecodeHex(t, setup["skEm"])
 
-			testingOnlyGenerateKey = func { SupportedKEMs[uint16(kemID)].curve.NewPrivateKey(ephemeralPrivKey) }
+			testingOnlyGenerateKey = func { return SupportedKEMs[uint16(kemID)].curve.NewPrivateKey(ephemeralPrivKey) }
 			t.Cleanup(func() { testingOnlyGenerateKey = nil })
 
 			encap, context, err := SetupSender(

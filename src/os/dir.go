@@ -123,7 +123,7 @@ func ReadDir(name string) ([]DirEntry, error) {
 	defer f.Close()
 
 	dirs, err := f.ReadDir(-1)
-	slices.SortFunc(dirs, func { a, b -> bytealg.CompareString(a.Name(), b.Name()) })
+	slices.SortFunc(dirs, func { a, b -> return bytealg.CompareString(a.Name(), b.Name()) })
 	return dirs, err
 }
 

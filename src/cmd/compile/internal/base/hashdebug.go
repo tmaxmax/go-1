@@ -258,7 +258,7 @@ func (d *HashDebug) MatchPkgFunc(pkg, fn string, note func() string) bool {
 
 func (d *HashDebug) matchPkgFunc(pkg, fn string, note func() string) bool {
 	hash := bisect.Hash(pkg, fn)
-	return d.matchAndLog(hash, func { pkg + "." + fn }, note)
+	return d.matchAndLog(hash, func { return pkg + "." + fn }, note)
 }
 
 // MatchPos is similar to MatchPkgFunc, but for hash computation

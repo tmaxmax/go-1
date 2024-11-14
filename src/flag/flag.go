@@ -420,7 +420,7 @@ func sortFlags(flags map[string]*Flag) []*Flag {
 		result[i] = f
 		i++
 	}
-	slices.SortFunc(result, func { a, b -> strings.Compare(a.Name, b.Name) })
+	slices.SortFunc(result, func { a, b -> return strings.Compare(a.Name, b.Name) })
 	return result
 }
 

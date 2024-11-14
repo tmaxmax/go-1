@@ -156,7 +156,7 @@ func (s *Section) Open() io.ReadSeeker {
 	case COMPRESS_ZLIB:
 		zrd = zlib.NewReader
 	case COMPRESS_ZSTD:
-		zrd = func { r -> io.NopCloser(zstd.NewReader(r)), nil }
+		zrd = func { r -> return io.NopCloser(zstd.NewReader(r)), nil }
 	}
 
 	if zrd == nil {

@@ -33,7 +33,7 @@ func scriptConditions() map[string]script.Cond {
 	}
 
 	lazyBool := func(summary string, f func() bool) script.Cond {
-		return script.OnceCondition(summary, func { f(), nil })
+		return script.OnceCondition(summary, func { return f(), nil })
 	}
 
 	add("abscc", script.Condition("default $CC path is absolute and exists", defaultCCIsAbsolute))

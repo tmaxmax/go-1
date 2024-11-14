@@ -661,7 +661,7 @@ dwarfLoop:
 		}
 		for _, pesect := range f.sections {
 			if sect.Name == pesect.name {
-				pesect.emitRelocations(ctxt.Out, func { relocsect(sect, si.syms, sect.Vaddr) })
+				pesect.emitRelocations(ctxt.Out, func { return relocsect(sect, si.syms, sect.Vaddr) })
 				continue dwarfLoop
 			}
 		}
@@ -1396,7 +1396,7 @@ func initdynexport(ctxt *Link) {
 		dexport = append(dexport, s)
 	}
 
-	sort.Slice(dexport, func { i, j -> ldr.SymExtname(dexport[i]) < ldr.SymExtname(dexport[j]) })
+	sort.Slice(dexport, func { i, j -> return ldr.SymExtname(dexport[i]) < ldr.SymExtname(dexport[j]) })
 }
 
 func addexports(ctxt *Link) {

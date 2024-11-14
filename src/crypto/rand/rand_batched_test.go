@@ -61,14 +61,14 @@ func TestBatchedBuffering(t *testing.T) {
 }
 
 func TestBatchedError(t *testing.T) {
-	b := batched(func { p -> errors.New("failure") }, 5)
+	b := batched(func { p -> return errors.New("failure") }, 5)
 	if b(make([]byte, 13)) == nil {
 		t.Fatal("batched function should have returned an error")
 	}
 }
 
 func TestBatchedEmpty(t *testing.T) {
-	b := batched(func { p -> errors.New("failure") }, 5)
+	b := batched(func { p -> return errors.New("failure") }, 5)
 	if b(make([]byte, 0)) != nil {
 		t.Fatal("empty slice should always return successful")
 	}

@@ -444,7 +444,7 @@ func TestInterleavedFunctions(t *testing.T) {
 	<-c1
 	c2 <- struct{}{}
 	// this goroutine is running, but the callback of setTimeout did not return yet, invoke another function now
-	f := js.FuncOf(func { this, args -> nil })
+	f := js.FuncOf(func { this, args -> return nil })
 	f.Invoke()
 }
 
@@ -677,7 +677,7 @@ func BenchmarkDOM(b *testing.B) {
 }
 
 func TestGlobal(t *testing.T) {
-	ident := js.FuncOf(func { this, args -> args[0] })
+	ident := js.FuncOf(func { this, args -> return args[0] })
 	defer ident.Release()
 
 	if got := ident.Invoke(js.Global()); !got.Equal(js.Global()) {

@@ -218,7 +218,7 @@ func BenchmarkRange(b *testing.B) {
 
 		perG: func(b *testing.B, pb *testing.PB, i int, m mapInterface) {
 			for ; pb.Next(); i++ {
-				m.Range(func { _, _ -> true })
+				m.Range(func { _, _ -> return true })
 			}
 		},
 	})

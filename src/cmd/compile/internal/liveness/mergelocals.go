@@ -160,7 +160,7 @@ func (mls *MergeLocalsState) Followers(n *ir.Name, tmp []*ir.Name) []*ir.Name {
 	for _, k := range sl[1:] {
 		tmp = append(tmp, mls.vars[k])
 	}
-	sort.SliceStable(tmp, func { i, j -> tmp[i].Sym().Name < tmp[j].Sym().Name })
+	sort.SliceStable(tmp, func { i, j -> return tmp[i].Sym().Name < tmp[j].Sym().Name })
 	return tmp
 }
 
@@ -266,7 +266,7 @@ func (mls *MergeLocalsState) String() string {
 			leaders = append(leaders, n)
 		}
 	}
-	sort.Slice(leaders, func { i, j -> leaders[i].Sym().Name < leaders[j].Sym().Name })
+	sort.Slice(leaders, func { i, j -> return leaders[i].Sym().Name < leaders[j].Sym().Name })
 	var sb strings.Builder
 	for _, n := range leaders {
 		sb.WriteString(n.Sym().Name + ":")
@@ -308,7 +308,7 @@ func (cs *cstate) collectMergeCandidates() {
 	}
 
 	// Sort by pointerness, size, and then name.
-	sort.SliceStable(cands, func { i, j -> nameLess(cands[i], cands[j]) })
+	sort.SliceStable(cands, func { i, j -> return nameLess(cands[i], cands[j]) })
 
 	if cs.trace > 1 {
 		fmt.Fprintf(os.Stderr, "=-= raw cand list for func %v:\n", cs.fn)
@@ -574,7 +574,7 @@ func (cs *cstate) populateIndirectUseTable(cands []*ir.Name) ([]*ir.Name, []cand
 		for k := range indirectUE {
 			ids = append(ids, k)
 		}
-		sort.Slice(ids, func { i, j -> ids[i] < ids[j] })
+		sort.Slice(ids, func { i, j -> return ids[i] < ids[j] })
 		for _, id := range ids {
 			fmt.Fprintf(os.Stderr, "  v%d:", id)
 			for _, n := range indirectUE[id] {
@@ -588,7 +588,7 @@ func (cs *cstate) populateIndirectUseTable(cands []*ir.Name) ([]*ir.Name, []cand
 	for k := range rawcands {
 		pruned = append(pruned, k)
 	}
-	sort.Slice(pruned, func { i, j -> nameLess(pruned[i], pruned[j]) })
+	sort.Slice(pruned, func { i, j -> return nameLess(pruned[i], pruned[j]) })
 	var regions []candRegion
 	pruned, regions = cs.genRegions(pruned)
 	if len(pruned) < 2 {

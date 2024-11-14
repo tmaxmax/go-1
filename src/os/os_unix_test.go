@@ -19,7 +19,7 @@ import (
 )
 
 func init() {
-	isReadonlyError = func { err -> err == syscall.EROFS }
+	isReadonlyError = func { err -> return err == syscall.EROFS }
 }
 
 // For TestRawConnReadWrite.

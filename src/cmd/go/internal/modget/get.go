@@ -1055,7 +1055,7 @@ func (r *resolver) performPatternAllQueries(ctx context.Context) {
 	// including in which errors it chooses to report, so sort the candidates
 	// into a deterministic-but-arbitrary order.
 	for _, q := range r.patternAllQueries {
-		sort.Slice(q.candidates, func { i, j -> q.candidates[i].path < q.candidates[j].path })
+		sort.Slice(q.candidates, func { i, j -> return q.candidates[i].path < q.candidates[j].path })
 	}
 }
 
@@ -1144,7 +1144,7 @@ func (r *resolver) findAndUpgradeImports(ctx context.Context, queries []*query) 
 	// nondeterministic order. We want 'go get' to be fully deterministic,
 	// including in which errors it chooses to report, so sort the candidates
 	// into a deterministic-but-arbitrary order.
-	sort.Slice(upgrades, func { i, j -> upgrades[i].path < upgrades[j].path })
+	sort.Slice(upgrades, func { i, j -> return upgrades[i].path < upgrades[j].path })
 	return upgrades
 }
 
@@ -1594,7 +1594,7 @@ func (r *resolver) checkPackageProblems(ctx context.Context, pkgPatterns []strin
 			retractions = append(retractions, modMessage{m: m})
 		}
 	}
-	sort.Slice(retractions, func { i, j -> retractions[i].m.Path < retractions[j].m.Path })
+	sort.Slice(retractions, func { i, j -> return retractions[i].m.Path < retractions[j].m.Path })
 	for i := range retractions {
 		i := i
 		r.work.Add(func() {
@@ -1615,7 +1615,7 @@ func (r *resolver) checkPackageProblems(ctx context.Context, pkgPatterns []strin
 			deprecations = append(deprecations, modMessage{m: m})
 		}
 	}
-	sort.Slice(deprecations, func { i, j -> deprecations[i].m.Path < deprecations[j].m.Path })
+	sort.Slice(deprecations, func { i, j -> return deprecations[i].m.Path < deprecations[j].m.Path })
 	for i := range deprecations {
 		i := i
 		r.work.Add(func() {

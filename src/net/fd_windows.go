@@ -179,7 +179,7 @@ func (fd *netFD) writeBuffers(buf *Buffers) (int64, error) {
 }
 
 func (fd *netFD) accept() (*netFD, error) {
-	s, rawsa, rsan, errcall, err := fd.pfd.Accept(func { sysSocket(fd.family, fd.sotype, 0) })
+	s, rawsa, rsan, errcall, err := fd.pfd.Accept(func { return sysSocket(fd.family, fd.sotype, 0) })
 
 	if err != nil {
 		if errcall != "" {

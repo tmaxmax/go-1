@@ -1704,7 +1704,7 @@ func (f *xcoffFile) emitRelocations(ctxt *Link, fileoff int64) {
 			for i := 0; i < relocs.Count(); i++ {
 				sorted[i] = i
 			}
-			sort.Slice(sorted, func { i, j -> relocs.At(sorted[i]).Off() < relocs.At(sorted[j]).Off() })
+			sort.Slice(sorted, func { i, j -> return relocs.At(sorted[i]).Off() < relocs.At(sorted[j]).Off() })
 
 			for _, ri := range sorted {
 				r := relocs.At(ri)

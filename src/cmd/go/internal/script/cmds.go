@@ -36,7 +36,7 @@ func DefaultCmds() map[string]Cmd {
 		"cp":      Cp(),
 		"echo":    Echo(),
 		"env":     Env(),
-		"exec":    Exec(func { cmd -> cmd.Process.Signal(os.Interrupt) }, 100*time.Millisecond), // arbitrary grace period
+		"exec":    Exec(func { cmd -> return cmd.Process.Signal(os.Interrupt) }, 100*time.Millisecond), // arbitrary grace period
 		"exists":  Exists(),
 		"grep":    Grep(),
 		"help":    Help(),
@@ -188,7 +188,7 @@ func Cmp() Cmd {
 				"File1 can be 'stdout' or 'stderr' to compare the stdout or stderr buffer from the most recent command.",
 			},
 		},
-		func { s, args -> nil, doCompare(s, false, args...) })
+		func { s, args -> return nil, doCompare(s, false, args...) })
 }
 
 // Cmpenv is like Compare, but also performs environment substitutions
@@ -204,7 +204,7 @@ func Cmpenv() Cmd {
 				"File1 can be 'stdout' or 'stderr' to compare the script's stdout or stderr buffer.",
 			},
 		},
-		func { s, args -> nil, doCompare(s, true, args...) })
+		func { s, args -> return nil, doCompare(s, true, args...) })
 }
 
 func doCompare(s *State, env bool, args ...string) error {
@@ -438,7 +438,7 @@ func startCommand(s *State, name, path string, args []string, cancel func(*exec.
 		if cancel == nil {
 			cmd.Cancel = nil
 		} else {
-			cmd.Cancel = func { cancel(cmd) }
+			cmd.Cancel = func { return cancel(cmd) }
 		}
 		cmd.WaitDelay = waitDelay
 		cmd.Args[0] = name
@@ -478,7 +478,7 @@ func lookPath(s *State, command string) (string, error) {
 		// TODO(bcmills): Remove this assumption.
 		strEqual = strings.EqualFold
 	} else {
-		strEqual = func { a, b -> a == b }
+		strEqual = func { a, b -> return a == b }
 	}
 
 	var pathExt []string
@@ -499,9 +499,9 @@ func lookPath(s *State, command string) (string, error) {
 				break
 			}
 		}
-		isExecutable = func { fi -> fi.Mode().IsRegular() }
+		isExecutable = func { fi -> return fi.Mode().IsRegular() }
 	} else {
-		isExecutable = func { fi -> fi.Mode().IsRegular() && fi.Mode().Perm()&0111 != 0 }
+		isExecutable = func { fi -> return fi.Mode().IsRegular() && fi.Mode().Perm()&0111 != 0 }
 	}
 
 	pathEnv, _ := s.LookupEnv(pathEnvName())
@@ -614,7 +614,7 @@ func Grep() Cmd {
 			},
 			RegexpArgs: firstNonFlag,
 		},
-		func { s, args -> nil, match(s, args, "", "grep") })
+		func { s, args -> return nil, match(s, args, "", "grep") })
 }
 
 const matchUsage = "[-count=N] [-q] 'pattern'"
@@ -954,7 +954,7 @@ func Stderr() Cmd {
 			},
 			RegexpArgs: firstNonFlag,
 		},
-		func { s, args -> nil, match(s, args, s.Stderr(), "stderr") })
+		func { s, args -> return nil, match(s, args, s.Stderr(), "stderr") })
 }
 
 // Stdout searches for a regular expression in the stdout buffer.
@@ -969,7 +969,7 @@ func Stdout() Cmd {
 			},
 			RegexpArgs: firstNonFlag,
 		},
-		func { s, args -> nil, match(s, args, s.Stdout(), "stdout") })
+		func { s, args -> return nil, match(s, args, s.Stdout(), "stdout") })
 }
 
 // Stop returns a sentinel error that causes script execution to halt

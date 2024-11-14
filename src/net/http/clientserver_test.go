@@ -610,15 +610,15 @@ func TestH12_ServerEmptyContentLength(t *testing.T) {
 }
 
 func TestH12_RequestContentLength_Known_NonZero(t *testing.T) {
-	h12requestContentLength(t, func { strings.NewReader("FOUR") }, 4)
+	h12requestContentLength(t, func { return strings.NewReader("FOUR") }, 4)
 }
 
 func TestH12_RequestContentLength_Known_Zero(t *testing.T) {
-	h12requestContentLength(t, func { nil }, 0)
+	h12requestContentLength(t, func { return nil }, 0)
 }
 
 func TestH12_RequestContentLength_Unknown(t *testing.T) {
-	h12requestContentLength(t, func { struct{ io.Reader }{strings.NewReader("Stuff")} }, -1)
+	h12requestContentLength(t, func { return struct{ io.Reader }{strings.NewReader("Stuff")} }, -1)
 }
 
 func h12requestContentLength(t *testing.T, bodyfn func() io.Reader, wantLen int64) {

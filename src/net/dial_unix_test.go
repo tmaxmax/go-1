@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	isEADDRINUSE = func { err -> errors.Is(err, syscall.EADDRINUSE) }
+	isEADDRINUSE = func { err -> return errors.Is(err, syscall.EADDRINUSE) }
 }
 
 // Issue 16523

@@ -341,7 +341,7 @@ func TestReplaceAllFunc(t *testing.T) {
 				tc.pattern, tc.input, actual, tc.output)
 		}
 		// now try bytes
-		actual = string(re.ReplaceAllFunc([]byte(tc.input), func { s -> []byte(tc.replacement(string(s))) }))
+		actual = string(re.ReplaceAllFunc([]byte(tc.input), func { s -> return []byte(tc.replacement(string(s))) }))
 		if actual != tc.output {
 			t.Errorf("%q.ReplaceFunc(%q,fn) = %q; want %q",
 				tc.pattern, tc.input, actual, tc.output)

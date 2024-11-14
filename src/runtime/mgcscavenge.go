@@ -409,7 +409,7 @@ func (s *scavengerState) init() {
 		}
 	}
 	if s.gomaxprocs == nil {
-		s.gomaxprocs = func { gomaxprocs }
+		s.gomaxprocs = func { return gomaxprocs }
 	}
 }
 

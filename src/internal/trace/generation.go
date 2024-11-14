@@ -129,7 +129,7 @@ func readGeneration(r *bufio.Reader, spill *spilledBatch) (*generation, *spilled
 		s.time = g.freq.mul(timestamp(s.time))
 	}
 	// Sort the CPU samples.
-	slices.SortFunc(g.cpuSamples, func { a, b -> cmp.Compare(a.time, b.time) })
+	slices.SortFunc(g.cpuSamples, func { a, b -> return cmp.Compare(a.time, b.time) })
 	return g, spill, spillErr
 }
 

@@ -55,7 +55,7 @@ func TestMappingEachPair(t *testing.T) {
 		got = append(got, entry[int, string]{k, v})
 		return true
 	})
-	slices.SortFunc(got, func { e1, e2 -> cmp.Compare(e1.key, e2.key) })
+	slices.SortFunc(got, func { e1, e2 -> return cmp.Compare(e1.key, e2.key) })
 	if !slices.Equal(got, want) {
 		t.Errorf("got %v, want %v", got, want)
 	}

@@ -79,11 +79,11 @@ func (server debugHTTP) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		for mname, method := range svc.method {
 			ds.Method = append(ds.Method, debugMethod{method, mname})
 		}
-		slices.SortFunc(ds.Method, func { a, b -> strings.Compare(a.Name, b.Name) })
+		slices.SortFunc(ds.Method, func { a, b -> return strings.Compare(a.Name, b.Name) })
 		services = append(services, ds)
 		return true
 	})
-	slices.SortFunc(services, func { a, b -> strings.Compare(a.Name, b.Name) })
+	slices.SortFunc(services, func { a, b -> return strings.Compare(a.Name, b.Name) })
 	err := debug.Execute(w, services)
 	if err != nil {
 		fmt.Fprintln(w, "rpc: error executing template:", err.Error())

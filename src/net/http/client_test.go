@@ -430,7 +430,7 @@ func testRedirectsByMethod(t *testing.T, mode testMode, method string, table []r
 	for _, tt := range table {
 		content := tt.redirectBody
 		req, _ := NewRequest(method, ts.URL+tt.suffix, strings.NewReader(content))
-		req.GetBody = func { io.NopCloser(strings.NewReader(content)), nil }
+		req.GetBody = func { return io.NopCloser(strings.NewReader(content)), nil }
 		res, err := c.Do(req)
 
 		if err != nil {
@@ -681,7 +681,7 @@ func testJarCalls(t *testing.T, mode testMode) {
 	jar := new(RecordingJar)
 	c := ts.Client()
 	c.Jar = jar
-	c.Transport.(*Transport).Dial = func { _, _ -> net.Dial("tcp", ts.Listener.Addr().String()) }
+	c.Transport.(*Transport).Dial = func { _, _ -> return net.Dial("tcp", ts.Listener.Addr().String()) }
 	_, err := c.Get("http://firsthost.fake/")
 	if err != nil {
 		t.Fatal(err)
@@ -913,7 +913,7 @@ func testTransportUsesTLSConfigServerName(t *testing.T, mode testMode) {
 	c := ts.Client()
 	tr := c.Transport.(*Transport)
 	tr.TLSClientConfig.ServerName = "example.com" // one of httptest's Server cert names
-	tr.Dial = func { netw, addr -> net.Dial(netw, ts.Listener.Addr().String()) }
+	tr.Dial = func { netw, addr -> return net.Dial(netw, ts.Listener.Addr().String()) }
 	res, err := c.Get("https://some-other-host.tld/")
 	if err != nil {
 		t.Fatal(err)
@@ -931,7 +931,7 @@ func testResponseSetsTLSConnectionState(t *testing.T, mode testMode) {
 	tr := c.Transport.(*Transport)
 	tr.TLSClientConfig.CipherSuites = []uint16{tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256}
 	tr.TLSClientConfig.MaxVersion = tls.VersionTLS12 // to get to pick the cipher suite
-	tr.Dial = func { netw, addr -> net.Dial(netw, ts.Listener.Addr().String()) }
+	tr.Dial = func { netw, addr -> return net.Dial(netw, ts.Listener.Addr().String()) }
 	res, err := c.Get("https://example.com/")
 	if err != nil {
 		t.Fatal(err)

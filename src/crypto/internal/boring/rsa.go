@@ -128,7 +128,7 @@ func setupRSA(withKey func(func(*C.GO_RSA) C.int) C.int,
 	if pkey == nil {
 		return pkey, ctx, fail("EVP_PKEY_new")
 	}
-	if withKey(func { key -> C._goboringcrypto_EVP_PKEY_set1_RSA(pkey, key) }) == 0 {
+	if withKey(func { key -> return C._goboringcrypto_EVP_PKEY_set1_RSA(pkey, key) }) == 0 {
 		return pkey, ctx, fail("EVP_PKEY_set1_RSA")
 	}
 	ctx = C._goboringcrypto_EVP_PKEY_CTX_new(pkey, nil)

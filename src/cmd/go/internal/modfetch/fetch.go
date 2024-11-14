@@ -646,7 +646,7 @@ func checkMod(ctx context.Context, mod module.Version) {
 
 // goModSum returns the checksum for the go.mod contents.
 func goModSum(data []byte) (string, error) {
-	return dirhash.Hash1([]string{"go.mod"}, func { io.NopCloser(bytes.NewReader(data)), nil })
+	return dirhash.Hash1([]string{"go.mod"}, func { return io.NopCloser(bytes.NewReader(data)), nil })
 }
 
 // checkGoMod checks the given module's go.mod checksum;
