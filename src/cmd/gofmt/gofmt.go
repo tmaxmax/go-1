@@ -365,6 +365,7 @@ func main() {
 	// The actual overhead for the parse tree and output will depend on the
 	// specifics of the file, but this at least keeps the footprint of the process
 	// roughly proportional to GOMAXPROCS.
+	runtime.GOMAXPROCS(1)
 	maxWeight := (2 << 20) * int64(runtime.GOMAXPROCS(0))
 	s := newSequencer(maxWeight, os.Stdout, os.Stderr)
 
@@ -378,7 +379,7 @@ func main() {
 
 		fmt.Printf("found %d function literals, %d (%0.1f%%) rewritten into lightweight form\n", count.funcLit, count.funcLight, perc(count.funcLight, count.funcLit))
 		fmt.Printf("%d lightweight function literals (%0.1f%%) are in test files\n", count.testFuncLight, perc(count.testFuncLight, count.funcLight))
-		fmt.Printf("%d lightweight function literals contain a single statement (from which %d, %0.1f%% are long)\n", count.singleStatement, count.longSingleStatement, perc(count.longSingleStatement, count.singleStatement))
+		fmt.Printf("%d lightweight function literals contain a single statement\n\t(from which %d, %0.1f%% are long)\n", count.singleStatement, count.longSingleStatement, perc(count.longSingleStatement, count.singleStatement))
 		fmt.Printf("%d lightweight function literals contain a single return statement (%0.1f%% of all rewritten literals, %0.1f%% of single statement literals)\n", count.singleReturn, perc(count.singleReturn, count.funcLight), perc(count.singleReturn, count.singleStatement))
 		fmt.Printf("return value count histogram for single-return lightweight function literals:\n\t%v\n", count.returnVals)
 	}
