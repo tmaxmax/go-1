@@ -229,7 +229,7 @@ func BenchmarkSearchWrappers(b *testing.B) {
 func TestSearchExhaustive(t *testing.T) {
 	for size := 0; size <= 100; size++ {
 		for targ := 0; targ <= size; targ++ {
-			i := Search(size, func { i | i >= targ })
+			i := Search(size, func { i | return i >= targ })
 			if i != targ {
 				t.Errorf("Search(%d, %d) = %d", size, targ, i)
 			}

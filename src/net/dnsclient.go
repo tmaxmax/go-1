@@ -228,7 +228,7 @@ func (s byPref) sort() {
 		j := randIntn(i + 1)
 		s[i], s[j] = s[j], s[i]
 	}
-	slices.SortFunc(s, func { a, b | cmp.Compare(a.Pref, b.Pref) })
+	slices.SortFunc(s, func { a, b | return cmp.Compare(a.Pref, b.Pref) })
 }
 
 // An NS represents a single DNS NS record.

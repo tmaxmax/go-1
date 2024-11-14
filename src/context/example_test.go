@@ -172,7 +172,7 @@ func ExampleAfterFunc_cond() {
 			cond.L.Lock()
 			defer cond.L.Unlock()
 
-			err := waitOnCond(ctx, cond, func { false })
+			err := waitOnCond(ctx, cond, func { return false })
 			fmt.Println(err)
 		}()
 	}

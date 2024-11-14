@@ -862,7 +862,7 @@ func (r *Reader) initFileList() {
 			}
 		}
 
-		slices.SortFunc(r.fileList, func { a, b | fileEntryCompare(a.name, b.name) })
+		slices.SortFunc(r.fileList, func { a, b | return fileEntryCompare(a.name, b.name) })
 	})
 }
 

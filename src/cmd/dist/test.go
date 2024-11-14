@@ -1206,14 +1206,14 @@ func (t *tester) registerCgoTests(heading string) {
 			ccName := compilerEnvLookup("CC", defaultcc, goos, goarch)
 			cc, err := exec.LookPath(ccName)
 			if err != nil {
-				staticCheck.skip = func { fmt.Sprintf("$CC (%q) not found, skip cgo static linking test.", ccName), true }
+				staticCheck.skip = func { return fmt.Sprintf("$CC (%q) not found, skip cgo static linking test.", ccName), true }
 			} else {
 				cmd := t.dirCmd("src/cmd/cgo/internal/test", cc, "-xc", "-o", "/dev/null", "-static", "-")
 				cmd.Stdin = strings.NewReader("int main() {}")
 				cmd.Stdout, cmd.Stderr = nil, nil // Discard output
 				if err := cmd.Run(); err != nil {
 					// Skip these tests
-					staticCheck.skip = func { "No support for static linking found (lacks libc.a?), skip cgo static linking test.", true }
+					staticCheck.skip = func { return "No support for static linking found (lacks libc.a?), skip cgo static linking test.", true }
 				}
 			}
 

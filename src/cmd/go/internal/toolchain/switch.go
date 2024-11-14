@@ -180,7 +180,7 @@ func pathToolchains(ctx context.Context) ([]string, error) {
 			list = append(list, v)
 		}
 	}
-	sort.Slice(list, func { i, j | gover.Compare(list[i], list[j]) < 0 })
+	sort.Slice(list, func { i, j | return gover.Compare(list[i], list[j]) < 0 })
 	return list, nil
 }
 

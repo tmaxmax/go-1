@@ -261,7 +261,7 @@ func (r *codeRepo) appendIncompatibleVersions(ctx context.Context, origin *codeh
 
 		if major != lastMajor {
 			rem := incompatible[i:]
-			j := sort.Search(len(rem), func { j | semver.Major(rem[j]) != major })
+			j := sort.Search(len(rem), func { j | return semver.Major(rem[j]) != major })
 			latestAtMajor := rem[j-1]
 
 			var err error
@@ -541,7 +541,7 @@ func (r *codeRepo) convert(ctx context.Context, info *codehost.RevInfo, statVers
 
 	isRetracted, err := r.retractedVersions(ctx)
 	if err != nil {
-		isRetracted = func { false }
+		isRetracted = func { return false }
 	}
 
 	// tagToVersion returns the version obtained by trimming tagPrefix from tag.

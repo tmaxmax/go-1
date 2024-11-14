@@ -649,7 +649,7 @@ func tempDirCanonical(t *testing.T) string {
 
 func TestWalk(t *testing.T) {
 	walk := func(root string, fn fs.WalkDirFunc) error {
-		return filepath.Walk(root, func { path, info, err | fn(path, fs.FileInfoToDirEntry(info), err) })
+		return filepath.Walk(root, func { path, info, err | return fn(path, fs.FileInfoToDirEntry(info), err) })
 	}
 	testWalk(t, walk, 1)
 }

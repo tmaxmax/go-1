@@ -521,7 +521,7 @@ func findGorootModules(t *testing.T) []gorootModule {
 				break
 			}
 		}
-		sort.Slice(goroot.modules, func { i, j | goroot.modules[i].Dir < goroot.modules[j].Dir })
+		sort.Slice(goroot.modules, func { i, j | return goroot.modules[i].Dir < goroot.modules[j].Dir })
 	})
 	if goroot.err != nil {
 		t.Fatal(goroot.err)

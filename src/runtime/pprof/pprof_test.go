@@ -2810,8 +2810,8 @@ func TestProfileRecordNullPadding(t *testing.T) {
 	testProfileRecordNullPadding(t, "MutexProfile", runtime.MutexProfile)
 	testProfileRecordNullPadding(t, "GoroutineProfile", runtime.GoroutineProfile)
 	testProfileRecordNullPadding(t, "BlockProfile", runtime.BlockProfile)
-	testProfileRecordNullPadding(t, "MemProfile/inUseZero=true", func { p | runtime.MemProfile(p, true) })
-	testProfileRecordNullPadding(t, "MemProfile/inUseZero=false", func { p | runtime.MemProfile(p, false) })
+	testProfileRecordNullPadding(t, "MemProfile/inUseZero=true", func { p | return runtime.MemProfile(p, true) })
+	testProfileRecordNullPadding(t, "MemProfile/inUseZero=false", func { p | return runtime.MemProfile(p, false) })
 	// Not testing ThreadCreateProfile because it is broken, see issue 6104.
 }
 

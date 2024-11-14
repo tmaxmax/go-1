@@ -15,7 +15,7 @@ import (
 
 func TestDo(t *testing.T) {
 	var g Group
-	v, err, _ := g.Do("key", func { "bar", nil })
+	v, err, _ := g.Do("key", func { return "bar", nil })
 	if got, want := fmt.Sprintf("%v (%T)", v, v), "bar (string)"; got != want {
 		t.Errorf("Do = %v; want %v", got, want)
 	}
@@ -27,7 +27,7 @@ func TestDo(t *testing.T) {
 func TestDoErr(t *testing.T) {
 	var g Group
 	someErr := errors.New("some error")
-	v, err, _ := g.Do("key", func { nil, someErr })
+	v, err, _ := g.Do("key", func { return nil, someErr })
 	if err != someErr {
 		t.Errorf("Do error = %v; want someErr %v", err, someErr)
 	}

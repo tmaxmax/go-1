@@ -79,7 +79,7 @@ func (mux *serveMux121) handle(pattern string, handler Handler) {
 
 func appendSorted(es []muxEntry, e muxEntry) []muxEntry {
 	n := len(es)
-	i := sort.Search(n, func { i | len(es[i].pattern) < len(e.pattern) })
+	i := sort.Search(n, func { i | return len(es[i].pattern) < len(e.pattern) })
 	if i == n {
 		return append(es, e)
 	}

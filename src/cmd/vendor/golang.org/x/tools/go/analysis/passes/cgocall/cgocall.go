@@ -266,7 +266,7 @@ func typeCheckCgoSourceFiles(fset *token.FileSet, pkg *types.Package, files []*a
 	// Type-check the synthetic files.
 	tc := &types.Config{
 		FakeImportC: true,
-		Importer:    importerFunc(func { path | importMap[path], nil }),
+		Importer:    importerFunc(func { path | return importMap[path], nil }),
 		Sizes:       sizes,
 		Error:       func(error) {}, // ignore errors (e.g. unused import)
 	}

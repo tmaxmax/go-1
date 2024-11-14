@@ -289,7 +289,7 @@ func TestMapRangeNoAllocations(t *testing.T) { // Issue 62404
 	testenv.SkipIfOptimizationOff(t)
 	var m sync.Map
 	allocs := testing.AllocsPerRun(10, func() {
-		m.Range(func { key, value | true })
+		m.Range(func { key, value | return true })
 	})
 	if allocs > 0 {
 		t.Errorf("AllocsPerRun of m.Range = %v; want 0", allocs)

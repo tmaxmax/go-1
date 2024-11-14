@@ -25,12 +25,12 @@ func testalias(t *testing.T, fn string, sys1, sys2 func() error) {
 func TestPlan9Syserr(t *testing.T) {
 	testalias(t,
 		"Syscall",
-		func { syscall.Mkdir("/", 0) },
-		func { syscall.Mkdir("#", 0) })
+		func { return syscall.Mkdir("/", 0) },
+		func { return syscall.Mkdir("#", 0) })
 	testalias(t,
 		"Syscall6",
-		func { syscall.Mount(0, 0, "", 0, "") },
-		func { syscall.Mount(-1, 0, "", 0, "") })
+		func { return syscall.Mount(0, 0, "", 0, "") },
+		func { return syscall.Mount(-1, 0, "", 0, "") })
 	// originally failed only on plan9_arm
 	testalias(t,
 		"seek",

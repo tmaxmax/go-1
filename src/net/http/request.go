@@ -969,7 +969,7 @@ func NewRequestWithContext(ctx context.Context, method, url string, body io.Read
 		// variable to mean explicitly zero.
 		if req.GetBody != nil && req.ContentLength == 0 {
 			req.Body = NoBody
-			req.GetBody = func { NoBody, nil }
+			req.GetBody = func { return NoBody, nil }
 		}
 	}
 

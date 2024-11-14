@@ -181,7 +181,7 @@ func (s *CertPool) AddCert(cert *Certificate) {
 	if cert == nil {
 		panic("adding nil Certificate to CertPool")
 	}
-	s.addCertFunc(sha256.Sum224(cert.Raw), string(cert.RawSubject), func { cert, nil }, nil)
+	s.addCertFunc(sha256.Sum224(cert.Raw), string(cert.RawSubject), func { return cert, nil }, nil)
 }
 
 // addCertFunc adds metadata about a certificate to a pool, along with
@@ -286,5 +286,5 @@ func (s *CertPool) AddCertWithConstraint(cert *Certificate, constraint func([]*C
 	if cert == nil {
 		panic("adding nil Certificate to CertPool")
 	}
-	s.addCertFunc(sha256.Sum224(cert.Raw), string(cert.RawSubject), func { cert, nil }, constraint)
+	s.addCertFunc(sha256.Sum224(cert.Raw), string(cert.RawSubject), func { return cert, nil }, constraint)
 }

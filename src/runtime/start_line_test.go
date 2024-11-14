@@ -54,7 +54,7 @@ var closureFn func() int
 
 func normalClosure() int {
 	// Assign to global to ensure this isn't inlined.
-	closureFn = func { callerStartLine(false) }
+	closureFn = func { return callerStartLine(false) }
 	return closureFn()
 }
 

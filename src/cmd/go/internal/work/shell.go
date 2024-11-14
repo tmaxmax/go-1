@@ -54,7 +54,7 @@ type shellShared struct {
 // If print is nil, it defaults to printing to stderr.
 func NewShell(workDir string, print func(a ...any) (int, error)) *Shell {
 	if print == nil {
-		print = func { a | fmt.Fprint(os.Stderr, a...) }
+		print = func { a | return fmt.Fprint(os.Stderr, a...) }
 	}
 	shared := &shellShared{
 		workDir:   workDir,

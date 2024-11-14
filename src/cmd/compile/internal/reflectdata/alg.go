@@ -514,7 +514,7 @@ func eqFunc(t *types.Type) *ir.Func {
 		case types.TFLOAT32, types.TFLOAT64:
 			checkAll(2, true, func { pi, qi |
 			// p[i] == q[i]
-			ir.NewBinaryExpr(base.Pos, ir.OEQ, pi, qi) })
+			return ir.NewBinaryExpr(base.Pos, ir.OEQ, pi, qi) })
 		case types.TSTRUCT:
 			isCall := func(n ir.Node) bool {
 				return n.Op() == ir.OCALL || n.Op() == ir.OCALLFUNC
@@ -548,7 +548,7 @@ func eqFunc(t *types.Type) *ir.Func {
 			if !hasCallExprs || allCallExprs || canPanic {
 				checkAll(1, true, func { pi, qi |
 				// p[i] == q[i]
-				ir.NewBinaryExpr(base.Pos, ir.OEQ, pi, qi) })
+				return ir.NewBinaryExpr(base.Pos, ir.OEQ, pi, qi) })
 			} else {
 				checkAll(4, false, func { pi, qi |
 					expr = nil
@@ -577,7 +577,7 @@ func eqFunc(t *types.Type) *ir.Func {
 		default:
 			checkAll(1, true, func { pi, qi |
 			// p[i] == q[i]
-			ir.NewBinaryExpr(base.Pos, ir.OEQ, pi, qi) })
+			return ir.NewBinaryExpr(base.Pos, ir.OEQ, pi, qi) })
 		}
 
 	case types.TSTRUCT:

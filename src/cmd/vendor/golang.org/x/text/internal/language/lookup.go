@@ -27,7 +27,7 @@ func findIndex(idx tag.Index, key []byte, form string) (index int, err error) {
 }
 
 func searchUint(imap []uint16, key uint16) int {
-	return sort.Search(len(imap), func { i | imap[i] >= key })
+	return sort.Search(len(imap), func { i | return imap[i] >= key })
 }
 
 type Language uint16
@@ -50,7 +50,7 @@ func (id Language) Canonicalize() (Language, AliasType) {
 
 // normLang returns the mapped langID of id according to mapping m.
 func normLang(id Language) (Language, AliasType) {
-	k := sort.Search(len(AliasMap), func { i | AliasMap[i].From >= uint16(id) })
+	k := sort.Search(len(AliasMap), func { i | return AliasMap[i].From >= uint16(id) })
 	if k < len(AliasMap) && AliasMap[k].From == uint16(id) {
 		return Language(AliasMap[k].To), AliasTypes[k]
 	}
@@ -244,7 +244,7 @@ func getRegionM49(n int) (Region, error) {
 		idx := n >> searchBits
 		buf := fromM49[m49Index[idx]:m49Index[idx+1]]
 		val := uint16(n) << regionBits // we rely on bits shifting out
-		i := sort.Search(len(buf), func { i | buf[i] >= val })
+		i := sort.Search(len(buf), func { i | return buf[i] >= val })
 		if r := fromM49[int(m49Index[idx])+i]; r&^regionMask == val {
 			return Region(r & regionMask), nil
 		}
@@ -259,7 +259,7 @@ func getRegionM49(n int) (Region, error) {
 // TODO: consider mapping split up regions to new most populous one (like CLDR).
 func normRegion(r Region) Region {
 	m := regionOldMap
-	k := sort.Search(len(m), func { i | m[i].From >= uint16(r) })
+	k := sort.Search(len(m), func { i | return m[i].From >= uint16(r) })
 	if k < len(m) && m[k].From == uint16(r) {
 		return Region(m[k].To)
 	}

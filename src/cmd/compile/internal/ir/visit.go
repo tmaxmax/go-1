@@ -137,7 +137,7 @@ func Any(n Node, cond func(Node) bool) bool {
 		return false
 	}
 	var do func(Node) bool
-	do = func { x | cond(x) || DoChildren(x, do) }
+	do = func { x | return cond(x) || DoChildren(x, do) }
 	return do(n)
 }
 

@@ -2179,7 +2179,7 @@ func TestFunc(t *testing.T) {
 
 func TestCallConvert(t *testing.T) {
 	v := ValueOf(new(io.ReadWriter)).Elem()
-	f := ValueOf(func { r | r })
+	f := ValueOf(func { r | return r })
 	out := f.Call([]Value{v})
 	if len(out) != 1 || out[0].Type() != TypeOf(new(io.Reader)).Elem() || !out[0].IsNil() {
 		t.Errorf("expected [nil], got %v", out)
@@ -2252,7 +2252,7 @@ func TestCallReturnsEmpty(t *testing.T) {
 
 func TestMakeFunc(t *testing.T) {
 	f := dummy
-	fv := MakeFunc(TypeOf(f), func { in | in })
+	fv := MakeFunc(TypeOf(f), func { in | return in })
 	ValueOf(&f).Elem().Set(fv)
 
 	// Call g with small arguments so that there is
@@ -2289,7 +2289,7 @@ func TestMakeFuncInterface(t *testing.T) {
 func TestMakeFuncVariadic(t *testing.T) {
 	// Test that variadic arguments are packed into a slice and passed as last arg
 	fn := func(_ int, is ...int) []int { return nil }
-	fv := MakeFunc(TypeOf(fn), func { in | in[1:2] })
+	fv := MakeFunc(TypeOf(fn), func { in | return in[1:2] })
 	ValueOf(&fn).Elem().Set(fv)
 
 	r := fn(1, 2, 3)
@@ -2341,7 +2341,7 @@ func TestMakeFuncValidReturnAssignments(t *testing.T) {
 
 	// Concrete types should be promotable to interfaces they implement.
 	var f func() error
-	f = MakeFunc(TypeOf(f), func { []Value{ValueOf(io.EOF)} }).Interface().(func() error)
+	f = MakeFunc(TypeOf(f), func { return []Value{ValueOf(io.EOF)} }).Interface().(func() error)
 	f()
 
 	// Super-interfaces should be promotable to simpler interfaces.
@@ -2354,13 +2354,13 @@ func TestMakeFuncValidReturnAssignments(t *testing.T) {
 
 	// Channels should be promotable to directional channels.
 	var h func() <-chan int
-	h = MakeFunc(TypeOf(h), func { []Value{ValueOf(make(chan int))} }).Interface().(func() <-chan int)
+	h = MakeFunc(TypeOf(h), func { return []Value{ValueOf(make(chan int))} }).Interface().(func() <-chan int)
 	h()
 
 	// Unnamed types should be promotable to named types.
 	type T struct{ a, b, c int }
 	var i func() T
-	i = MakeFunc(TypeOf(i), func { []Value{ValueOf(struct{ a, b, c int }{a: 1, b: 2, c: 3})} }).Interface().(func() T)
+	i = MakeFunc(TypeOf(i), func { return []Value{ValueOf(struct{ a, b, c int }{a: 1, b: 2, c: 3})} }).Interface().(func() T)
 	i()
 }
 
@@ -2368,7 +2368,7 @@ func TestMakeFuncInvalidReturnAssignments(t *testing.T) {
 	// Type doesn't implement the required interface.
 	shouldPanic("", func() {
 		var f func() error
-		f = MakeFunc(TypeOf(f), func { []Value{ValueOf(int(7))} }).Interface().(func() error)
+		f = MakeFunc(TypeOf(f), func { return []Value{ValueOf(int(7))} }).Interface().(func() error)
 		f()
 	})
 	// Assigning to an interface with additional methods.
@@ -2394,7 +2394,7 @@ func TestMakeFuncInvalidReturnAssignments(t *testing.T) {
 		type T struct{ a, b, c int }
 		type U struct{ a, b, c int }
 		var f func() T
-		f = MakeFunc(TypeOf(f), func { []Value{ValueOf(U{a: 1, b: 2, c: 3})} }).Interface().(func() T)
+		f = MakeFunc(TypeOf(f), func { return []Value{ValueOf(U{a: 1, b: 2, c: 3})} }).Interface().(func() T)
 		f()
 	})
 }
@@ -3517,7 +3517,7 @@ func TestAllocations(t *testing.T) {
 	noAlloc(t, 100, func { j |
 		var i any
 		var v Value
-		i = func { j | j }
+		i = func { j | return j }
 		v = ValueOf(i)
 		if v.Interface().(func(int) int)(j) != j {
 			panic("wrong result")
@@ -6974,7 +6974,7 @@ func TestFuncLayout(t *testing.T) {
 	}
 	tests := []test{
 		{
-			typ:       ValueOf(func { a, b | "" }).Type(),
+			typ:       ValueOf(func { a, b | return "" }).Type(),
 			size:      6 * goarch.PtrSize,
 			argsize:   4 * goarch.PtrSize,
 			retOffset: 4 * goarch.PtrSize,
@@ -7023,7 +7023,7 @@ func TestFuncLayout(t *testing.T) {
 			gc:        []byte{},
 		},
 		{
-			typ:       ValueOf(func { 0 }).Type(),
+			typ:       ValueOf(func { return 0 }).Type(),
 			size:      goarch.PtrSize,
 			argsize:   0,
 			retOffset: 0,

@@ -1698,7 +1698,7 @@ func TestIssue31810(t *testing.T) {
 	}
 
 	// Even a plain function fails - need to use call.
-	f := func { "result" }
+	f := func { return "result" }
 	b.Reset()
 	err = tmpl.Execute(&b, f)
 	if err == nil {

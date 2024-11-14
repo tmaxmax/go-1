@@ -176,14 +176,14 @@ func BenchmarkProbablyPrime(b *testing.B) {
 
 func TestMillerRabinPseudoprimes(t *testing.T) {
 	testPseudoprimes(t, "probablyPrimeMillerRabin",
-		func { n | n.probablyPrimeMillerRabin(1, true) && !n.probablyPrimeLucas() },
+		func { n | return n.probablyPrimeMillerRabin(1, true) && !n.probablyPrimeLucas() },
 		// https://oeis.org/A001262
 		[]int{2047, 3277, 4033, 4681, 8321, 15841, 29341, 42799, 49141, 52633, 65281, 74665, 80581, 85489, 88357, 90751})
 }
 
 func TestLucasPseudoprimes(t *testing.T) {
 	testPseudoprimes(t, "probablyPrimeLucas",
-		func { n | n.probablyPrimeLucas() && !n.probablyPrimeMillerRabin(1, true) },
+		func { n | return n.probablyPrimeLucas() && !n.probablyPrimeMillerRabin(1, true) },
 		// https://oeis.org/A217719
 		[]int{989, 3239, 5777, 10877, 27971, 29681, 30739, 31631, 39059, 72389, 73919, 75077})
 }

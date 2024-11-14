@@ -16,7 +16,7 @@ import (
 )
 
 func TestHashTrieMap(t *testing.T) {
-	testHashTrieMap(t, func { NewHashTrieMap[string, int]() })
+	testHashTrieMap(t, func { return NewHashTrieMap[string, int]() })
 }
 
 func TestHashTrieMapBadHash(t *testing.T) {
@@ -24,7 +24,7 @@ func TestHashTrieMapBadHash(t *testing.T) {
 		// Stub out the good hash function with a terrible one.
 		// Everything should still work as expected.
 		m := NewHashTrieMap[string, int]()
-		m.keyHash = func { _, _ | 0 }
+		m.keyHash = func { _, _ | return 0 }
 		return m
 	})
 }
@@ -118,7 +118,7 @@ func testHashTrieMap(t *testing.T, newMap func() *HashTrieMap[string, int]) {
 	t.Run("All", func { t |
 		m := newMap()
 
-		testAll(t, m, testDataMap(testData[:]), func { _, _ | true })
+		testAll(t, m, testDataMap(testData[:]), func { _, _ | return true })
 	})
 	t.Run("AllDelete", func { t |
 		m := newMap()

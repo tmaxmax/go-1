@@ -504,7 +504,7 @@ func (csa *callSiteAnalyzer) scoreCallsRegion(fn *ir.Func, region ir.Nodes, csta
 		csl = append(csl, cs)
 	}
 	scoreCallsCache.csl = csl[:0]
-	sort.Slice(csl, func { i, j | csl[i].ID < csl[j].ID })
+	sort.Slice(csl, func { i, j | return csl[i].ID < csl[j].ID })
 
 	// Score each call site.
 	var resultNameTab map[*ir.Name]resultPropAndCS

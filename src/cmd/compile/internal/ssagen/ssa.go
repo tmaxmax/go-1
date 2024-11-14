@@ -3739,7 +3739,7 @@ func (s *state) minMax(n *ir.CallExpr) *ssa.Value {
 				case typ.Kind() == types.TFLOAT32 && n.Op() == ir.OMAX:
 					op = ssa.OpMax32F
 				}
-				return fold(func { x, a | s.newValue2(op, typ, x, a) })
+				return fold(func { x, a | return s.newValue2(op, typ, x, a) })
 			}
 		}
 		var name string
@@ -3768,7 +3768,7 @@ func (s *state) minMax(n *ir.CallExpr) *ssa.Value {
 		}
 		fn := typecheck.LookupRuntimeFunc(name)
 
-		return fold(func { x, a | s.rtcall(fn, true, []*types.Type{typ}, x, a)[0] })
+		return fold(func { x, a | return s.rtcall(fn, true, []*types.Type{typ}, x, a)[0] })
 	}
 
 	lt := s.ssaOp(ir.OLT, typ)
@@ -4233,7 +4233,7 @@ func InitTables() {
 			// Compiler frontend optimizations emit OBYTES2STRTMP nodes
 			// for the backend instead of slicebytetostringtmp calls
 			// when not instrumenting.
-			s.newValue2(ssa.OpStringMake, n.Type(), args[0], args[1]) },
+			return s.newValue2(ssa.OpStringMake, n.Type(), args[0], args[1]) },
 			all...)
 	}
 	addF("runtime/internal/math", "MulUintptr",
@@ -4252,15 +4252,15 @@ func InitTables() {
 		},
 		all...)
 	add("runtime", "getclosureptr",
-		func { s, n, args | s.newValue0(ssa.OpGetClosurePtr, s.f.Config.Types.Uintptr) },
+		func { s, n, args | return s.newValue0(ssa.OpGetClosurePtr, s.f.Config.Types.Uintptr) },
 		all...)
 
 	add("runtime", "getcallerpc",
-		func { s, n, args | s.newValue0(ssa.OpGetCallerPC, s.f.Config.Types.Uintptr) },
+		func { s, n, args | return s.newValue0(ssa.OpGetCallerPC, s.f.Config.Types.Uintptr) },
 		all...)
 
 	add("runtime", "getcallersp",
-		func { s, n, args | s.newValue1(ssa.OpGetCallerSP, s.f.Config.Types.Uintptr, s.mem()) },
+		func { s, n, args | return s.newValue1(ssa.OpGetCallerSP, s.f.Config.Types.Uintptr, s.mem()) },
 		all...)
 
 	addF("runtime", "publicationBarrier",
@@ -4278,10 +4278,10 @@ func InitTables() {
 	}
 	/******** runtime/internal/sys ********/
 	addF("runtime/internal/sys", "Bswap32",
-		func { s, n, args | s.newValue1(ssa.OpBswap32, types.Types[types.TUINT32], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpBswap32, types.Types[types.TUINT32], args[0]) },
 		brev_arch...)
 	addF("runtime/internal/sys", "Bswap64",
-		func { s, n, args | s.newValue1(ssa.OpBswap64, types.Types[types.TUINT64], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpBswap64, types.Types[types.TUINT64], args[0]) },
 		brev_arch...)
 
 	/****** Prefetch ******/
@@ -4609,31 +4609,31 @@ func InitTables() {
 
 	/******** math ********/
 	addF("math", "sqrt",
-		func { s, n, args | s.newValue1(ssa.OpSqrt, types.Types[types.TFLOAT64], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpSqrt, types.Types[types.TFLOAT64], args[0]) },
 		sys.I386, sys.AMD64, sys.ARM, sys.ARM64, sys.Loong64, sys.MIPS, sys.MIPS64, sys.PPC64, sys.RISCV64, sys.S390X, sys.Wasm)
 	addF("math", "Trunc",
-		func { s, n, args | s.newValue1(ssa.OpTrunc, types.Types[types.TFLOAT64], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpTrunc, types.Types[types.TFLOAT64], args[0]) },
 		sys.ARM64, sys.PPC64, sys.S390X, sys.Wasm)
 	addF("math", "Ceil",
-		func { s, n, args | s.newValue1(ssa.OpCeil, types.Types[types.TFLOAT64], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpCeil, types.Types[types.TFLOAT64], args[0]) },
 		sys.ARM64, sys.PPC64, sys.S390X, sys.Wasm)
 	addF("math", "Floor",
-		func { s, n, args | s.newValue1(ssa.OpFloor, types.Types[types.TFLOAT64], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpFloor, types.Types[types.TFLOAT64], args[0]) },
 		sys.ARM64, sys.PPC64, sys.S390X, sys.Wasm)
 	addF("math", "Round",
-		func { s, n, args | s.newValue1(ssa.OpRound, types.Types[types.TFLOAT64], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpRound, types.Types[types.TFLOAT64], args[0]) },
 		sys.ARM64, sys.PPC64, sys.S390X)
 	addF("math", "RoundToEven",
-		func { s, n, args | s.newValue1(ssa.OpRoundToEven, types.Types[types.TFLOAT64], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpRoundToEven, types.Types[types.TFLOAT64], args[0]) },
 		sys.ARM64, sys.S390X, sys.Wasm)
 	addF("math", "Abs",
-		func { s, n, args | s.newValue1(ssa.OpAbs, types.Types[types.TFLOAT64], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpAbs, types.Types[types.TFLOAT64], args[0]) },
 		sys.ARM64, sys.ARM, sys.PPC64, sys.RISCV64, sys.Wasm, sys.MIPS, sys.MIPS64)
 	addF("math", "Copysign",
-		func { s, n, args | s.newValue2(ssa.OpCopysign, types.Types[types.TFLOAT64], args[0], args[1]) },
+		func { s, n, args | return s.newValue2(ssa.OpCopysign, types.Types[types.TFLOAT64], args[0], args[1]) },
 		sys.PPC64, sys.RISCV64, sys.Wasm)
 	addF("math", "FMA",
-		func { s, n, args | s.newValue3(ssa.OpFMA, types.Types[types.TFLOAT64], args[0], args[1], args[2]) },
+		func { s, n, args | return s.newValue3(ssa.OpFMA, types.Types[types.TFLOAT64], args[0], args[1], args[2]) },
 		sys.ARM64, sys.PPC64, sys.RISCV64, sys.S390X)
 	addF("math", "FMA",
 		func { s, n, args |
@@ -4753,10 +4753,10 @@ func InitTables() {
 
 	/******** math/bits ********/
 	addF("math/bits", "TrailingZeros64",
-		func { s, n, args | s.newValue1(ssa.OpCtz64, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpCtz64, types.Types[types.TINT], args[0]) },
 		sys.AMD64, sys.I386, sys.ARM64, sys.ARM, sys.S390X, sys.MIPS, sys.PPC64, sys.Wasm)
 	addF("math/bits", "TrailingZeros32",
-		func { s, n, args | s.newValue1(ssa.OpCtz32, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpCtz32, types.Types[types.TINT], args[0]) },
 		sys.AMD64, sys.I386, sys.ARM64, sys.ARM, sys.S390X, sys.MIPS, sys.PPC64, sys.Wasm)
 	addF("math/bits", "TrailingZeros16",
 		func { s, n, args |
@@ -4767,7 +4767,7 @@ func InitTables() {
 		},
 		sys.MIPS)
 	addF("math/bits", "TrailingZeros16",
-		func { s, n, args | s.newValue1(ssa.OpCtz16, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpCtz16, types.Types[types.TINT], args[0]) },
 		sys.AMD64, sys.I386, sys.ARM, sys.ARM64, sys.Wasm)
 	addF("math/bits", "TrailingZeros16",
 		func { s, n, args |
@@ -4786,7 +4786,7 @@ func InitTables() {
 		},
 		sys.MIPS)
 	addF("math/bits", "TrailingZeros8",
-		func { s, n, args | s.newValue1(ssa.OpCtz8, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpCtz8, types.Types[types.TINT], args[0]) },
 		sys.AMD64, sys.I386, sys.ARM, sys.ARM64, sys.Wasm)
 	addF("math/bits", "TrailingZeros8",
 		func { s, n, args |
@@ -4803,15 +4803,15 @@ func InitTables() {
 	// On Power10, 16-bit rotate is not available so use BRH instruction
 	if buildcfg.GOPPC64 >= 10 {
 		addF("math/bits", "ReverseBytes16",
-			func { s, n, args | s.newValue1(ssa.OpBswap16, types.Types[types.TUINT], args[0]) },
+			func { s, n, args | return s.newValue1(ssa.OpBswap16, types.Types[types.TUINT], args[0]) },
 			sys.PPC64)
 	}
 
 	addF("math/bits", "Len64",
-		func { s, n, args | s.newValue1(ssa.OpBitLen64, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpBitLen64, types.Types[types.TINT], args[0]) },
 		sys.AMD64, sys.ARM64, sys.ARM, sys.S390X, sys.MIPS, sys.PPC64, sys.Wasm)
 	addF("math/bits", "Len32",
-		func { s, n, args | s.newValue1(ssa.OpBitLen32, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpBitLen32, types.Types[types.TINT], args[0]) },
 		sys.AMD64, sys.ARM64, sys.PPC64)
 	addF("math/bits", "Len32",
 		func { s, n, args |
@@ -4833,7 +4833,7 @@ func InitTables() {
 		},
 		sys.ARM64, sys.ARM, sys.S390X, sys.MIPS, sys.PPC64, sys.Wasm)
 	addF("math/bits", "Len16",
-		func { s, n, args | s.newValue1(ssa.OpBitLen16, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpBitLen16, types.Types[types.TINT], args[0]) },
 		sys.AMD64)
 	addF("math/bits", "Len8",
 		func { s, n, args |
@@ -4846,7 +4846,7 @@ func InitTables() {
 		},
 		sys.ARM64, sys.ARM, sys.S390X, sys.MIPS, sys.PPC64, sys.Wasm)
 	addF("math/bits", "Len8",
-		func { s, n, args | s.newValue1(ssa.OpBitLen8, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpBitLen8, types.Types[types.TINT], args[0]) },
 		sys.AMD64)
 	addF("math/bits", "Len",
 		func { s, n, args |
@@ -4858,31 +4858,31 @@ func InitTables() {
 		sys.AMD64, sys.ARM64, sys.ARM, sys.S390X, sys.MIPS, sys.PPC64, sys.Wasm)
 	// LeadingZeros is handled because it trivially calls Len.
 	addF("math/bits", "Reverse64",
-		func { s, n, args | s.newValue1(ssa.OpBitRev64, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpBitRev64, types.Types[types.TINT], args[0]) },
 		sys.ARM64)
 	addF("math/bits", "Reverse32",
-		func { s, n, args | s.newValue1(ssa.OpBitRev32, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpBitRev32, types.Types[types.TINT], args[0]) },
 		sys.ARM64)
 	addF("math/bits", "Reverse16",
-		func { s, n, args | s.newValue1(ssa.OpBitRev16, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpBitRev16, types.Types[types.TINT], args[0]) },
 		sys.ARM64)
 	addF("math/bits", "Reverse8",
-		func { s, n, args | s.newValue1(ssa.OpBitRev8, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpBitRev8, types.Types[types.TINT], args[0]) },
 		sys.ARM64)
 	addF("math/bits", "Reverse",
-		func { s, n, args | s.newValue1(ssa.OpBitRev64, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpBitRev64, types.Types[types.TINT], args[0]) },
 		sys.ARM64)
 	addF("math/bits", "RotateLeft8",
-		func { s, n, args | s.newValue2(ssa.OpRotateLeft8, types.Types[types.TUINT8], args[0], args[1]) },
+		func { s, n, args | return s.newValue2(ssa.OpRotateLeft8, types.Types[types.TUINT8], args[0], args[1]) },
 		sys.AMD64, sys.RISCV64)
 	addF("math/bits", "RotateLeft16",
-		func { s, n, args | s.newValue2(ssa.OpRotateLeft16, types.Types[types.TUINT16], args[0], args[1]) },
+		func { s, n, args | return s.newValue2(ssa.OpRotateLeft16, types.Types[types.TUINT16], args[0], args[1]) },
 		sys.AMD64, sys.RISCV64)
 	addF("math/bits", "RotateLeft32",
-		func { s, n, args | s.newValue2(ssa.OpRotateLeft32, types.Types[types.TUINT32], args[0], args[1]) },
+		func { s, n, args | return s.newValue2(ssa.OpRotateLeft32, types.Types[types.TUINT32], args[0], args[1]) },
 		sys.AMD64, sys.ARM, sys.ARM64, sys.Loong64, sys.PPC64, sys.RISCV64, sys.S390X, sys.Wasm)
 	addF("math/bits", "RotateLeft64",
-		func { s, n, args | s.newValue2(ssa.OpRotateLeft64, types.Types[types.TUINT64], args[0], args[1]) },
+		func { s, n, args | return s.newValue2(ssa.OpRotateLeft64, types.Types[types.TUINT64], args[0], args[1]) },
 		sys.AMD64, sys.ARM64, sys.Loong64, sys.PPC64, sys.RISCV64, sys.S390X, sys.Wasm)
 	alias("math/bits", "RotateLeft", "math/bits", "RotateLeft64", p8...)
 
@@ -4922,22 +4922,22 @@ func InitTables() {
 		makeOnesCountAMD64(ssa.OpPopCount64),
 		sys.AMD64)
 	addF("math/bits", "OnesCount64",
-		func { s, n, args | s.newValue1(ssa.OpPopCount64, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpPopCount64, types.Types[types.TINT], args[0]) },
 		sys.PPC64, sys.ARM64, sys.S390X, sys.Wasm)
 	addF("math/bits", "OnesCount32",
 		makeOnesCountAMD64(ssa.OpPopCount32),
 		sys.AMD64)
 	addF("math/bits", "OnesCount32",
-		func { s, n, args | s.newValue1(ssa.OpPopCount32, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpPopCount32, types.Types[types.TINT], args[0]) },
 		sys.PPC64, sys.ARM64, sys.S390X, sys.Wasm)
 	addF("math/bits", "OnesCount16",
 		makeOnesCountAMD64(ssa.OpPopCount16),
 		sys.AMD64)
 	addF("math/bits", "OnesCount16",
-		func { s, n, args | s.newValue1(ssa.OpPopCount16, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpPopCount16, types.Types[types.TINT], args[0]) },
 		sys.ARM64, sys.S390X, sys.PPC64, sys.Wasm)
 	addF("math/bits", "OnesCount8",
-		func { s, n, args | s.newValue1(ssa.OpPopCount8, types.Types[types.TINT], args[0]) },
+		func { s, n, args | return s.newValue1(ssa.OpPopCount8, types.Types[types.TINT], args[0]) },
 		sys.S390X, sys.PPC64, sys.Wasm)
 	addF("math/bits", "OnesCount",
 		makeOnesCountAMD64(ssa.OpPopCount64),

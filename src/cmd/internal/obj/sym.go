@@ -232,17 +232,17 @@ func (ctxt *Link) NumberSyms() {
 		// any original entries with the same name (all DWARFVAR symbols
 		// have empty names but different relocation sets) are not shuffled.
 		// TODO: Find a better place and optimize to only sort TOC symbols.
-		sort.SliceStable(ctxt.Data, func { i, j | ctxt.Data[i].Name < ctxt.Data[j].Name })
+		sort.SliceStable(ctxt.Data, func { i, j | return ctxt.Data[i].Name < ctxt.Data[j].Name })
 	}
 
 	// Constant symbols are created late in the concurrent phase. Sort them
 	// to ensure a deterministic order.
-	sort.Slice(ctxt.constSyms, func { i, j | ctxt.constSyms[i].Name < ctxt.constSyms[j].Name })
+	sort.Slice(ctxt.constSyms, func { i, j | return ctxt.constSyms[i].Name < ctxt.constSyms[j].Name })
 	ctxt.Data = append(ctxt.Data, ctxt.constSyms...)
 	ctxt.constSyms = nil
 
 	// So are SEH symbols.
-	sort.Slice(ctxt.SEHSyms, func { i, j | ctxt.SEHSyms[i].Name < ctxt.SEHSyms[j].Name })
+	sort.Slice(ctxt.SEHSyms, func { i, j | return ctxt.SEHSyms[i].Name < ctxt.SEHSyms[j].Name })
 	ctxt.Data = append(ctxt.Data, ctxt.SEHSyms...)
 	ctxt.SEHSyms = nil
 
@@ -440,7 +440,7 @@ func (ctxt *Link) traverseFuncAux(flag traverseFlag, fsym *LSym, fn func(parent 
 	for f := range pc.UsedFiles {
 		usedFiles = append(usedFiles, f)
 	}
-	sort.Slice(usedFiles, func { i, j | usedFiles[i] < usedFiles[j] })
+	sort.Slice(usedFiles, func { i, j | return usedFiles[i] < usedFiles[j] })
 	for _, f := range usedFiles {
 		if filesym := ctxt.Lookup(files[f]); filesym != nil {
 			fn(fsym, filesym)

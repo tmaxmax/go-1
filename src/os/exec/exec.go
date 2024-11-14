@@ -465,7 +465,7 @@ func CommandContext(ctx context.Context, name string, arg ...string) *Cmd {
 	}
 	cmd := Command(name, arg...)
 	cmd.ctx = ctx
-	cmd.Cancel = func { cmd.Process.Kill() }
+	cmd.Cancel = func { return cmd.Process.Kill() }
 	return cmd
 }
 

@@ -1959,7 +1959,7 @@ func (p *Package) gccDebug(stdin []byte, nnames int) (d *dwarf.Data, ints []int6
 						// tag. Remove it so that
 						// we can find the associated
 						// data.
-						removeTag = func { v | v &^ (0xff << (64 - 8)) }
+						removeTag = func { v | return v &^ (0xff << (64 - 8)) }
 						break
 					}
 				}

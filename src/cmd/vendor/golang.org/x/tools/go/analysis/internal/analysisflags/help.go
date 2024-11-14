@@ -32,7 +32,7 @@ func Help(progname string, analyzers []*analysis.Analyzer, args []string) {
 		fmt.Println(strings.Replace(help, "PROGNAME", progname, -1))
 		fmt.Println("Registered analyzers:")
 		fmt.Println()
-		sort.Slice(analyzers, func { i, j | analyzers[i].Name < analyzers[j].Name })
+		sort.Slice(analyzers, func { i, j | return analyzers[i].Name < analyzers[j].Name })
 		for _, a := range analyzers {
 			title := strings.Split(a.Doc, "\n\n")[0]
 			fmt.Printf("    %-12s %s\n", a.Name, title)

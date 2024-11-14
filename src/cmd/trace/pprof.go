@@ -111,7 +111,7 @@ type computePprofFunc func(gToIntervals map[trace.GoID][]interval, events []trac
 // computePprofIO returns a computePprofFunc that generates IO pprof-like profile (time spent in
 // IO wait, currently only network blocking event).
 func computePprofIO() computePprofFunc {
-	return makeComputePprofFunc(trace.GoWaiting, func { reason | reason == "network" })
+	return makeComputePprofFunc(trace.GoWaiting, func { reason | return reason == "network" })
 }
 
 // computePprofBlock returns a computePprofFunc that generates blocking pprof-like profile
@@ -125,13 +125,13 @@ func computePprofBlock() computePprofFunc {
 // computePprofSyscall returns a computePprofFunc that generates a syscall pprof-like
 // profile (time spent in syscalls).
 func computePprofSyscall() computePprofFunc {
-	return makeComputePprofFunc(trace.GoSyscall, func { _ | true })
+	return makeComputePprofFunc(trace.GoSyscall, func { _ | return true })
 }
 
 // computePprofSched returns a computePprofFunc that generates a scheduler latency pprof-like profile
 // (time between a goroutine become runnable and actually scheduled for execution).
 func computePprofSched() computePprofFunc {
-	return makeComputePprofFunc(trace.GoRunnable, func { _ | true })
+	return makeComputePprofFunc(trace.GoRunnable, func { _ | return true })
 }
 
 // makeComputePprofFunc returns a computePprofFunc that generates a profile of time goroutines spend

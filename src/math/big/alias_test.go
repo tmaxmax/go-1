@@ -196,16 +196,16 @@ func TestAliasing(t *testing.T) {
 			return checkAliasingTwoArgs(t, (*big.Int).Div, v.Int, x.Int, y.Int)
 		},
 		"Exp-XY": func(v, x, y bigInt, z notZeroInt) bool {
-			return checkAliasingTwoArgs(t, func { v, x, y | v.Exp(x, y, z.Int) }, v.Int, x.Int, y.Int)
+			return checkAliasingTwoArgs(t, func { v, x, y | return v.Exp(x, y, z.Int) }, v.Int, x.Int, y.Int)
 		},
 		"Exp-XZ": func(v, x, y bigInt, z notZeroInt) bool {
-			return checkAliasingTwoArgs(t, func { v, x, z | v.Exp(x, y.Int, z) }, v.Int, x.Int, z.Int)
+			return checkAliasingTwoArgs(t, func { v, x, z | return v.Exp(x, y.Int, z) }, v.Int, x.Int, z.Int)
 		},
 		"Exp-YZ": func(v, x, y bigInt, z notZeroInt) bool {
-			return checkAliasingTwoArgs(t, func { v, y, z | v.Exp(x.Int, y, z) }, v.Int, y.Int, z.Int)
+			return checkAliasingTwoArgs(t, func { v, y, z | return v.Exp(x.Int, y, z) }, v.Int, y.Int, z.Int)
 		},
 		"GCD": func(v, x, y bigInt) bool {
-			return checkAliasingTwoArgs(t, func { v, x, y | v.GCD(nil, nil, x, y) }, v.Int, x.Int, y.Int)
+			return checkAliasingTwoArgs(t, func { v, x, y | return v.GCD(nil, nil, x, y) }, v.Int, x.Int, y.Int)
 		},
 		"GCD-X": func(v, x, y bigInt) bool {
 			a, b := new(big.Int), new(big.Int)
@@ -222,7 +222,7 @@ func TestAliasing(t *testing.T) {
 			}, v.Int, x.Int, y.Int)
 		},
 		"Lsh": func(v, x bigInt, n smallUint) bool {
-			return checkAliasingOneArg(t, func { v, x | v.Lsh(x, n.uint) }, v.Int, x.Int)
+			return checkAliasingOneArg(t, func { v, x | return v.Lsh(x, n.uint) }, v.Int, x.Int)
 		},
 		"Mod": func(v, x bigInt, y notZeroInt) bool {
 			return checkAliasingTwoArgs(t, (*big.Int).Mod, v.Int, x.Int, y.Int)
@@ -258,13 +258,13 @@ func TestAliasing(t *testing.T) {
 			return checkAliasingTwoArgs(t, (*big.Int).Rem, v.Int, x.Int, y.Int)
 		},
 		"Rsh": func(v, x bigInt, n smallUint) bool {
-			return checkAliasingOneArg(t, func { v, x | v.Rsh(x, n.uint) }, v.Int, x.Int)
+			return checkAliasingOneArg(t, func { v, x | return v.Rsh(x, n.uint) }, v.Int, x.Int)
 		},
 		"Set": func(v, x bigInt) bool {
 			return checkAliasingOneArg(t, (*big.Int).Set, v.Int, x.Int)
 		},
 		"SetBit": func(v, x bigInt, i smallUint, b zeroOrOne) bool {
-			return checkAliasingOneArg(t, func { v, x | v.SetBit(x, int(i.uint), b.uint) }, v.Int, x.Int)
+			return checkAliasingOneArg(t, func { v, x | return v.SetBit(x, int(i.uint), b.uint) }, v.Int, x.Int)
 		},
 		"Sqrt": func(v bigInt, x positiveInt) bool {
 			return checkAliasingOneArg(t, (*big.Int).Sqrt, v.Int, x.Int)

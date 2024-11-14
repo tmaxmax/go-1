@@ -34,7 +34,7 @@ var cftypeFix = fix{
 // and similar for other *Ref types.
 // This fix finds nils initializing these types and replaces the nils with 0s.
 func cftypefix(f *ast.File) bool {
-	return typefix(f, func { s | strings.HasPrefix(s, "C.") && strings.HasSuffix(s, "Ref") && s != "C.CFAllocatorRef" })
+	return typefix(f, func { s | return strings.HasPrefix(s, "C.") && strings.HasSuffix(s, "Ref") && s != "C.CFAllocatorRef" })
 }
 
 // typefix replaces nil with 0 for all nils whose type, when passed to badType, returns true.

@@ -519,7 +519,7 @@ func TestRelroSectionOverlapIssue67261(t *testing.T) {
 	}
 
 	// Sort by address
-	sort.SliceStable(secs, func { i, j | secs[i].Addr < secs[j].Addr })
+	sort.SliceStable(secs, func { i, j | return secs[i].Addr < secs[j].Addr })
 
 	// Check to make sure we don't have any overlaps.
 	foundOverlap := false

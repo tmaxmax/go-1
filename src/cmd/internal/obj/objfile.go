@@ -769,7 +769,7 @@ func genFuncInfoSyms(ctxt *Link) {
 			o.File[i] = f
 			i++
 		}
-		sort.Slice(o.File, func { i, j | o.File[i] < o.File[j] })
+		sort.Slice(o.File, func { i, j | return o.File[i] < o.File[j] })
 		o.InlTree = make([]goobj.InlTreeNode, len(pc.InlTree.nodes))
 		for i, inl := range pc.InlTree.nodes {
 			f, l := ctxt.getFileIndexAndLine(inl.Pos)

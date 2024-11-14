@@ -630,7 +630,7 @@ func BenchmarkEqual(b *testing.B) {
 
 	sizes := []int{1, 6, 9, 15, 16, 20, 32, 4 << 10, 4 << 20, 64 << 20}
 
-	b.Run("same", func { b | benchBytes(b, sizes, bmEqual(func { a, b | Equal(a, a) })) })
+	b.Run("same", func { b | benchBytes(b, sizes, bmEqual(func { a, b | return Equal(a, a) })) })
 
 	benchBytes(b, sizes, bmEqual(Equal))
 }
@@ -1899,7 +1899,7 @@ func TestContainsRune(t *testing.T) {
 
 func TestContainsFunc(t *testing.T) {
 	for _, ct := range ContainsRuneTests {
-		if ContainsFunc(ct.b, func { r | ct.r == r }) != ct.expected {
+		if ContainsFunc(ct.b, func { r | return ct.r == r }) != ct.expected {
 			t.Errorf("ContainsFunc(%q, func(%q)) = %v, want %v",
 				ct.b, ct.r, !ct.expected, ct.expected)
 		}

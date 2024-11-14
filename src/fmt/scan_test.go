@@ -84,7 +84,7 @@ var (
 type Xs string
 
 func (x *Xs) Scan(state ScanState, verb rune) error {
-	tok, err := state.Token(true, func { r | r == verb })
+	tok, err := state.Token(true, func { r | return r == verb })
 	if err != nil {
 		return err
 	}

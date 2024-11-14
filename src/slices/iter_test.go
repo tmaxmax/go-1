@@ -140,7 +140,7 @@ func TestSorted(t *testing.T) {
 }
 
 func TestSortedFunc(t *testing.T) {
-	s := SortedFunc(Values(ints[:]), func { a, b | a - b })
+	s := SortedFunc(Values(ints[:]), func { a, b | return a - b })
 	if !IsSorted(s) {
 		t.Errorf("sorted %v", ints)
 		t.Errorf("   got %v", s)

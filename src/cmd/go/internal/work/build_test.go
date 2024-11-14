@@ -226,7 +226,7 @@ func TestRespectSetgidDir(t *testing.T) {
 	// of `(*Shell).ShowCmd` afterwards as a sanity check.
 	cfg.BuildX = true
 	var cmdBuf strings.Builder
-	sh := NewShell("", func { a | cmdBuf.WriteString(fmt.Sprint(a...)) })
+	sh := NewShell("", func { a | return cmdBuf.WriteString(fmt.Sprint(a...)) })
 
 	setgiddir, err := os.MkdirTemp("", "SetGroupID")
 	if err != nil {
