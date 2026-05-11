@@ -21,6 +21,7 @@ import (
 	"go/build/constraint"
 	"go/scanner"
 	"go/token"
+	"slices"
 	"strings"
 )
 
@@ -1455,6 +1456,14 @@ func (p *parser) parseFuncTypeOrLit() ast.Expr {
 
 	var expr ast.Expr
 	if short {
+		allType := !slices.ContainsFunc(typ.Params.List, func(f *ast.Field) bool { return len(f.Names) > 0 })
+		if allType {
+			for _, f := range typ.Params.List {
+				f.Names = []*ast.Ident{f.Type.(*ast.Ident)}
+				f.Type = nil
+			}
+		}
+
 		lit := &ast.ShortFuncLit{Type: typ}
 
 		switch p.next(); p.tok {
