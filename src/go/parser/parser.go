@@ -1450,30 +1450,30 @@ func (p *parser) parseFuncTypeOrLit() ast.Expr {
 		return typ
 	}
 
-	lit := &ast.FuncLit{Type: typ}
-
 	p.exprLev++
 
+	var expr ast.Expr
 	if short {
-		lit.Colon = p.pos
+		lit := &ast.ShortFuncLit{Type: typ}
 
 		switch p.next(); p.tok {
 		case token.LBRACE:
 			lit.Body = p.parseBody()
 		case token.LPAREN:
 			lit.Expr = p.parseList(true)
-			lit.ExprEnd = p.expect(token.RPAREN)
+			lit.Rparen = p.expect(token.RPAREN)
 		default:
 			lit.Expr = []ast.Expr{p.parseExpr()}
-			lit.ExprEnd = lit.Expr[0].End()
 		}
+
+		expr = lit
 	} else {
-		lit.Body = p.parseBody()
+		expr = &ast.FuncLit{Type: typ, Body: p.parseBody()}
 	}
 
 	p.exprLev--
 
-	return lit
+	return expr
 }
 
 // parseOperand may return an expression or a raw type (incl. array
