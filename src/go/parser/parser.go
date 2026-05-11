@@ -21,6 +21,7 @@ import (
 	"go/build/constraint"
 	"go/scanner"
 	"go/token"
+	"slices"
 	"strings"
 )
 
@@ -58,12 +59,16 @@ type parser struct {
 	exprLev int  // < 0: in control clause, >= 0: in expression
 	inRhs   bool // if set, the parser is parsing a rhs expression
 
+	preferTypeAtExprLev int
+
 	imports []*ast.ImportSpec // list of imports
 
 	// nestLev is used to track and limit the recursion depth
 	// during parsing.
 	nestLev int
 }
+
+const preferExpr = -10
 
 func (p *parser) init(file *token.File, src []byte, mode Mode) {
 	p.file = file
@@ -73,6 +78,7 @@ func (p *parser) init(file *token.File, src []byte, mode Mode) {
 	p.top = true
 	p.mode = mode
 	p.trace = mode&Trace != 0 // for convenience (p.trace is used frequently)
+	p.preferTypeAtExprLev = preferExpr
 	p.next()
 }
 
@@ -1439,16 +1445,45 @@ func (p *parser) parseFuncTypeOrLit() ast.Expr {
 	}
 
 	typ := p.parseFuncType()
-	if p.tok != token.LBRACE {
+	short := p.tok == token.COLON
+
+	if (p.tok != token.LBRACE && !short) || (p.exprLev == p.preferTypeAtExprLev) {
 		// function type only
 		return typ
 	}
 
 	p.exprLev++
-	body := p.parseBody()
+
+	var expr ast.Expr
+	if short {
+		allType := !slices.ContainsFunc(typ.Params.List, func(f *ast.Field) bool { return len(f.Names) > 0 })
+		if allType {
+			for _, f := range typ.Params.List {
+				f.Names = []*ast.Ident{f.Type.(*ast.Ident)}
+				f.Type = nil
+			}
+		}
+
+		lit := &ast.ShortFuncLit{Type: typ}
+
+		switch p.next(); p.tok {
+		case token.LBRACE:
+			lit.Body = p.parseBody()
+		case token.LPAREN:
+			lit.Expr = p.parseList(true)
+			lit.Rparen = p.expect(token.RPAREN)
+		default:
+			lit.Expr = []ast.Expr{p.parseExpr()}
+		}
+
+		expr = lit
+	} else {
+		expr = &ast.FuncLit{Type: typ, Body: p.parseBody()}
+	}
+
 	p.exprLev--
 
-	return &ast.FuncLit{Type: typ, Body: body}
+	return expr
 }
 
 // parseOperand may return an expression or a raw type (incl. array
@@ -2084,8 +2119,8 @@ func (p *parser) parseIfHeader() (init ast.Stmt, cond ast.Expr) {
 	}
 	// p.tok != token.LBRACE
 
-	prevLev := p.exprLev
-	p.exprLev = -1
+	prevLev, prevPreferType := p.exprLev, p.preferTypeAtExprLev
+	p.exprLev, p.preferTypeAtExprLev = -1, preferExpr
 
 	if p.tok != token.SEMICOLON {
 		// accept potential variable declaration but complain
@@ -2132,7 +2167,7 @@ func (p *parser) parseIfHeader() (init ast.Stmt, cond ast.Expr) {
 		cond = &ast.BadExpr{From: p.pos, To: p.pos}
 	}
 
-	p.exprLev = prevLev
+	p.exprLev, p.preferTypeAtExprLev = prevLev, prevPreferType
 	return
 }
 
@@ -2168,7 +2203,7 @@ func (p *parser) parseIfStmt() *ast.IfStmt {
 	return &ast.IfStmt{If: pos, Init: init, Cond: cond, Body: body, Else: else_}
 }
 
-func (p *parser) parseCaseClause() *ast.CaseClause {
+func (p *parser) parseCaseClause(typeSwitch bool) *ast.CaseClause {
 	if p.trace {
 		defer un(trace(p, "CaseClause"))
 	}
@@ -2177,7 +2212,14 @@ func (p *parser) parseCaseClause() *ast.CaseClause {
 	var list []ast.Expr
 	if p.tok == token.CASE {
 		p.next()
+		old := p.preferTypeAtExprLev
+		if typeSwitch {
+			p.preferTypeAtExprLev = p.exprLev
+		}
 		list = p.parseList(true)
+		if typeSwitch {
+			p.preferTypeAtExprLev = old
+		}
 	} else {
 		p.expect(token.DEFAULT)
 	}
@@ -2223,8 +2265,8 @@ func (p *parser) parseSwitchStmt() ast.Stmt {
 
 	var s1, s2 ast.Stmt
 	if p.tok != token.LBRACE {
-		prevLev := p.exprLev
-		p.exprLev = -1
+		prevLev, prevPreferType := p.exprLev, p.preferTypeAtExprLev
+		p.exprLev, p.preferTypeAtExprLev = -1, preferExpr
 		if p.tok != token.SEMICOLON {
 			s2, _ = p.parseSimpleStmt(basic)
 		}
@@ -2248,14 +2290,14 @@ func (p *parser) parseSwitchStmt() ast.Stmt {
 				s2, _ = p.parseSimpleStmt(basic)
 			}
 		}
-		p.exprLev = prevLev
+		p.exprLev, p.preferTypeAtExprLev = prevLev, prevPreferType
 	}
 
 	typeSwitch := p.isTypeSwitchGuard(s2)
 	lbrace := p.expect(token.LBRACE)
 	var list []ast.Stmt
 	for p.tok == token.CASE || p.tok == token.DEFAULT {
-		list = append(list, p.parseCaseClause())
+		list = append(list, p.parseCaseClause(typeSwitch))
 	}
 	rbrace := p.expect(token.RBRACE)
 	p.expectSemi()
@@ -2348,8 +2390,8 @@ func (p *parser) parseForStmt() ast.Stmt {
 	var s1, s2, s3 ast.Stmt
 	var isRange bool
 	if p.tok != token.LBRACE {
-		prevLev := p.exprLev
-		p.exprLev = -1
+		prevLev, prevPreferType := p.exprLev, p.preferTypeAtExprLev
+		p.exprLev, p.preferTypeAtExprLev = -1, preferExpr
 		if p.tok != token.SEMICOLON {
 			if p.tok == token.RANGE {
 				// "for range x" (nil lhs in assignment)
@@ -2374,7 +2416,7 @@ func (p *parser) parseForStmt() ast.Stmt {
 				s3, _ = p.parseSimpleStmt(basic)
 			}
 		}
-		p.exprLev = prevLev
+		p.exprLev, p.preferTypeAtExprLev = prevLev, prevPreferType
 	}
 
 	body := p.parseBlockStmt()
