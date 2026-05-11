@@ -21,7 +21,6 @@ import (
 	"go/build/constraint"
 	"go/scanner"
 	"go/token"
-	"math"
 	"strings"
 )
 
@@ -68,6 +67,8 @@ type parser struct {
 	nestLev int
 }
 
+const preferExpr = -10
+
 func (p *parser) init(file *token.File, src []byte, mode Mode) {
 	p.file = file
 	eh := func(pos token.Position, msg string) { p.errors.Add(pos, msg) }
@@ -76,7 +77,7 @@ func (p *parser) init(file *token.File, src []byte, mode Mode) {
 	p.top = true
 	p.mode = mode
 	p.trace = mode&Trace != 0 // for convenience (p.trace is used frequently)
-	p.preferTypeAtExprLev = math.MinInt
+	p.preferTypeAtExprLev = preferExpr
 	p.next()
 }
 
@@ -2114,7 +2115,7 @@ func (p *parser) parseIfHeader() (init ast.Stmt, cond ast.Expr) {
 	// p.tok != token.LBRACE
 
 	prevLev, prevPreferType := p.exprLev, p.preferTypeAtExprLev
-	p.exprLev, p.preferTypeAtExprLev = -1, math.MinInt
+	p.exprLev, p.preferTypeAtExprLev = -1, preferExpr
 
 	if p.tok != token.SEMICOLON {
 		// accept potential variable declaration but complain
@@ -2264,7 +2265,7 @@ func (p *parser) parseSwitchStmt() ast.Stmt {
 	var s1, s2 ast.Stmt
 	if p.tok != token.LBRACE {
 		prevLev, prevPreferType := p.exprLev, p.preferTypeAtExprLev
-		p.exprLev, p.preferTypeAtExprLev = -1, math.MinInt
+		p.exprLev, p.preferTypeAtExprLev = -1, preferExpr
 
 		if p.tok != token.SEMICOLON {
 			s2, _ = p.parseSimpleStmt(basic)
@@ -2391,7 +2392,7 @@ func (p *parser) parseForStmt() ast.Stmt {
 	var isRange bool
 	if p.tok != token.LBRACE {
 		prevLev, prevPreferType := p.exprLev, p.preferTypeAtExprLev
-		p.exprLev, p.preferTypeAtExprLev = -1, math.MinInt
+		p.exprLev, p.preferTypeAtExprLev = -1, preferExpr
 		if p.tok != token.SEMICOLON {
 			if p.tok == token.RANGE {
 				// "for range x" (nil lhs in assignment)
