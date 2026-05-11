@@ -1498,9 +1498,6 @@ func (p *parser) parseOperand() ast.Expr {
 		lparen := p.pos
 		p.next()
 		p.exprLev++
-		// preferType is used to resolve ambiguities that the "func():"
-		// syntax may introduce. Wrapping it in parens removes any ambiguity,
-		// therefore preferType is not passed down the call stack anymore.
 		x := p.parseRhs() // types may be parenthesized: (some type)
 		p.exprLev--
 		rparen := p.expect(token.RPAREN)
@@ -1809,7 +1806,6 @@ func (p *parser) parseUnaryExpr() ast.Expr {
 	case token.ADD, token.SUB, token.NOT, token.XOR, token.AND, token.TILDE:
 		pos, op := p.pos, p.tok
 		p.next()
-		// Only after tilde can a type still follow.
 		x := p.parseUnaryExpr()
 		return &ast.UnaryExpr{OpPos: pos, Op: op, X: x}
 
@@ -2163,7 +2159,6 @@ func (p *parser) parseIfHeader() (init ast.Stmt, cond ast.Expr) {
 	}
 
 	p.exprLev, p.preferTypeAtExprLev = prevLev, prevPreferType
-
 	return
 }
 
@@ -2208,14 +2203,11 @@ func (p *parser) parseCaseClause(typeSwitch bool) *ast.CaseClause {
 	var list []ast.Expr
 	if p.tok == token.CASE {
 		p.next()
-
 		old := p.preferTypeAtExprLev
 		if typeSwitch {
 			p.preferTypeAtExprLev = p.exprLev
 		}
-
 		list = p.parseList(true)
-
 		if typeSwitch {
 			p.preferTypeAtExprLev = old
 		}
@@ -2266,7 +2258,6 @@ func (p *parser) parseSwitchStmt() ast.Stmt {
 	if p.tok != token.LBRACE {
 		prevLev, prevPreferType := p.exprLev, p.preferTypeAtExprLev
 		p.exprLev, p.preferTypeAtExprLev = -1, preferExpr
-
 		if p.tok != token.SEMICOLON {
 			s2, _ = p.parseSimpleStmt(basic)
 		}
@@ -2290,7 +2281,6 @@ func (p *parser) parseSwitchStmt() ast.Stmt {
 				s2, _ = p.parseSimpleStmt(basic)
 			}
 		}
-
 		p.exprLev, p.preferTypeAtExprLev = prevLev, prevPreferType
 	}
 
