@@ -493,26 +493,34 @@ func (p *parser) parseIdentList() (list []*ast.Ident) {
 // Common productions
 
 // If lhs is set, result list elements which are identifiers are not resolved.
-func (p *parser) parseExprList() (list []ast.Expr) {
+func (p *parser) parseExprList(preferType bool) (list []ast.Expr) {
 	if p.trace {
 		defer un(trace(p, "ExpressionList"))
 	}
 
-	list = append(list, p.parseExpr())
+	list = append(list, p.parseExpr0(preferType))
 	for p.tok == token.COMMA {
 		p.next()
-		list = append(list, p.parseExpr())
+		list = append(list, p.parseExpr0(preferType))
 	}
 
 	return
 }
 
-func (p *parser) parseList(inRhs bool) []ast.Expr {
+func (p *parser) parseList0(inRhs, preferType bool) []ast.Expr {
 	old := p.inRhs
 	p.inRhs = inRhs
-	list := p.parseExprList()
+	list := p.parseExprList(preferType)
 	p.inRhs = old
 	return list
+}
+
+func (p *parser) parseList(inRhs bool) []ast.Expr {
+	return p.parseList0(inRhs, false)
+}
+
+func (p *parser) parseTypeList(inRhs bool) []ast.Expr {
+	return p.parseList0(inRhs, true)
 }
 
 // ----------------------------------------------------------------------------
@@ -1433,13 +1441,13 @@ func (p *parser) parseBlockStmt() *ast.BlockStmt {
 // ----------------------------------------------------------------------------
 // Expressions
 
-func (p *parser) parseFuncTypeOrLit() ast.Expr {
+func (p *parser) parseFuncTypeOrLit(preferType bool) ast.Expr {
 	if p.trace {
 		defer un(trace(p, "FuncTypeOrLit"))
 	}
 
 	typ := p.parseFuncType()
-	if p.tok != token.LBRACE {
+	if p.tok != token.LBRACE || preferType {
 		// function type only
 		return typ
 	}
@@ -1453,7 +1461,7 @@ func (p *parser) parseFuncTypeOrLit() ast.Expr {
 
 // parseOperand may return an expression or a raw type (incl. array
 // types of the form [...]T). Callers must verify the result.
-func (p *parser) parseOperand() ast.Expr {
+func (p *parser) parseOperand(preferType bool) ast.Expr {
 	if p.trace {
 		defer un(trace(p, "Operand"))
 	}
@@ -1472,13 +1480,16 @@ func (p *parser) parseOperand() ast.Expr {
 		lparen := p.pos
 		p.next()
 		p.exprLev++
+		// preferType is used to resolve ambiguities that the "func():"
+		// syntax may introduce. Wrapping it in parens removes any ambiguity,
+		// therefore preferType is not passed down the call stack anymore.
 		x := p.parseRhs() // types may be parenthesized: (some type)
 		p.exprLev--
 		rparen := p.expect(token.RPAREN)
 		return &ast.ParenExpr{Lparen: lparen, X: x, Rparen: rparen}
 
 	case token.FUNC:
-		return p.parseFuncTypeOrLit()
+		return p.parseFuncTypeOrLit(preferType)
 	}
 
 	if typ := p.tryIdentOrType(); typ != nil { // do not consume trailing type parameters
@@ -1696,13 +1707,13 @@ func (p *parser) parseLiteralValue(typ ast.Expr) ast.Expr {
 	return &ast.CompositeLit{Type: typ, Lbrace: lbrace, Elts: elts, Rbrace: rbrace}
 }
 
-func (p *parser) parsePrimaryExpr(x ast.Expr) ast.Expr {
+func (p *parser) parsePrimaryExpr(x ast.Expr, preferType bool) ast.Expr {
 	if p.trace {
 		defer un(trace(p, "PrimaryExpr"))
 	}
 
 	if x == nil {
-		x = p.parseOperand()
+		x = p.parseOperand(preferType)
 	}
 	// We track the nesting here rather than at the entry for the function,
 	// since it can iteratively produce a nested output, and we want to
@@ -1769,7 +1780,7 @@ func (p *parser) parsePrimaryExpr(x ast.Expr) ast.Expr {
 	}
 }
 
-func (p *parser) parseUnaryExpr() ast.Expr {
+func (p *parser) parseUnaryExpr(preferType bool) ast.Expr {
 	defer decNestLev(incNestLev(p))
 
 	if p.trace {
@@ -1780,7 +1791,8 @@ func (p *parser) parseUnaryExpr() ast.Expr {
 	case token.ADD, token.SUB, token.NOT, token.XOR, token.AND, token.TILDE:
 		pos, op := p.pos, p.tok
 		p.next()
-		x := p.parseUnaryExpr()
+		// Only after tilde can a type still follow.
+		x := p.parseUnaryExpr(preferType && p.tok == token.TILDE)
 		return &ast.UnaryExpr{OpPos: pos, Op: op, X: x}
 
 	case token.ARROW:
@@ -1802,7 +1814,7 @@ func (p *parser) parseUnaryExpr() ast.Expr {
 		//   <- (chan type)    =>  (<-chan type)
 		//   <- (chan<- type)  =>  (<-chan (<-type))
 
-		x := p.parseUnaryExpr()
+		x := p.parseUnaryExpr(preferType)
 
 		// determine which case we have
 		if typ, ok := x.(*ast.ChanType); ok {
@@ -1833,11 +1845,11 @@ func (p *parser) parseUnaryExpr() ast.Expr {
 		// pointer type or unary "*" expression
 		pos := p.pos
 		p.next()
-		x := p.parseUnaryExpr()
+		x := p.parseUnaryExpr(preferType)
 		return &ast.StarExpr{Star: pos, X: x}
 	}
 
-	return p.parsePrimaryExpr(nil)
+	return p.parsePrimaryExpr(nil, preferType)
 }
 
 func (p *parser) tokPrec() (token.Token, int) {
@@ -1852,13 +1864,13 @@ func (p *parser) tokPrec() (token.Token, int) {
 // If x is non-nil, it is used as the left operand.
 //
 // TODO(rfindley): parseBinaryExpr has become overloaded. Consider refactoring.
-func (p *parser) parseBinaryExpr(x ast.Expr, prec1 int) ast.Expr {
+func (p *parser) parseBinaryExpr(x ast.Expr, prec1 int, preferType bool) ast.Expr {
 	if p.trace {
 		defer un(trace(p, "BinaryExpr"))
 	}
 
 	if x == nil {
-		x = p.parseUnaryExpr()
+		x = p.parseUnaryExpr(preferType)
 	}
 	// We track the nesting here rather than at the entry for the function,
 	// since it can iteratively produce a nested output, and we want to
@@ -1872,18 +1884,22 @@ func (p *parser) parseBinaryExpr(x ast.Expr, prec1 int) ast.Expr {
 			return x
 		}
 		pos := p.expect(op)
-		y := p.parseBinaryExpr(nil, oprec+1)
+		y := p.parseBinaryExpr(nil, oprec+1, preferType)
 		x = &ast.BinaryExpr{X: x, OpPos: pos, Op: op, Y: y}
 	}
 }
 
-// The result may be a type or even a raw type ([...]int).
-func (p *parser) parseExpr() ast.Expr {
+func (p *parser) parseExpr0(preferType bool) ast.Expr {
 	if p.trace {
 		defer un(trace(p, "Expression"))
 	}
 
-	return p.parseBinaryExpr(nil, token.LowestPrec+1)
+	return p.parseBinaryExpr(nil, token.LowestPrec+1, preferType)
+}
+
+// The result may be a type or even a raw type ([...]int).
+func (p *parser) parseExpr() ast.Expr {
+	return p.parseExpr0(false)
 }
 
 func (p *parser) parseRhs() ast.Expr {
@@ -2168,16 +2184,26 @@ func (p *parser) parseIfStmt() *ast.IfStmt {
 	return &ast.IfStmt{If: pos, Init: init, Cond: cond, Body: body, Else: else_}
 }
 
-func (p *parser) parseCaseClause() *ast.CaseClause {
+func (p *parser) parseCaseClause(typeSwitch bool) *ast.CaseClause {
 	if p.trace {
-		defer un(trace(p, "CaseClause"))
+		name := "CaseClause"
+		if typeSwitch {
+			name = "TypeCaseClause"
+		}
+
+		defer un(trace(p, name))
 	}
 
 	pos := p.pos
 	var list []ast.Expr
 	if p.tok == token.CASE {
 		p.next()
-		list = p.parseList(true)
+
+		if typeSwitch {
+			list = p.parseTypeList(true)
+		} else {
+			list = p.parseList(true)
+		}
 	} else {
 		p.expect(token.DEFAULT)
 	}
@@ -2255,7 +2281,7 @@ func (p *parser) parseSwitchStmt() ast.Stmt {
 	lbrace := p.expect(token.LBRACE)
 	var list []ast.Stmt
 	for p.tok == token.CASE || p.tok == token.DEFAULT {
-		list = append(list, p.parseCaseClause())
+		list = append(list, p.parseCaseClause(typeSwitch))
 	}
 	rbrace := p.expect(token.RBRACE)
 	p.expectSemi()
@@ -2620,8 +2646,8 @@ func (p *parser) parseTypeSpec(doc *ast.CommentGroup, _ token.Token, _ int) ast.
 				// the call sequence we would get by passing in name
 				// to parser.expr, and pass in name to parsePrimaryExpr.
 				p.exprLev++
-				lhs := p.parsePrimaryExpr(x)
-				x = p.parseBinaryExpr(lhs, token.LowestPrec+1)
+				lhs := p.parsePrimaryExpr(x, false)
+				x = p.parseBinaryExpr(lhs, token.LowestPrec+1, false)
 				p.exprLev--
 			}
 			// Analyze expression x. If we can split x into a type parameter
